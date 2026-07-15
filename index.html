@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liminal Labyrinth</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Gill Sans', 'Arial Narrow', sans-serif;
+            background-color: #121212;
+            color: #fff8fa;
+            /* Softer general text glow */
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.3), 0 0 12px rgba(255, 248, 250, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Purely transparent container wrapper */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* Room Transition Logic */
+        .room {
+            display: none; /* Hide all rooms by default */
+        }
+
+        /* ================= LANDING SCREEN (Strictly Borderless) ================= */
+        #landing.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1.2s ease-in-out;
+            /* Explicitly stripping any box properties */
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        /* ================= PLAYABLE ROOMS (Box design starts here) ================= */
+        .room:not(#landing).active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1.2s ease-in-out;
+            background: #1e1e1e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 248, 250, 0.1);
+            box-sizing: border-box;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Landing Screen Title (Softer glow & Case-sensitive) */
+        .landing-title {
+            font-size: 3.8rem;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            color: #fff8fa;
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
+        }
+
+        /* Elements Styling */
+        h1 {
+            font-size: 2.4rem; 
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            color: #fff8fa;
+            text-shadow: 0 0 8px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+        }
+
+        p {
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+
+        .room-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 5px;
+            border: 2px solid rgba(255, 248, 250, 0.2);
+            box-shadow: 0 0 15px rgba(255, 248, 250, 0.1); 
+        }
+
+        .crop {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 5px;
+            border: 2px solid rgba(255, 248, 250, 0.2);
+            box-shadow: 0 0 15px rgba(255, 248, 250, 0.1); 
+        }
+
+        /* YouTube Container */
+        .audio-player-container {
+            margin: 20px 0;
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 248, 250, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        iframe {
+            border: none;
+            width: 100%;
+            height: 80px; 
+            border-radius: 4px;
+        }
+
+        /* Buttons */
+        .nav-btn {
+            background-color: #fff8fa;
+            color: #121212;
+            border: none;
+            padding: 8px 20px;
+            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', sans-serif;
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            box-shadow: 0 0 10px rgba(255, 248, 250, 0.3);
+            text-transform: uppercase;
+        }
+
+        .nav-btn:hover {
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 248, 250, 0.8);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="landing" class="room active">
+        <h1 class="landing-title">Liminal Labyrinth</h1>
+        <button class="nav-btn" onclick="window.location.reload()">Coming Soon</button>
+    </div>
+
+    <div id="room1" class="room">
+        <h1>Liminal Labyrinth</h1>
+        
+        <img class="crop" src="https://cdn.discordapp.com/attachments/839943265641955363/1526938551340499044/room1staticvoid.png?ex=6a58d7d7&is=6a578657&hm=14cbef52170acd75e4e5e53f8e66c22f7459b571a6c0eb84f8991f92edcdb04b&" alt="Static Void">
+        
+        <p>Static Void</p>
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio:</p>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/ZFWsSOSTzrY?si=tilkrN9vLA3Cx2UB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+        <button class="nav-btn" onclick="goToRoom('room2')">Go to Next Room</button>
+    </div>
+
+    <div id="room2" class="room">
+        <h1>Room 2: The Neon Alleyway</h1>
+        
+        <img class="room-image" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600" alt="Neon Street">
+        
+        <p>Rain puddles reflect glowing neon lights. You hear synth music echoing from a nearby club.</p>
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio:</p>
+            <iframe src="https://www.youtube.com/embed/5qap5aO4i9A?controls=1"></iframe>
+        </div>
+
+        <button class="nav-btn" onclick="goToRoom('room1')">Go Back to Room 1</button>
+    </div>
+
+</div>
+
+<script>
+    // JavaScript function to switch between rooms
+    function goToRoom(roomId) {
+        // Find all elements with the class 'room' and hide them
+        const rooms = document.querySelectorAll('.room');
+        rooms.forEach(room => {
+            room.classList.remove('active');
+        });
+
+        // Show the selected room
+        const activeRoom = document.getElementById(roomId);
+        if (activeRoom) {
+            activeRoom.classList.add('active');
+        }
+    }
+</script>
+
+</body>
+</html>
