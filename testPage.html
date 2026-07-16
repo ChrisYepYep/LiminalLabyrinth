@@ -3,7 +3,8 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liminal Labyrinth</title>
@@ -16,18 +17,23 @@
             background-color: #000000;
             color: #fff8fa;
             display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
-
         }
 
-        /* Purely transparent container wrapper */
         .container {
             width: 90%;
             max-width: 600px;
             text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         /* Room Transition Logic */
@@ -68,18 +74,52 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes floatUpAndDown {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
         .room0-image {
             width: 100%;
             height: 450px;
-            object-fit: contain;
-            border-radius: none;
-            margin-bottom: -100px;
-            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/Figment.png?raw=true');
+            margin-bottom: -120px;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Make sure the mask image stays strictly on top */
+        .room0-image img {
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* The underlying artwork layer (Figment.png) */
+        .room0-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('roomassets/Figment.png');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
             z-index: 1;
-            position: relative;
+            transition: opacity 3.5s ease-in-out; /* Smooth fade for the background only */
+        }
+
+        /* Class to trigger fading the artwork underneath the mask */
+        .room0-image.fade-underneath::before {
+            opacity: 0;
         }
 
         .room1-image {
@@ -358,6 +398,10 @@
             color: #fff8fa;
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
             z-index: 5;
+            min-height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .landing-text {
@@ -485,6 +529,7 @@
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
             position: relative;
             z-index: 5;
+            animation: floatUpAndDown 6s ease-in-out infinite;
         }
 
         .button-group {
@@ -509,7 +554,7 @@
             border: transparent;
             padding: 0px 10px;
             font-family: 'Oswald', sans-serif;
-            font-size: 1rem;
+            font-size: 0.7rem;
             font-weight: bold;
             letter-spacing: 1px;
             border-radius: 5px;
@@ -532,14 +577,14 @@
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
         }
 
-        .nav-btn:hover {
+        .nav-btn-landing:hover {
             background-color: transparent;
             box-shadow: none;
             transform: translateY(-3px);
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
         }
 
-        .nav-btn:active {
+        .nav-btn-landing:active {
             transform: scale(0.98);
         }
 
@@ -578,6 +623,29 @@
             drop-shadow: 10px 10px 10px #fff8fa;
         }
 
+        .site-footer {
+            width: 800px;
+            padding: 5px 0;
+            margin-top: auto; /* Pushes footer to bottom if flexbox layout is used */
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255, 248, 250, 0.4);
+            letter-spacing: 1px;
+            z-index: 10;
+            position: relative;
+            text-opacity: 0.2;
+            flex-shrink: 0;
+}
+
+        .site-footer p {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 150;
+            margin: 0;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+
     </style>
 </head>
 <body>
@@ -588,464 +656,17 @@
         <div class="room0-image">
             <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
-        <button class="nav-btn-landing" onclick="goToRoom('room1')">
-            <span class="btn-main">It is time to wake up.</span>
+        <button class="nav-btn-landing" onclick="handleLandingClick()">
+            <span>It is time to wake up.</span><br>
+            <span>August 2026.</span>
         </button>
     </div>
 
-        <div id="room1" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room1-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Static Void</p>
-                </div>
-            </div>
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/room1track.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('landing')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room2')">Progress</button>
-            </div>
-            <div class="btn-sub">
-                <button class="nav-btn-landing" onclick="resetProgress()" style="margin-top: 15px; opacity: 0.6; font-size: 0.85rem;">
-                Reset Progress
-                </button>
-            </div>
-    </div>
-
-        <div id="room2" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room2-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Apprehensive Living</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room1')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room3')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room3" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room3-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Visional Horizons</p>
-                </div>
-            </div>        
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room2')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room4')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room4" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room4-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Neglected Beams</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room3')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room5')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room5" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room5-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Optical Flush</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room4')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room6')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room6" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room6-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Dream Is Collapsing</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room5')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room7')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room7" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room7-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Umbra</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/room7track.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room6')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room8')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room8" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room8-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Appointed Connection</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room7')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room9')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room9" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room9-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Professional Amber</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room8')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room10')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room10" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room10-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Lost Connection</p>
-                </div>
-            </div>        
-
-             <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room9')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room11')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room11" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room11-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Celestial</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room10')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room12')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room12" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room12-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Approximation</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room11')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room13')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room13" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room13-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>New Eden</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room12')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room14')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room14" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room14-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Utopia</p>
-                </div>
-            </div>        
-
-             <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room13')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room15')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room15" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room15-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Monotonous</p>
-                </div>
-            </div>        
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room14')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room16')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room16" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room16-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Postponement</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room15')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room17')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room17" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room17-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>The Expanse Project</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room16')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('room18')">Progress</button>
-            </div>
-    </div>
-
-        <div id="room18" class="room">
-        <h2>Liminal Labyrinth</h2>
-            <div class="room18-image">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
-
-                <div class="room-title">
-                    <p>Expanded</p>
-                </div>
-            </div>        
-
-            <div class="audio-player-container">
-                <audio loop preload="auto">
-                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-                </audio>
-            </div>
-
-            <div class="button-group">
-                <button class="nav-btn" onclick="goToRoom('room17')">Return</button>
-                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
-                </button>
-                <button class="nav-btn" onclick="goToRoom('landing')">Progress</button>
-            </div>
-    </div>
-
 </div>
+
+<footer class="site-footer">
+    <p>This fan site is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
+</footer>
 
 <script>
 // Image URLs for play and pause state
@@ -1133,6 +754,50 @@ function goToRoom(roomId) {
         
         // Return to landing screen
         goToRoom('landing');
+    }
+}
+
+let transitionComplete = false;
+
+function handleLandingClick() {
+    // If the transition has already taken place, reload the page on click
+    if (transitionComplete) {
+        window.location.reload();
+        return;
+    }
+
+    const titleElement = document.querySelector('.landing-title');
+    const landingContainer = document.getElementById('landing');
+    const landingImage = document.querySelector('.room0-image');
+
+    if (titleElement) {
+        let currentText = titleElement.textContent;
+
+        // Remove one character per click
+        if (currentText.length > 0) {
+            titleElement.textContent = currentText.slice(0, -1);
+        }
+
+        // When the last letter is removed:
+        if (titleElement.textContent.trim().length === 0) {
+            titleElement.innerHTML = '&nbsp;'; // Reserve vertical space
+
+            if (landingImage && landingContainer) {
+                // 1. Place the new image on #landing (behind the mask)
+                landingContainer.style.backgroundImage = "url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanse.png?raw=true')";
+                landingContainer.style.backgroundSize = "contain";
+                landingContainer.style.backgroundPosition = "center";
+                landingContainer.style.backgroundRepeat = "no-repeat";
+
+                // 2. Fade out Figment.png underneath mask
+                landingImage.classList.add('fade-underneath');
+            }
+
+            // 3. Mark transition as complete after 3s fade finishes
+            setTimeout(() => {
+                transitionComplete = true;
+            }, 3000);
+        }
     }
 }
 
