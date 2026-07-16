@@ -444,7 +444,7 @@
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
-            padding: 8px 20px;
+            padding: 0px 20px;
             font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
             font-size: 1rem;
             font-weight: bold;
@@ -452,7 +452,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.8s ease-in-out;
-            margin-top: -50px;
+            margin-top: -10px;
             margin-bottom: 1px;
             box-shadow: none;
             text-transform: none;
@@ -466,11 +466,15 @@
             justify-content: center;
             gap: 10px;
             width: 100%;
-            margin-top: 70px;
+            margin-top: 100px;
         }
 
-        .button-group .nav-btn {
+        .button-group .nav-btn .audio-toggle-btn {
             margin-top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
         }
 
         .btn-sub {
@@ -480,7 +484,7 @@
             margin-top: 1px;
             letter-spacing: 0.5px;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-}
+        }
 
         .nav-btn:hover {
             background-color: transparent;
@@ -492,6 +496,41 @@
         .nav-btn:active {
             transform: scale(0.98);
         }
+
+        audio {
+            display: none;
+        }
+
+        .audio-toggle-btn {
+            background-color: transparent;
+            color: #fff8fa;
+            border: none;
+            padding: 0px 0px;
+            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
+            margin-bottom: 10px;
+            z-index: 5;
+            box-shadow: 0 0 20px rgba(255, 248, 250, 0.3);
+        }
+
+        .audio-toggle-btn:hover {
+            border-color: none;
+            box-shadow: 0 0 10px rgba(255, 248, 250, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .audio-toggle-btn.playing {
+            border-color: none;
+            background: none;
+            box-shadow: none;
+            drop-shadow: 10px 10px 10px #fff8fa;
+        }
+
     </style>
 </head>
 <body>
@@ -515,19 +554,20 @@
                 <div class="room-title">
                     <p>Static Void</p>
                 </div>
-            </div>        
+            </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/room1track.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio:</p>
-            <audio controls loop>
-                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
-    </audio>
-        </div>
-
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('landing')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room2')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('landing')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room2')">Progress</button>
+            </div>
     </div>
 
         <div id="room2" class="room">
@@ -540,20 +580,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube.com/embed/0Odln_9IUNw?si=heMG6D9sH7VvO6S4" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room1')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room3')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room1')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room3')">Progress</button>
+            </div>
     </div>
 
         <div id="room3" class="room">
@@ -565,21 +604,19 @@
                     <p>Visional Horizons</p>
                 </div>
             </div>        
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
-
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room2')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room4')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room2')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room4')">Progress</button>
+            </div>
     </div>
 
         <div id="room4" class="room">
@@ -592,20 +629,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room3')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room5')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room3')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room5')">Progress</button>
+            </div>
     </div>
 
         <div id="room5" class="room">
@@ -618,20 +654,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room4')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room6')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room4')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room6')">Progress</button>
+            </div>
     </div>
 
         <div id="room6" class="room">
@@ -644,20 +679,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room5')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room7')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room5')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room7')">Progress</button>
+            </div>
     </div>
 
         <div id="room7" class="room">
@@ -670,20 +704,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room6')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room8')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room6')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room8')">Progress</button>
+            </div>
     </div>
 
         <div id="room8" class="room">
@@ -696,20 +729,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room7')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room9')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room7')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room9')">Progress</button>
+            </div>
     </div>
 
         <div id="room9" class="room">
@@ -722,20 +754,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room8')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room10')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room8')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room10')">Progress</button>
+            </div>
     </div>
 
         <div id="room10" class="room">
@@ -748,20 +779,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+             <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room9')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room11')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room9')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room11')">Progress</button>
+            </div>
     </div>
 
         <div id="room11" class="room">
@@ -774,20 +804,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room10')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room12')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room10')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room12')">Progress</button>
+            </div>
     </div>
 
         <div id="room12" class="room">
@@ -800,20 +829,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room11')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room13')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room11')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room13')">Progress</button>
+            </div>
     </div>
 
         <div id="room13" class="room">
@@ -826,20 +854,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room12')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room14')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room12')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room14')">Progress</button>
+            </div>
     </div>
 
         <div id="room14" class="room">
@@ -852,20 +879,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+             <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room13')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room15')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room13')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room15')">Progress</button>
+            </div>
     </div>
 
         <div id="room15" class="room">
@@ -877,21 +903,19 @@
                     <p>Monotonous</p>
                 </div>
             </div>        
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
-
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room14')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room16')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room14')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room16')">Progress</button>
+            </div>
     </div>
 
         <div id="room16" class="room">
@@ -904,20 +928,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room15')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room17')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room15')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room17')">Progress</button>
+            </div>
     </div>
 
         <div id="room17" class="room">
@@ -930,20 +953,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room16')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('room18')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room16')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('room18')">Progress</button>
+            </div>
     </div>
 
         <div id="room18" class="room">
@@ -956,20 +978,19 @@
                 </div>
             </div>        
 
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
-            <iframe 
-            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
-            title="YouTube video player" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-            </iframe>
-        </div>
+            <div class="audio-player-container">
+                <audio loop preload="auto">
+                    <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+                </audio>
+            </div>
 
-        <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room17')">Return</button>
-            <button class="nav-btn" onclick="goToRoom('landing')">Progress</button>
-        </div>
+            <div class="button-group">
+                <button class="nav-btn" onclick="goToRoom('room17')">Return</button>
+                <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                </button>
+                <button class="nav-btn" onclick="goToRoom('landing')">Progress</button>
+            </div>
     </div>
 
 </div>
@@ -977,20 +998,78 @@
 </div>
 
 <script>
-    // JavaScript function to switch between rooms
-    function goToRoom(roomId) {
-        // Find all elements with the class 'room' and hide them
-        const rooms = document.querySelectorAll('.room');
-        rooms.forEach(room => {
-            room.classList.remove('active');
+// Image URLs for play and pause state
+const PLAY_ICON_URL = "https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true";
+const PAUSE_ICON_URL = "https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/pauseicon.png?raw=true"; // Ensure you have this image uploaded
+
+// Toggle audio play/pause for the button clicked
+function toggleAudio(btn) {
+    const room = btn.closest('.room');
+    const audio = room ? room.querySelector('audio') : null;
+
+    if (!audio) return;
+
+    if (audio.paused) {
+        // Stop any other playing audio across rooms first
+        document.querySelectorAll('audio').forEach(a => {
+            a.pause();
+            a.currentTime = 0;
         });
 
-        // Show the selected room
-        const activeRoom = document.getElementById(roomId);
-        if (activeRoom) {
-            activeRoom.classList.add('active');
-        }
+        // Reset all other audio buttons to play icon
+        document.querySelectorAll('.audio-toggle-btn').forEach(b => {
+            b.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+            b.classList.remove('playing');
+        });
+
+        // Play current audio and switch to pause icon
+        audio.play();
+        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.classList.add('playing');
+    } else {
+        // Pause current audio and switch back to play icon
+        audio.pause();
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.classList.remove('playing');
     }
+}
+
+// Function to switch rooms and reset all audio
+function goToRoom(roomId) {
+    // 1. Pause & reset all audio elements
+    const allAudio = document.querySelectorAll('audio');
+    allAudio.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+
+    // 2. Reset all audio button icons back to play icon
+    const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
+    allAudioBtns.forEach(btn => {
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.classList.remove('playing');
+    });
+
+    // 3. Force-stop all YouTube iframe playback if present
+    const allIframes = document.querySelectorAll('iframe');
+    allIframes.forEach(iframe => {
+        const currentSrc = iframe.src;
+        iframe.src = '';
+        iframe.src = currentSrc;
+    });
+
+    // 4. Hide all rooms
+    const rooms = document.querySelectorAll('.room');
+    rooms.forEach(room => {
+        room.classList.remove('active');
+    });
+
+    // 5. Show the target room
+    const activeRoom = document.getElementById(roomId);
+    if (activeRoom) {
+        activeRoom.classList.add('active');
+    }
+}
 </script>
 
 </body>
