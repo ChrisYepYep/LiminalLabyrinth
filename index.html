@@ -74,6 +74,18 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes floatUpAndDown {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
         .room0-image {
             width: 100%;
             height: 450px;
@@ -517,6 +529,7 @@
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
             position: relative;
             z-index: 5;
+            animation: floatUpAndDown 6s ease-in-out infinite;
         }
 
         .button-group {
