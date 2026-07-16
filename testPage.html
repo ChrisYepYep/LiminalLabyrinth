@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Gill Sans MT Condensed', 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-            background-color: #121212;
+            background-color: #000000;
             color: #fff8fa;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.3), 0 0 12px rgba(255, 248, 250, 0.1);
             display: flex;
@@ -37,11 +37,12 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 2.2s ease-in-out;
+            animation: fadeIn 3.2s ease-in-out;
             background: transparent;
             border: none;
             box-shadow: none;
             padding: 0;
+            position: relative;
         }
 
         /* ================= PLAYABLE ROOMS ================= */
@@ -50,10 +51,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 4.2s ease-in-out;
-            background: none;
+            animation: fadeIn 0.6s ease-in-out;
             padding: 30px;
-            border-radius: 50%;
+            border-radius: none;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             border: none;
             box-sizing: border-box;
@@ -64,47 +64,351 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Landing Screen Title (Softer glow & Case-sensitive) */
+        .room0-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: -100px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/Figment.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+        }
+
+        .room1-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room1staticvoid1.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room2-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/apprehensive.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room3-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/visional.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room4-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/neglected.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room5-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/optical.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room6-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/dream.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room7-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/umbra.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room8-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/appointed.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room9-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/amber.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room10-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/lostconnection.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room11-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/celestial.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room12-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/approximation.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room13-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/neweden.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room14-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/utopia.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room15-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/monotonous.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room16-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/postponement.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room17-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanseproject.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room18-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanded.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
         .landing-title {
             font-size: 3.8rem;
             letter-spacing: 3px;
-            margin-bottom: 30px;
             color: #fff8fa;
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
+            z-index: 5;
         }
 
         .landing-text {
             font-size: 1rem;
             letter-spacing: 0px;
-            margin-bottom: 30px;
             color: #fff8fa;
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
+            z-index: 5;
         }
 
         /* Elements Styling */
         h1 {
             font-size: 2.4rem; 
             letter-spacing: 1px;
-            margin-bottom: 20px;
+            margin-bottom: -150px;
             color: #fff8fa;
             cursor: pointer;
             text-shadow: 0 0 8px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            z-index: 2;
         }
+
+        h2 {
+            font-size: 6rem; 
+            letter-spacing: 1px;
+            margin-bottom: -150px;
+            color: #fff8fa;
+            cursor: pointer;
+            text-shadow: 0 0 20px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            z-index: 5;
+        }
+
+        .room-title {
+            position: absolute;
+            bottom: 130px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 5;
+        }
+
+        .room-title p {
+            font-size: 1.5rem;
+            margin: 0;
+            letter-spacing: 2px;
+            color: #fff8fa;
+            cursor: pointer;
+            text-shadow: 0 0 5px rgba(255, 248, 250, 0.6), 0 0 20px rgba(255, 248, 250, 0.3);
+}
 
         p {
             font-size: 1.3rem;
             letter-spacing: 0.5px;
             line-height: 1.4;
-        }
-
-        .room-image {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-bottom: 5px;
-            border: 2px solid rgba(255, 248, 250, 0.2);
-            box-shadow: 0 0 15px rgba(255, 248, 250, 0.1); 
+            z-index: 4;
+            margin-top: -50px;
         }
 
         .crop {
@@ -117,15 +421,15 @@
             box-shadow: 0 0 15px rgba(255, 248, 250, 0.1); 
         }
 
-        /* YouTube Container */
         .audio-player-container {
-            margin: 20px 0;
-            background: #2a2a2a;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 248, 250, 0.1);
+            margin: -80px 0;
+            background: none;
+            padding: 0px;
+            border-radius: 0px;
+            border: none;
             width: 100%;
             box-sizing: border-box;
+            z-index: 10;
         }
 
         iframe {
@@ -142,17 +446,31 @@
             border: transparent;
             padding: 8px 20px;
             font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1rem;
             font-weight: bold;
             letter-spacing: 1px;
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.8s ease-in-out;
-            margin-top: 15px;
+            margin-top: -50px;
             margin-bottom: 1px;
             box-shadow: none;
             text-transform: none;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            position: relative;
+            z-index: 5;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 70px;
+        }
+
+        .button-group .nav-btn {
+            margin-top: 0;
         }
 
         .btn-sub {
@@ -179,48 +497,479 @@
 <body>
 
 <div class="container">
-
     <div id="landing" class="room active">
         <h1 class="landing-title">Liminal Labyrinth</h1>
+        <div class="room0-image">
+            <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
         <button class="nav-btn" onclick="goToRoom('room1')">
             <span class="btn-main">It is time to wake up.</span>
         </button>
     </div>
 
         <div id="room1" class="room">
-        <h1>Liminal Labyrinth</h1>
-        
-        <img class="crop" src="https://cdn.discordapp.com/attachments/839943265641955363/1526938551340499044/room1staticvoid.png?ex=6a58d7d7&is=6a578657&hm=14cbef52170acd75e4e5e53f8e66c22f7459b571a6c0eb84f8991f92edcdb04b&" alt="Static Void">
-        
-        <p>Static Void</p>
+        <h2>Liminal Labyrinth</h2>
+            <div class="room1-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Static Void</p>
+                </div>
+            </div>        
 
         <div class="audio-player-container">
             <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio:</p>
+            <audio controls loop>
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/audiotestshort1.m4a" type="audio/mpeg">
+    </audio>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('landing')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room2')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room2" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room2-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Apprehensive Living</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube.com/embed/0Odln_9IUNw?si=heMG6D9sH7VvO6S4" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room1')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room3')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room3" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room3-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Visional Horizons</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
             <iframe 
             src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
             title="YouTube video player" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen
-            width: 150px
-            height: 50%></iframe>
+            allowfullscreen>
+            </iframe>
         </div>
 
-        <button class="nav-btn" onclick="goToRoom('room2')">Go to Next Room</button>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room2')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room4')">Progress</button>
+        </div>
     </div>
 
-    <div id="room2" class="room">
-        <h1>Room 2: The Neon Alleyway</h1>
-        
-        <img class="room-image" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600" alt="Neon Street">
-        
-        <p>Rain puddles reflect glowing neon lights. You hear synth music echoing from a nearby club.</p>
+        <div id="room4" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room4-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Neglected Beams</p>
+                </div>
+            </div>        
 
         <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio:</p>
-            <iframe src="https://www.youtube.com/embed/5qap5aO4i9A?controls=1"></iframe>
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
         </div>
 
-        <button class="nav-btn" onclick="goToRoom('room1')">Go Back to Room 1</button>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room3')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room5')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room5" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room5-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Optical Flush</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room4')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room6')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room6" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room6-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Dream Is Collapsing</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room5')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room7')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room7" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room7-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Umbra</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room6')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room8')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room8" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room8-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Appointed Connection</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room7')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room9')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room9" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room9-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Professional Amber</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room8')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room10')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room10" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room10-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Lost Connection</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room9')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room11')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room11" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room11-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Celestial</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room10')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room12')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room12" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room12-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Approximation</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room11')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room13')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room13" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room13-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>New Eden</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room12')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room14')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room14" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room14-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Utopia</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room13')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room15')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room15" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room15-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Monotonous</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room14')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room16')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room16" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room16-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Postponement</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room15')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room17')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room17" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room17-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>The Expanse Project</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room16')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('room18')">Progress</button>
+        </div>
+    </div>
+
+        <div id="room18" class="room">
+        <h2>Liminal Labyrinth</h2>
+            <div class="room18-image">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+
+                <div class="room-title">
+                    <p>Expanded</p>
+                </div>
+            </div>        
+
+        <div class="audio-player-container">
+            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio</p>
+            <iframe 
+            src="https://www.youtube-nocookie.com/embed/ZFWsSOSTzrY?enablejsapi=1" 
+            title="YouTube video player" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+            </iframe>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room17')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('landing')">Progress</button>
+        </div>
     </div>
 
 </div>
