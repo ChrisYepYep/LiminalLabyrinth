@@ -8,10 +8,9 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Gill Sans', 'Arial Narrow', sans-serif;
+            font-family: 'Gill Sans MT Condensed', 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
             background-color: #121212;
             color: #fff8fa;
-            /* Softer general text glow */
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.3), 0 0 12px rgba(255, 248, 250, 0.1);
             display: flex;
             justify-content: center;
@@ -32,27 +31,26 @@
             display: none; /* Hide all rooms by default */
         }
 
-        /* ================= LANDING SCREEN (Strictly Borderless) ================= */
+        /* ================= LANDING SCREEN ================= */
         #landing.active {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 1.2s ease-in-out;
-            /* Explicitly stripping any box properties */
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0 !important;
+            animation: fadeIn 2.2s ease-in-out;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
         }
 
-        /* ================= PLAYABLE ROOMS (Box design starts here) ================= */
+        /* ================= PLAYABLE ROOMS ================= */
         .room:not(#landing).active {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 1.2s ease-in-out;
+            animation: fadeIn 4.2s ease-in-out;
             background: #1e1e1e;
             padding: 30px;
             border-radius: 12px;
@@ -62,7 +60,7 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -75,12 +73,21 @@
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
         }
 
+        .landing-text {
+            font-size: 1rem;
+            letter-spacing: 0px;
+            margin-bottom: 30px;
+            color: #fff8fa;
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
+        }
+
         /* Elements Styling */
         h1 {
             font-size: 2.4rem; 
             letter-spacing: 1px;
             margin-bottom: 20px;
             color: #fff8fa;
+            cursor: pointer;
             text-shadow: 0 0 8px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
         }
 
@@ -130,26 +137,38 @@
 
         /* Buttons */
         .nav-btn {
-            background-color: #fff8fa;
-            color: #121212;
-            border: none;
+            background-color: transparent;
+            color: #fff8fa;
+            border: transparent;
             padding: 8px 20px;
-            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', sans-serif;
+            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
             font-size: 1.4rem;
             font-weight: bold;
             letter-spacing: 1px;
-            border-radius: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.8s ease-in-out;
             margin-top: 15px;
-            box-shadow: 0 0 10px rgba(255, 248, 250, 0.3);
-            text-transform: uppercase;
+            margin-bottom: 1px;
+            box-shadow: none;
+            text-transform: none;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
         }
 
+        .btn-sub {
+            font-size: 0.85rem;
+            font-weight: bold;
+            opacity: 0.7;
+            margin-top: 1px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+}
+
         .nav-btn:hover {
-            background-color: #ffffff;
-            box-shadow: 0 0 15px rgba(255, 248, 250, 0.8);
-            transform: translateY(-1px);
+            background-color: transparent;
+            box-shadow: none;
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
         }
 
         .nav-btn:active {
@@ -163,38 +182,12 @@
 
     <div id="landing" class="room active">
         <h1 class="landing-title">Liminal Labyrinth</h1>
-        <button class="nav-btn" onclick="window.location.reload()">Coming Soon</button>
+        <button class="nav-btn" onclick="window.location.reload()">
+            <span class="btn-main">It is time to wake up.</span><br>
+            <span class="btn-sub">Coming August 2026.</span>
+        </button>
     </div>
 
-    <div id="room1" class="room">
-        <h1>Liminal Labyrinth</h1>
-        
-        <img class="crop" src="https://cdn.discordapp.com/attachments/839943265641955363/1526938551340499044/room1staticvoid.png?ex=6a58d7d7&is=6a578657&hm=14cbef52170acd75e4e5e53f8e66c22f7459b571a6c0eb84f8991f92edcdb04b&" alt="Static Void">
-        
-        <p>Static Void</p>
-
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio:</p>
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/ZFWsSOSTzrY?si=tilkrN9vLA3Cx2UB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-
-        <button class="nav-btn" onclick="goToRoom('room2')">Go to Next Room</button>
-    </div>
-
-    <div id="room2" class="room">
-        <h1>Room 2: The Neon Alleyway</h1>
-        
-        <img class="room-image" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600" alt="Neon Street">
-        
-        <p>Rain puddles reflect glowing neon lights. You hear synth music echoing from a nearby club.</p>
-
-        <div class="audio-player-container">
-            <p style="margin: 0 0 10px 0; font-size: 1rem; color: #fff8fa; opacity: 0.8;">Background Audio:</p>
-            <iframe src="https://www.youtube.com/embed/5qap5aO4i9A?controls=1"></iframe>
-        </div>
-
-        <button class="nav-btn" onclick="goToRoom('room1')">Go Back to Room 1</button>
-    </div>
 
 </div>
 
