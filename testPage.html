@@ -11,7 +11,6 @@
             font-family: 'Gill Sans MT Condensed', 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
             background-color: #000000;
             color: #fff8fa;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.3), 0 0 12px rgba(255, 248, 250, 0.1);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -400,7 +399,7 @@
             letter-spacing: 2px;
             color: #fff8fa;
             cursor: pointer;
-            text-shadow: 0 0 5px rgba(255, 248, 250, 0.6), 0 0 20px rgba(255, 248, 250, 0.3);
+            text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
 }
 
         p {
@@ -441,6 +440,29 @@
 
         /* Buttons */
         .nav-btn {
+            background-color: transparent;
+            color: #fff8fa;
+            border: transparent;
+            padding: 0px 20px;
+            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.8s ease-in-out;
+            margin-top: -10px;
+            margin-bottom: 1px;
+            box-shadow: none;
+            text-transform: none;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            position: relative;
+            z-index: 5;
+            width: 90px; 
+            text-align: center;
+        }
+
+                .nav-btn-landing {
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
@@ -541,7 +563,7 @@
         <div class="room0-image">
             <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
-        <button class="nav-btn" onclick="goToRoom('room1')">
+        <button class="nav-btn-landing" onclick="goToRoom('room1')">
             <span class="btn-main">It is time to wake up.</span>
         </button>
     </div>
@@ -1000,7 +1022,7 @@
 <script>
 // Image URLs for play and pause state
 const PLAY_ICON_URL = "https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true";
-const PAUSE_ICON_URL = "https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/pauseicon.png?raw=true"; // Ensure you have this image uploaded
+const PAUSE_ICON_URL = "https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/pauseicon.png?raw=true";
 
 // Toggle audio play/pause for the button clicked
 function toggleAudio(btn) {
@@ -1010,37 +1032,40 @@ function toggleAudio(btn) {
     if (!audio) return;
 
     if (audio.paused) {
-        // Stop any other playing audio across rooms first
+        // Stop other playing audio across rooms, but DO NOT reset currentTime
         document.querySelectorAll('audio').forEach(a => {
-            a.pause();
-            a.currentTime = 0;
+            if (a !== audio) {
+                a.pause();
+            }
         });
 
         // Reset all other audio buttons to play icon
         document.querySelectorAll('.audio-toggle-btn').forEach(b => {
-            b.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
-            b.classList.remove('playing');
+            if (b !== btn) {
+                b.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+                b.classList.remove('playing');
+            }
         });
 
-        // Play current audio and switch to pause icon
+        // Resume/Play current audio from where it was paused
         audio.play();
         btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
         btn.classList.add('playing');
     } else {
-        // Pause current audio and switch back to play icon
+        // Simply pause current audio (currentTime stays right where it is)
         audio.pause();
         btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
         btn.classList.remove('playing');
     }
 }
 
-// Function to switch rooms and reset all audio
+// Function to switch rooms
 function goToRoom(roomId) {
-    // 1. Pause & reset all audio elements
+    // 1. Pause all audio elements when switching rooms (optional: remove 'currentTime = 0' if you want track positions remembered when leaving/returning to rooms)
     const allAudio = document.querySelectorAll('audio');
     allAudio.forEach(audio => {
         audio.pause();
-        audio.currentTime = 0;
+        audio.currentTime = 0; // Keeps audio reset when changing room levels
     });
 
     // 2. Reset all audio button icons back to play icon
