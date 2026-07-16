@@ -405,7 +405,7 @@
             color: #fff8fa;
             cursor: pointer;
             text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
-}
+        }
 
         p {
             font-size: 1.3rem;
@@ -448,26 +448,25 @@
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
-            padding: 0px 20px;
-            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+            padding: 0px 10px;
+            font-family: 'Oswald', sans-serif;
             font-size: 1rem;
             font-weight: bold;
             letter-spacing: 1px;
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.8s ease-in-out;
-            margin-top: -10px;
-            margin-bottom: 1px;
+            margin: 0;
             box-shadow: none;
             text-transform: none;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
             position: relative;
             z-index: 5;
-            width: 90px; 
+            width: 90px;
             text-align: center;
         }
 
-                .nav-btn-landing {
+        .nav-btn-landing {
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
@@ -491,26 +490,46 @@
         .button-group {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            align-items: center; /* Keeps play icon and text buttons perfectly level */
+            gap: 15px;
             width: 100%;
             margin-top: 100px;
         }
 
         .button-group .nav-btn .audio-toggle-btn {
             margin-top: 0;
-            display: flex;
             align-items: center;
             justify-content: center;
             margin: 0;
         }
 
         .btn-sub {
-            font-size: 0.85rem;
+            background-color: transparent;
+            color: #fff8fa;
+            border: transparent;
+            padding: 0px 10px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
             font-weight: bold;
-            opacity: 0.7;
-            margin-top: 1px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.8s ease-in-out;
+            margin: 0;
+            box-shadow: none;
+            text-transform: none;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            position: relative;
+            z-index: 5;
+            width: 150px;
+            text-align: center;
+        }
+
+        .btn-sub:hover {
+            background-color: transparent;
+            box-shadow: none;
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
         }
 
         .nav-btn:hover {
@@ -532,17 +551,18 @@
             background-color: transparent;
             color: #fff8fa;
             border: none;
-            padding: 0px 0px;
-            font-family: 'Oswald', sans-serif;
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            border-radius: 10px;
+            padding: 0;
             cursor: pointer;
             transition: all 0.4s ease-in-out;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
-            margin-bottom: 10px;
+            margin: 0;
             z-index: 5;
-            box-shadow: 0 0 20px rgba(255, 248, 250, 0.3);
+            box-shadow: 0 0 10px rgba(102, 101, 101, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 55%;
         }
 
         .audio-toggle-btn:hover {
@@ -563,7 +583,7 @@
 <body>
 
 <div class="container">
-    <div id="landing" class="room active">
+    <div id="landing" class="room">
         <h1 class="landing-title">Liminal Labyrinth</h1>
         <div class="room0-image">
             <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
@@ -591,9 +611,14 @@
             <div class="button-group">
                 <button class="nav-btn" onclick="goToRoom('landing')">Return</button>
                 <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+                    <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
                 </button>
                 <button class="nav-btn" onclick="goToRoom('room2')">Progress</button>
+            </div>
+            <div class="btn-sub">
+                <button class="nav-btn-landing" onclick="resetProgress()" style="margin-top: 15px; opacity: 0.6; font-size: 0.85rem;">
+                Reset Progress
+                </button>
             </div>
     </div>
 
@@ -1022,8 +1047,6 @@
 
 </div>
 
-</div>
-
 <script>
 // Image URLs for play and pause state
 const PLAY_ICON_URL = "https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true";
@@ -1066,7 +1089,7 @@ function toggleAudio(btn) {
 
 // Function to switch rooms
 function goToRoom(roomId) {
-    // 1. Pause all audio elements when switching rooms (optional: remove 'currentTime = 0' if you want track positions remembered when leaving/returning to rooms)
+    // 1. Pause all audio elements when switching rooms
     const allAudio = document.querySelectorAll('audio');
     allAudio.forEach(audio => {
         audio.pause();
@@ -1094,12 +1117,34 @@ function goToRoom(roomId) {
         room.classList.remove('active');
     });
 
-    // 5. Show the target room
+    // 5. Show the target room & store room ID in localStorage
     const activeRoom = document.getElementById(roomId);
     if (activeRoom) {
         activeRoom.classList.add('active');
+        localStorage.setItem('currentRoom', roomId);
     }
 }
+
+    function resetProgress() {
+    // Confirm with the user before wiping progress
+    if (confirm("Sure?")) {
+        // Clear the stored room from localStorage
+        localStorage.removeItem('currentRoom');
+        
+        // Return to landing screen
+        goToRoom('landing');
+    }
+}
+
+// Automatically restore the last active room on page reload
+window.addEventListener('DOMContentLoaded', () => {
+    const savedRoom = localStorage.getItem('currentRoom');
+    if (savedRoom && document.getElementById(savedRoom)) {
+        goToRoom(savedRoom);
+    } else {
+        goToRoom('landing');
+    }
+});
 </script>
 
 </body>
