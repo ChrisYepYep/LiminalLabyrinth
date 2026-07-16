@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liminal Labyrinth</title>
@@ -8,15 +11,16 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Gill Sans MT Condensed', 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
             background-color: #000000;
             color: #fff8fa;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.3), 0 0 12px rgba(255, 248, 250, 0.1);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
+
         }
 
         /* Purely transparent container wrapper */
@@ -37,11 +41,12 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 2.2s ease-in-out;
+            animation: fadeIn 3.2s ease-in-out;
             background: transparent;
             border: none;
             box-shadow: none;
             padding: 0;
+            position: relative;
         }
 
         /* ================= PLAYABLE ROOMS ================= */
@@ -50,12 +55,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 4.2s ease-in-out;
-            background: #000000;
+            animation: fadeIn 0.6s ease-in-out;
             padding: 30px;
-            border-radius: 12px;
+            border-radius: none;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255, 248, 250, 0.1);
+            border: none;
             box-sizing: border-box;
         }
 
@@ -64,47 +68,351 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Landing Screen Title (Softer glow & Case-sensitive) */
+        .room0-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: -120px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/Figment.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+        }
+
+        .room1-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room1staticvoid1.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room2-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/apprehensive.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room3-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/visional.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room4-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/neglected.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room5-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/optical.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room6-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/dream.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room7-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/umbra.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room8-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/appointed.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room9-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/amber.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room10-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/lostconnection.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room11-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/celestial.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room12-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/approximation.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room13-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/neweden.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room14-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/utopia.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room15-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/monotonous.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room16-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/postponement.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room17-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanseproject.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
+        .room18-image {
+            width: 100%;
+            height: 450px;
+            object-fit: contain;
+            border-radius: none;
+            margin-bottom: 0px;
+            background-image: url('https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanded.png?raw=true');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            position: relative;
+            margin-bottom: -50px;
+        }
+
         .landing-title {
-            font-size: 3.8rem;
+            font-size: 2rem;
             letter-spacing: 3px;
-            margin-bottom: 30px;
             color: #fff8fa;
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
+            z-index: 5;
         }
 
         .landing-text {
             font-size: 1rem;
-            letter-spacing: 0px;
-            margin-bottom: 30px;
+            letter-spacing: 0cqmax;
             color: #fff8fa;
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
+            z-index: 5;
         }
 
         /* Elements Styling */
         h1 {
-            font-size: 2.4rem; 
-            letter-spacing: 1px;
-            margin-bottom: 20px;
+            letter-spacing: 0px;
+            margin-bottom: -150px;
             color: #fff8fa;
             cursor: pointer;
             text-shadow: 0 0 8px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            z-index: 2;
+        }
+
+        h2 {
+            font-size: 2rem; 
+            letter-spacing: 0px;
+            margin-bottom: -150px;
+            color: #fff8fa;
+            cursor: pointer;
+            text-shadow: 0 0 20px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            z-index: 5;
+            line-height: -10px;
+        }
+
+        .room-title {
+            position: absolute;
+            bottom: 130px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 5;
+        }
+
+        .room-title p {
+            font-size: 1.5rem;
+            margin: 0;
+            letter-spacing: 2px;
+            color: #fff8fa;
+            cursor: pointer;
+            text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
         }
 
         p {
             font-size: 1.3rem;
             letter-spacing: 0.5px;
             line-height: 1.4;
-        }
-
-        .room-image {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-bottom: 5px;
-            border: 2px solid rgba(255, 248, 250, 0.2);
-            box-shadow: 0 0 15px rgba(255, 248, 250, 0.1); 
+            z-index: 4;
+            margin-top: -50px;
         }
 
         .crop {
@@ -117,15 +425,15 @@
             box-shadow: 0 0 15px rgba(255, 248, 250, 0.1); 
         }
 
-        /* YouTube Container */
         .audio-player-container {
-            margin: 20px 0;
-            background: #2a2a2a;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 248, 250, 0.1);
+            margin: -80px 0;
+            background: none;
+            padding: 0px;
+            border-radius: 0px;
+            border: none;
             width: 100%;
             box-sizing: border-box;
+            z-index: 10;
         }
 
         iframe {
@@ -140,29 +448,89 @@
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
-            padding: 8px 20px;
-            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-            font-size: 1.4rem;
+            padding: 0px 10px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
             font-weight: bold;
             letter-spacing: 1px;
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.8s ease-in-out;
-            margin-top: 15px;
+            margin: 0;
+            box-shadow: none;
+            text-transform: none;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            position: relative;
+            z-index: 5;
+            width: 90px;
+            text-align: center;
+        }
+
+        .nav-btn-landing {
+            background-color: transparent;
+            color: #fff8fa;
+            border: transparent;
+            padding: 0px 20px;
+            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.8s ease-in-out;
+            margin-top: -10px;
             margin-bottom: 1px;
             box-shadow: none;
             text-transform: none;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+            position: relative;
+            z-index: 5;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Keeps play icon and text buttons perfectly level */
+            gap: 15px;
+            width: 100%;
+            margin-top: 100px;
+        }
+
+        .button-group .nav-btn .audio-toggle-btn {
+            margin-top: 0;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
         }
 
         .btn-sub {
-            font-size: 0.85rem;
+            background-color: transparent;
+            color: #fff8fa;
+            border: transparent;
+            padding: 0px 10px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.7rem;
             font-weight: bold;
-            opacity: 0.7;
-            margin-top: 1px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.8s ease-in-out;
+            margin: 0;
+            box-shadow: none;
+            text-transform: none;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-}
+            position: relative;
+            z-index: 5;
+            width: 150px;
+            text-align: center;
+        }
+
+        .btn-sub:hover {
+            background-color: transparent;
+            box-shadow: none;
+            transform: translateY(-3px);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+        }
 
         .nav-btn:hover {
             background-color: transparent;
@@ -174,38 +542,157 @@
         .nav-btn:active {
             transform: scale(0.98);
         }
+
+        audio {
+            display: none;
+        }
+
+        .audio-toggle-btn {
+            background-color: transparent;
+            color: #fff8fa;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            margin: 0;
+            z-index: 5;
+            box-shadow: 0 0 10px rgba(102, 101, 101, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 55%;
+        }
+
+        .audio-toggle-btn:hover {
+            border-color: none;
+            box-shadow: 0 0 10px rgba(255, 248, 250, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .audio-toggle-btn.playing {
+            border-color: none;
+            background: none;
+            box-shadow: none;
+            drop-shadow: 10px 10px 10px #fff8fa;
+        }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-
-    <div id="landing" class="room active">
+    <div id="landing" class="room">
         <h1 class="landing-title">Liminal Labyrinth</h1>
-        <button class="nav-btn" onclick="window.location.reload()">
-            <span class="btn-main">It is time to wake up.</span><br>
-            <span class="btn-sub">Coming August 2026.</span>
+        <div class="room0-image">
+            <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+        </div>
+        <button class="nav-btn-landing" onclick="window.location.reload()">
+            <span class="nav-btn">It is time to wake up.</span><br>
+            <span class="nav-btn">August 2026.</span>
         </button>
     </div>
-
-
 </div>
 
 <script>
-    // JavaScript function to switch between rooms
-    function goToRoom(roomId) {
-        // Find all elements with the class 'room' and hide them
-        const rooms = document.querySelectorAll('.room');
-        rooms.forEach(room => {
-            room.classList.remove('active');
+// Image URLs for play and pause state
+const PLAY_ICON_URL = "https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true";
+const PAUSE_ICON_URL = "https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/pauseicon.png?raw=true";
+
+// Toggle audio play/pause for the button clicked
+function toggleAudio(btn) {
+    const room = btn.closest('.room');
+    const audio = room ? room.querySelector('audio') : null;
+
+    if (!audio) return;
+
+    if (audio.paused) {
+        // Stop other playing audio across rooms, but DO NOT reset currentTime
+        document.querySelectorAll('audio').forEach(a => {
+            if (a !== audio) {
+                a.pause();
+            }
         });
 
-        // Show the selected room
-        const activeRoom = document.getElementById(roomId);
-        if (activeRoom) {
-            activeRoom.classList.add('active');
-        }
+        // Reset all other audio buttons to play icon
+        document.querySelectorAll('.audio-toggle-btn').forEach(b => {
+            if (b !== btn) {
+                b.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+                b.classList.remove('playing');
+            }
+        });
+
+        // Resume/Play current audio from where it was paused
+        audio.play();
+        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.classList.add('playing');
+    } else {
+        // Simply pause current audio (currentTime stays right where it is)
+        audio.pause();
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.classList.remove('playing');
     }
+}
+
+// Function to switch rooms
+function goToRoom(roomId) {
+    // 1. Pause all audio elements when switching rooms
+    const allAudio = document.querySelectorAll('audio');
+    allAudio.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0; // Keeps audio reset when changing room levels
+    });
+
+    // 2. Reset all audio button icons back to play icon
+    const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
+    allAudioBtns.forEach(btn => {
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.classList.remove('playing');
+    });
+
+    // 3. Force-stop all YouTube iframe playback if present
+    const allIframes = document.querySelectorAll('iframe');
+    allIframes.forEach(iframe => {
+        const currentSrc = iframe.src;
+        iframe.src = '';
+        iframe.src = currentSrc;
+    });
+
+    // 4. Hide all rooms
+    const rooms = document.querySelectorAll('.room');
+    rooms.forEach(room => {
+        room.classList.remove('active');
+    });
+
+    // 5. Show the target room & store room ID in localStorage
+    const activeRoom = document.getElementById(roomId);
+    if (activeRoom) {
+        activeRoom.classList.add('active');
+        localStorage.setItem('currentRoom', roomId);
+    }
+}
+
+    function resetProgress() {
+    // Confirm with the user before wiping progress
+    if (confirm("Sure?")) {
+        // Clear the stored room from localStorage
+        localStorage.removeItem('currentRoom');
+        
+        // Return to landing screen
+        goToRoom('landing');
+    }
+}
+
+// Automatically restore the last active room on page reload
+window.addEventListener('DOMContentLoaded', () => {
+    const savedRoom = localStorage.getItem('currentRoom');
+    if (savedRoom && document.getElementById(savedRoom)) {
+        goToRoom(savedRoom);
+    } else {
+        goToRoom('landing');
+    }
+});
 </script>
 
 </body>
