@@ -54,7 +54,13 @@
             box-shadow: none;
             padding: 0;
             position: relative;
-            transition: opacity 1s ease-in-out; /* Added smooth fade out transition */
+            opacity: 1;
+            transition: opacity 3s ease-in-out;
+        }
+
+        #landing.fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* ================= PLAYABLE ROOMS ================= */
@@ -497,8 +503,8 @@
     <div id="landing" class="room">
         <div class="room-image-frame">
             <h1 class="landing-title">Liminal Labyrinth</h1>
-            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/Figment.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="/roomassets/Figment.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
         <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
             <span>It is time to wake up.<br>Enter...</span>
@@ -1301,56 +1307,49 @@ async function goToRoom(roomId) {
 function triggerLandingCollapse(buttonElement) {
     const landingElement = document.getElementById('landing');
     const titleElement = document.querySelector('.landing-title');
-    if (!titleElement) return goToRoom('welcome');
-
-    buttonElement.style.opacity = '0';
-    buttonElement.style.pointerEvents = 'none';
-
+    
+    // 1. Prepare text animation (Staggered falls)
     if (!titleElement.querySelector('.landing-letter')) {
         const textContent = titleElement.textContent;
         titleElement.innerHTML = '';
-        
         [...textContent].forEach(char => {
             const span = document.createElement('span');
-            if (char === ' ') {
-                span.innerHTML = '&nbsp;';
-            } else {
-                span.textContent = char;
-            }
+            span.innerHTML = char === ' ' ? '&nbsp;' : char;
             span.classList.add('landing-letter');
             titleElement.appendChild(span);
         });
     }
 
-    const letters = titleElement.querySelectorAll('.landing-letter');
+    // 2. Hide button
+    buttonElement.style.opacity = '0';
+    buttonElement.style.pointerEvents = 'none';
 
+    // 3. Trigger the individual letter fall animation with RANDOM delays
+    const letters = titleElement.querySelectorAll('.landing-letter');
     letters.forEach(letter => {
         const randomRotation = Math.floor(Math.random() * 360) - 180 + 'deg';
-        const randomDelay = Math.random() * 1000; 
-
         letter.style.setProperty('--rot', randomRotation);
-
-        setTimeout(() => {
-            letter.classList.add('fall');
-        }, randomDelay);
+        // Staggered timing: each letter starts its fall between 0ms and 1000ms
+        setTimeout(() => { letter.classList.add('fall'); }, Math.random() * 1000); 
     });
 
-    // Start fading out the entire landing screen container as the letters cascade
-    setTimeout(() => {
-        if (landingElement) landingElement.style.opacity = '0';
-    }, 800);
+    // 4. Start the container fade-out (3 seconds long)
+    landingElement.classList.add('fade-out');
 
-    // Change room once the container fade out animation completes cleanly
+    // 5. Navigate to the next room after the container fade completes
     setTimeout(() => {
         goToRoom('welcome');
 
+        // Reset for the next session
         setTimeout(() => {
-            if (landingElement) landingElement.style.opacity = ''; // Reset for progress tracking loops
+            landingElement.classList.remove('fade-out');
+            landingElement.style.opacity = '1';
+            // Restore title text
             titleElement.innerHTML = 'Liminal Labyrinth';
             buttonElement.style.opacity = '';
             buttonElement.style.pointerEvents = '';
-        }, 1000);
-    }, 1800); 
+        }, 500);
+    }, 3000); 
 }
 
 function resetProgress() {
