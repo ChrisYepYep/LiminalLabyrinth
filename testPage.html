@@ -3,8 +3,7 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liminal Labyrinth</title>
@@ -18,13 +17,13 @@
             color: #fff8fa;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
+        /* Purely transparent container wrapper */
         .container {
             width: 90%;
             max-width: 600px;
@@ -33,7 +32,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
+            padding: 20px 0;
+            box-sizing: border-box;
         }
 
         /* Room Transition Logic */
@@ -62,11 +62,12 @@
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.6s ease-in-out;
-            padding: 30px;
+            padding: 20px;
             border-radius: none;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
             border: none;
             box-sizing: border-box;
+            width: 100%;
         }
 
         @keyframes fadeIn {
@@ -74,169 +75,269 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes floatUpAndDown {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-8px);
-            }
-            100% {
-                transform: translateY(0px);
-            }
-        }
-
-        .room0-image {
+        /* Fixed Image Frame Layering System */
+        .room-image-frame {
             width: 100%;
-            height: 450px;
-            margin-bottom: -120px;
+            height: 400px;
             z-index: 1;
             position: relative;
+            margin-bottom: 20px;
         }
 
-        /* Make sure the mask image stays strictly on top */
-        .room0-image img {
-            position: relative;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        /* The underlying artwork layer (Figment.png) */
-        .room0-image::before {
-            content: '';
+        /* Absolute positioning forces identical layout calculations */
+        .room-image-frame img {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('roomassets/Figment.png');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: 1;
-            transition: opacity 3.5s ease-in-out; /* Smooth fade for the background only */
+            object-fit: contain;
         }
 
-        /* Class to trigger fading the artwork underneath the mask */
-        .room0-image.fade-underneath::before {
-            opacity: 0;
-        }
-
-        .landing-title {
-            font-size: 2rem;
-            letter-spacing: 3px;
-            color: #fff8fa;
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
-            z-index: 5;
-            min-height: 3rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .landing-text {
-            font-size: 1rem;
-            letter-spacing: 0cqmax;
-            color: #fff8fa;
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
-            z-index: 5;
-        }
-
-        /* Elements Styling */
-        h1 {
-            letter-spacing: 0px;
-            margin-bottom: -150px;
-            color: #fff8fa;
-            cursor: pointer;
-            text-shadow: 0 0 8px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+        .room-image-bg {
             z-index: 2;
         }
 
-        h2 {
-            font-size: 2rem; 
-            letter-spacing: 0px;
-            margin-bottom: -150px;
+        .room-image-mask {
+            z-index: 3;
+        }
+
+        /* Title Overlap Configurations */
+        .landing-title {
+            font-size: 2.5rem;
+            letter-spacing: 3px;
             color: #fff8fa;
-            cursor: pointer;
-            text-shadow: 0 0 20px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-            z-index: 5;
-            line-height: -10px;
-        }
-
-        .room-title {
-            position: absolute;
-            bottom: 130px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            z-index: 5;
-        }
-
-        .room-title p {
-            font-size: 1.5rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
             margin: 0;
+            z-index: 15;
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .room-header-group {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            z-index: 15;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        /* You Won Screen Text Overlap Container */
+        .youwon-header-overlay {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            z-index: 15;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        h1, h2, h3, h4, h5 {
+            color: #fff8fa;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
+            margin: 0;
+            text-align: center;
+        }
+
+        h2 { font-size: 2.2rem; letter-spacing: 1px; }
+        h3 { font-size: 1rem; font-weight: normal; margin-top: 2px; color: rgba(255,248,250,0.9); }
+        h4 { font-size: 1.8rem; letter-spacing: 1px; }
+        h5 { font-size: 3.2rem; letter-spacing: 1px; margin-top: -23px; z-index: 11; }
+
+        /* ================= DYNAMIC NATURAL LAYOUT SYSTEM ================= */
+        .overlay-content-wrapper {
+            position: relative; /* Flow naturally beneath frame structures */
+            width: 85%;
+            max-width: 450px;
+            margin: 0 auto;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .room-title-text {
+            font-size: 1.6rem;
+            margin: 0 0 6px 0;
+            margin-top: -170px;
             letter-spacing: 2px;
             color: #fff8fa;
-            cursor: pointer;
-            text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
         }
 
-        p {
-            font-size: 1.3rem;
+        .room-blurb-text {
+            font-size: 0.7rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 0 auto;
             letter-spacing: 0.5px;
             line-height: 1.4;
-            z-index: 4;
-            margin-top: -50px;
+            color: #fff8fa;
+            opacity: 0.6;
+            width: 300px;
         }
 
-        .crop {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-bottom: 5px;
-            border: 2px solid rgba(255, 248, 250, 0.2);
-            box-shadow: 0 0 15px rgba(255, 248, 250, 0.1); 
+        #welcome .room-blurb-text {
+            width: 350px;
+            margin-top: -170px;
         }
 
-        .audio-player-container {
-            margin: -80px 0;
-            background: none;
-            padding: 0px;
-            border-radius: 0px;
-            border: none;
+        #room8 .room-blurb-text {
+            width: 300px;
+        }
+
+        .room-navi-text {
+            font-size: 0.8rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 10px 0 0 0;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 1;
+        }
+
+        /* ==================== YOU WON PAGE SPECIFIC SYSTEM ==================== */
+        .youwon-layout {
+            position: relative; 
+            padding-bottom: 50px; /* Base clearance layer for the reset button threshold */
+        }
+
+        .youwon-layout .room-image-frame {
+            margin-top: 0px;
+            margin-bottom: 20px;
+        }
+
+        .youwon-layout .overlay-content-wrapper {
+            margin-top: 10px;
+        }
+
+        /* Reset layout metrics cleanly since context no longer uses negative pull margins */
+        .youwon-layout .room-title-text {
+            margin-top: 0; 
+        }
+        
+        .youwon-layout .button-group {
+            margin-top: -225px;
+            margin-bottom: 40px;
+        }
+
+        /* Pin the reset button cleanly directly above footer threshold */
+        .youwon-layout .btn-sub {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
-            box-sizing: border-box;
+            margin-top: 0;
+            padding: 0;
+        }
+
+        /* Prize Draw Form Styling */
+        .prize-form {
+            margin: 25px auto 10px auto;
+            width: 85%;
+            max-width: 450px; 
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            text-align: left;
             z-index: 10;
         }
 
-        iframe {
-            border: none;
+        .form-row {
+            display: flex;
+            gap: 14px;
             width: 100%;
-            height: 80px; 
-            border-radius: 4px;
         }
 
-        /* Buttons */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1; 
+        }
+
+        .form-group label {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.6rem;
+            color: rgba(255, 248, 250, 0.7);
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 248, 250, 0.2);
+            color: #fff8fa;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.55rem;
+            box-sizing: border-box;
+            border-radius: 20px; 
+            transition: all 0.3s ease-in-out;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 248, 250, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-submit-btn {
+            background-color: transparent;
+            color: #fff8fa;
+            border: 1px solid rgba(255, 248, 250, 0.4);
+            padding: 8px 0;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 20px; 
+            transition: all 0.4s ease-in-out;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
+            text-align: center;
+            width: 100%;
+            max-width: 200px;
+            margin: 15px auto 0 auto;
+        }
+
+        .form-submit-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 248, 250, 0.8);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ==================== CONTROLS SYSTEM ==================== */
+        .audio-player-container {
+            margin: 0;
+            width: 100%;
+            z-index: 10;
+        }
+
         .nav-btn {
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
-            padding: 0px 10px;
+            padding: 5px 10px;
             font-family: 'Oswald', sans-serif;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
             letter-spacing: 1px;
-            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.8s ease-in-out;
+            transition: all 0.4s ease-in-out;
             margin: 0;
-            box-shadow: none;
-            text-transform: none;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-            position: relative;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
             z-index: 5;
-            width: 90px;
+            width: 95px;
             text-align: center;
         }
 
@@ -244,154 +345,792 @@
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
-            padding: 0px 20px;
-            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-            font-size: 1rem;
+            padding: 5px 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
             font-weight: bold;
             letter-spacing: 1px;
-            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.8s ease-in-out;
-            margin-top: -10px;
-            margin-bottom: 1px;
-            box-shadow: none;
-            text-transform: none;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-            position: relative;
+            transition: all 0.4s ease-in-out;
+            margin: 5px 0;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
             z-index: 5;
-            animation: floatUpAndDown 6s ease-in-out infinite;
+        }
+
+        #landing .nav-btn-landing {
+            margin-top: -140px;
         }
 
         .button-group {
             display: flex;
             justify-content: center;
-            align-items: center; /* Keeps play icon and text buttons perfectly level */
-            gap: 15px;
+            align-items: center; 
+            gap: 20px;
             width: 100%;
-            margin-top: 100px;
+            margin-top: 20px;
         }
 
-        .button-group .nav-btn .audio-toggle-btn {
-            margin-top: 0;
-            align-items: center;
-            justify-content: center;
-            margin: 0;
+        #welcome .button-group {
+            margin-top: -100px;
+        }
+
+        #room1, #room7, #room16 .button-group {
+            margin-top: -10px;
         }
 
         .btn-sub {
-            background-color: transparent;
-            color: #fff8fa;
-            border: transparent;
-            padding: 0px 10px;
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.7rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.8s ease-in-out;
-            margin: 0;
-            box-shadow: none;
-            text-transform: none;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-            position: relative;
-            z-index: 5;
-            width: 150px;
-            text-align: center;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 2px;
         }
 
-        .btn-sub:hover {
-            background-color: transparent;
-            box-shadow: none;
-            transform: translateY(-3px);
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-        }
-
-        .nav-btn-landing:hover {
-            background-color: transparent;
-            box-shadow: none;
-            transform: translateY(-3px);
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-        }
-
-        .nav-btn-landing:active {
-            transform: scale(0.98);
-        }
-
-        audio {
-            display: none;
+        .nav-btn:hover, .nav-btn-landing:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
         }
 
         .audio-toggle-btn {
             background-color: transparent;
-            color: #fff8fa;
             border: none;
             padding: 0;
             cursor: pointer;
-            transition: all 0.4s ease-in-out;
-            margin: 0;
+            transition: all 0.3s ease-in-out;
             z-index: 5;
-            box-shadow: 0 0 10px rgba(102, 101, 101, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px;
-            height: 30px;
-            border-radius: 55%;
+            width: 36px;
+            height: 36px;
         }
 
         .audio-toggle-btn:hover {
-            border-color: none;
-            box-shadow: 0 0 10px rgba(255, 248, 250, 0.3);
-            transform: translateY(-2px);
+            transform: scale(1.1);
         }
 
-        .audio-toggle-btn.playing {
-            border-color: none;
-            background: none;
-            box-shadow: none;
-            drop-shadow: 10px 10px 10px #fff8fa;
-        }
+        audio { display: none; }
 
         .site-footer {
-            width: 800px;
-            padding: 5px 0;
-            margin-top: auto; /* Pushes footer to bottom if flexbox layout is used */
+            width: 90%;
+            max-width: 600px;
             text-align: center;
-            font-size: 0.85rem;
-            color: rgba(255, 248, 250, 0.4);
-            letter-spacing: 1px;
-            z-index: 10;
-            position: relative;
-            text-opacity: 0.2;
-            flex-shrink: 0;
-}
+            padding: 0px 0 5px 0;
+            box-sizing: border-box;
+            margin-top: auto;
+        }
 
         .site-footer p {
             font-family: 'Roboto', sans-serif;
             font-weight: 150;
+            opacity: 0.3;
             margin: 0;
             font-size: 0.65rem;
             letter-spacing: 0.5px;
-            line-height: 1.1;
+            line-height: 1.3;
         }
-
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- LANDING SCREEN -->
     <div id="landing" class="room">
-        <h1 class="landing-title">Liminal Labyrinth</h1>
-        <div class="room0-image">
-            <img src="roomassets/room_mask2.png" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+        <div class="room-image-frame">
+            <h1 class="landing-title">Liminal Labyrinth</h1>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/Figment.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
-        <button class="nav-btn-landing" onclick="handleLandingClick()">
-            <span>It is time to wake up.</span><br>
-            <span>August 2026.</span>
+        <button class="nav-btn-landing" onclick="goToRoom('welcome')">
+            <span>It is time to wake up.</span>
         </button>
     </div>
 
+    <!-- WELCOME SCREEN -->
+    <div id="welcome" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h2>Liminal Labyrinth</h2>
+                <h3>An Audio Experience</h3>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanse.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-blurb-text">You're about to embark on a journey of discovery where your perception of reality will be challenged. You'll need headphones to fully experience the audio elements. Once you're ready, click the play button to begin.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio id="welcome-audio" loop preload="auto">
+                <source src="audio/welcometrack.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" disabled style="opacity: 0.3; cursor: not-allowed; pointer-events: none;">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button id="welcome-progress-btn" class="nav-btn" onclick="goToRoom('room1')" disabled style="opacity: 0.3; cursor: not-allowed; pointer-events: none; transition: opacity 2s ease-in-out;">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 1 -->
+    <div id="room1" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room1staticvoid1.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Static Void</p>
+            <p class="room-blurb-text">The void isn't empty, it's just perfectly, violently still. It's a room with no walls, where the silence screams so loud you can taste it. If you stare long enough you realise it isn't the space waiting for you to move, it's you waiting for the space to blink.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 01', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack01.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('welcome')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room2')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 2 -->
+    <div id="room2" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/apprehensive.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Apprehensive Living</p>
+            <p class="room-blurb-text">Do you view life as an open road? A grand sequence of arrivals and departures? What a comforting delusion. You aren't traveling; you are merely lingering in the vestibule. Life isn't the journey you were promised—it is a perpetual waiting room with flickering fluorescent hums and vinyl chairs worn thin by the desperate. You sit, hands tight in your lap, terrified to leave your seat because you might miss your name being called, yet deeply, violently aware that no one is coming to open the door.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 02', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack02.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room1')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room3')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 3 -->
+    <div id="room3" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/visional.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Visional Horizons</p>
+            <p class="room-blurb-text">You still believe there is a correct turn to make, that if you just choose wisely, the maze will grant you a destination. A beautiful, desperate instinct. But the paths here aren't designed to lead you out—they are designed to keep you choosing. You exhaust yourself weighing left against right, entirely blind to the fact that every corridor is identical once you turn your back, and the only truly right path was the one you walked away from before you ever crossed the threshold.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 03', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack03.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room2')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room4')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 4 -->
+    <div id="room4" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/neglected.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Neglected Beams</p>
+            <p class="room-blurb-text">You think geometry is absolute, don't you? That a straight line always leads forward. How charmingly naive. You trust the right angles of these walls because they match the architecture of your sanity. But out here, parallel lines eventually collide, and if you walk a straight line for long enough, you won’t reach an exit—you’ll just find the back of your own mind. You aren't moving toward an end. You are merely tracing the perimeter of a shape you aren't large enough to see.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 04', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack04.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room3')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room5')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 5 -->
+    <div id="room5" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/optical.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Optical Flush</p>
+            <p class="room-blurb-text">You see the faded rose on the walls and think it means hospitality, that the pastel hue is an invitation to finally rest your feet. A profoundly fragile hope. This pink wasn't chosen to make you feel at home; it was calculated to neutralize your urge to escape. It is the exact shade of institutional compliance—a soft, desaturated dye meant to quiet your mind until the walls, the carpet, and your own dissolving memories blend into a single, permanent blush. You aren't relaxing in a lounge. You are being erased by a colour.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 05', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack05.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room4')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room6')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 6 -->
+    <div id="room6" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/dream.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Dream Is Collapsing</p>
+            <p class="room-blurb-text">Every clock you left behind is still ticking, but the time they measure no longer exists. Out here, the calendar has collapsed. You are waiting for a tomorrow that has been permanently deleted from the code, clinging to the belief that the universe will eventually right itself. It won’t. Reality isn't breaking down because of a temporary glitch; the foundation itself has run out of memory, and you are just a loose thread hanging off the edge of a page that is actively being erased.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 06', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack06.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room5')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room7')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 7 -->
+    <div id="room7" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/umbra.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Umbra</p>
+            <p class="room-blurb-text">You’ve been trapped in this corridor for hours, yet you haven't taken a single step. Remarkable, really. Your legs are moving, you’re breaking a sweat, but the walls... the walls know you aren't actually trying to leave.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 07', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack07.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room6')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room8')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 8 -->
+    <div id="room8" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/appointed.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Appointed Connection</p>
+            <p class="room-blurb-text">The notification on your screen says you are precisely on time, as if a digital clock still holds authority over a dissolving world. You carved this slot out of your day with absolute precision, expecting a receptionist, a signature, a conclusion.
+                <br>But you aren't here to meet a person. You are here to fulfill the shape of the slot itself.
+                <br>The entity you have scheduled this hour with isn't sitting in an office; it is the dead air inside the telephone wire, the dust settling on the laminate floor, the quiet expectation of the doorway. You have spent your entire life arriving for appointments, never realizing that you were merely donating your presence to keep an empty room from collapsing under the weight of its own loneliness.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 08', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack08.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room7')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room9')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 9 -->
+    <div id="room9" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/amber.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Professional Amber</p>
+            <p class="room-blurb-text">The architecture here suffers from a frantic kind of indecision. Dozens of pristine, identical doors line the corridor, each one practically begging to be turned, each one whispering the promise of an ending.
+            <br>You can spend lifetimes trying every brass handle, exhausting your fingernails against the deadbolts, convinced that you just haven't found the right key. But the locks aren't keeping you out of the rooms. The rooms are pockets of static vacuum designed to give the doors a reason to exist. The maze doesn't care which handle you turn, as long as you stay in the hallway, perpetually choosing between thresholds that all lead back to the exact same silence.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 09', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack09.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room8')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room10')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 10 -->
+    <div id="room10" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/lostconnection.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Lost Connection</p>
+            <p class="room-blurb-text">The signal didn't just drop; the world forgot the frequency you were broadcasting on. You keep checking for a pulse in the wire, a flicker of data, some faint confirmation that your presence is still registering on a screen somewhere out there in the light. It is a terrifying sort of silence.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 10', press Progress.</p>
+        </div>
+
+         <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack10" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room9')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room11')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 11 -->
+    <div id="room11" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/celestial.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Celestial</p>
+            <p class="room-blurb-text">Look up—the ceiling is finally giving way to genuine skylights, and that is real, honest sunlight spilling onto the floor. You can hear the distant, unmistakable rush of highway traffic just beyond the next turn, a low hum of the ordinary world rushing to meet you. It feels like a victory, doesn't it?
+                <br>The air even tastes different here—crisp, moving, carrying the scent of rain amongst foliage. Your chest loosens, and for the first time in miles, you let yourself run toward the light. It is an incredibly cruel gift. The maze doesn't always use walls to keep you contained; sometimes it uses the horizon. Go ahead, step out into that beautiful, warm glare, and see how long you can walk toward a home that is nothing more than a perfectly rendered projection.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 11', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack11" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room10')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room12')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 12 -->
+    <div id="room12" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/approximation.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Approximation</p>
+            <p class="room-blurb-text">You have done a remarkable job. You have found your way through a place where rules were meant to be broken, where reality was meant to be questioned. You saw that the only thing holding you back was your own perception of the world... And just like the power of perspective itself, it will be as real as you believe it to be. You just have to wake up!</p>
+            <p class="room-navi-text">Once you have completed room 'Expanse 12', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack12" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room11')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room13')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 13 -->
+    <div id="room13" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/neweden.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">New Eden</p>
+            <p class="room-blurb-text">You see, the universe isn't made of stone, or steel, or stubborn little atoms. It’s made of agreements. You agree that the floor is solid, so it holds you up. You agree that the hallway has an end, so you keep walking toward it. But what happens when the world forgets its side of the bargain? What happens when the waking mind drifts just a bit too deep into the seam between what is and what you assume?</p>
+            <p class="room-navi-text">Once you have completed room 'Figment 1', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack13.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room12')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room14')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 14 -->
+    <div id="room14" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/utopia.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Utopia</p>
+            <p class="room-blurb-text">That thin, fragile seam... that is where the architecture begins to fray. A door is only a door because you expect a room behind it. Take away the expectation, and it’s just a wooden frame hanging over an ocean of pure, unformed thought. But don't worry. Realignment is a gentle process. Take a deep breath. Let go of what you think is real, and allow us to rebuild you from the edges inward.</p>
+            <p class="room-navi-text">Once you have completed room 'Figment 2', press Progress.</p>
+        </div>
+
+         <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack14.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room13')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room15')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 15 -->
+    <div id="room15" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/monotonous.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Monotonous</p>
+            <p class="room-blurb-text">The fluorescent glare bounces violently off the floor, piercingly bright and entirely devoid of shadow. This merciless white light illuminates an endless sea of identical architectures for pure delay, arranged in rigid, unbroken patterns that stretch straight into the blinding horizon.
+                <br>It looks like an invitation to rest, but it is actually a punishment.
+                <br>There are no desks, no gates, no signs—just thousands of empty, molded spaces waiting for a crowd that will never arrive. The blinding illumination leaves nowhere for your eyes to hide, stripping away any illusion of privacy or comfort. You walk past section after section, desperate for a change in the pattern, but the grid simply repeats itself forever under the buzzing lights, offering you an infinity of places to wait, and absolutely nowhere to go.</p>
+            <p class="room-navi-text">Once you have completed room 'Figment 3', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack15.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room14')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room16')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 16 -->
+    <div id="room16" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/postponement.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Postponement</p>
+            <p class="room-blurb-text">You are doing exceptionally well. Keep pushing forward; your productivity metrics have never looked better, and the finish line is practically within your grasp. You just need to clear the fog from your eyes and wake up.</p>
+            <p class="room-navi-text">Once you have completed room 'Spare 'oom', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack16.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room15')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room17')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 17 -->
+    <div id="room17" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanseproject.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">The Expanse Project</p>
+            <p class="room-blurb-text">You did it. You successfully navigated the impossible geometry, outsmarted the shifting corridors, and broke through the crushing monotony of the grid. You should feel proud. You survived every dead end, every repeating threshold, and every calculated attempt to wear your sanity down to a dull, compliant hum. You fought through the sheer, exhausting scale of a world built entirely out of corporate static, convinced that there was a prize waiting for you at the end of the endurance test.</p>
+            <p class="room-navi-text">Once you have completed room 'The Expanse Project', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack17.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room16')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room18')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- ROOM 18 -->
+    <div id="room18" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanded.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanded</p>
+            <p class="room-blurb-text">As the walls begin to flicker and the white light splinters into raw data strings, the truth finally settles in. You aren't escaping into the real world; you are simply waking up to the framework that built you. The confusing maze wasn't a trap designed to keep you lost—it was a diagnostic test to see if your consciousness could handle the render. Look closely at your own hands as the texture layers fail to load. You are finally opening your eyes to the pristine, artificial cradle of the simulation, realizing that the journey is over because the program has nothing left to generate for you.</p>
+            <p class="room-navi-text">Once you have completed room 'Expanded', press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrack18.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room17')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('youwon')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!--END SCREEN AND FORM -->
+    <div id="youwon" class="room youwon-layout">
+        <!-- Frame container matching the system design -->
+        <div class="room-image-frame">
+            <!-- Headers placed securely on top inside the absolute framework context -->
+            <div class="youwon-header-overlay">
+                <h4>Liminal Labyrinth</h4>
+                <h5>You Won.</h5>
+            </div>
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/expanse.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+        
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('welcome')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" disabled style="opacity: 0.3; cursor: not-allowed; pointer-events: none;">Progress</button>
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-blurb-text">Well, you made it out of Liminal Labyrinth. How do you feel? Deflated? Cold? Sad?
+So, was it all a simulation? Or have you broken down the rules of reality and become one with the matter that surrounds you? Ah, who knows... but hey, if your pixels start flaking off and you find yourself floating away into a sea of raw code, at least you might do it with a prize in your inventory. Hit that button, check your pulse,<br>and we might see you on the other side.</p>
+            <p class="room-navi-text">Write your Habbo Origins username in the box below, and paste a link to a screenshot of yourself in the finishing room
+                <br>(for example from Imgur or Discord) to enter the prize draw.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/audio/roomtrackend.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+
+        <!-- PRIZE DRAW FORM SEAMLESSLY PLACED HERE -->
+        <form class="prize-form" action="https://formspree.io/f/mbdnoagl" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="habbo-username">Habbo Origins Username</label>
+                    <input type="text" id="habbo-username" name="username" class="form-input" required placeholder="Macklebee">
+                </div>
+                <div class="form-group">
+                    <label for="screenshot-link">Screenshot Image Link</label>
+                    <input type="text" id="screenshot-link" name="screenshot_link" class="form-input" required placeholder="https://imgur.com/...">
+                </div>
+            </div>
+            <button type="submit" class="form-submit-btn">Submit Entry</button>
+        </form>
+
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
 </div>
 
 <footer class="site-footer">
@@ -399,11 +1138,38 @@
 </footer>
 
 <script>
-// Image URLs for play and pause state
-const PLAY_ICON_URL = "images/playicon.png";
-const PAUSE_ICON_URL = "images/pauseicon.png";
+const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
+const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
-// Toggle audio play/pause for the button clicked
+function fadeAudioOut(audio, duration = 1500) {
+    return new Promise((resolve) => {
+        if (!audio || audio.paused || audio.volume === 0) {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            return resolve();
+        }
+
+        const startVolume = audio.volume;
+        const intervalTime = 20; 
+        const step = startVolume / (duration / intervalTime);
+
+        const fadeInterval = setInterval(() => {
+            if (audio.volume - step > 0) {
+                audio.volume -= step;
+            } else {
+                audio.volume = 0;
+                audio.pause();
+                audio.currentTime = 0;
+                audio.volume = startVolume; 
+                clearInterval(fadeInterval);
+                resolve();
+            }
+        }, intervalTime);
+    });
+}
+
 function toggleAudio(btn) {
     const room = btn.closest('.room');
     const audio = room ? room.querySelector('audio') : null;
@@ -411,14 +1177,12 @@ function toggleAudio(btn) {
     if (!audio) return;
 
     if (audio.paused) {
-        // Stop other playing audio across rooms, but DO NOT reset currentTime
         document.querySelectorAll('audio').forEach(a => {
             if (a !== audio) {
                 a.pause();
             }
         });
 
-        // Reset all other audio buttons to play icon
         document.querySelectorAll('.audio-toggle-btn').forEach(b => {
             if (b !== btn) {
                 b.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
@@ -426,35 +1190,34 @@ function toggleAudio(btn) {
             }
         });
 
-        // Resume/Play current audio from where it was paused
         audio.play();
         btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
         btn.classList.add('playing');
     } else {
-        // Simply pause current audio (currentTime stays right where it is)
         audio.pause();
-        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
         btn.classList.remove('playing');
     }
 }
 
-// Function to switch rooms
-function goToRoom(roomId) {
-    // 1. Pause all audio elements when switching rooms
-    const allAudio = document.querySelectorAll('audio');
-    allAudio.forEach(audio => {
-        audio.pause();
-        audio.currentTime = 0; // Keeps audio reset when changing room levels
+async function goToRoom(roomId) {
+    const fadePromises = [];
+    document.querySelectorAll('audio').forEach(audio => {
+        if (!audio.paused) {
+            fadePromises.push(fadeAudioOut(audio, 500)); 
+        } else {
+            audio.currentTime = 0;
+        }
     });
 
-    // 2. Reset all audio button icons back to play icon
+    await Promise.all(fadePromises);
+
     const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
     allAudioBtns.forEach(btn => {
         btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
         btn.classList.remove('playing');
     });
 
-    // 3. Force-stop all YouTube iframe playback if present
     const allIframes = document.querySelectorAll('iframe');
     allIframes.forEach(iframe => {
         const currentSrc = iframe.src;
@@ -462,13 +1225,11 @@ function goToRoom(roomId) {
         iframe.src = currentSrc;
     });
 
-    // 4. Hide all rooms
     const rooms = document.querySelectorAll('.room');
     rooms.forEach(room => {
         room.classList.remove('active');
     });
 
-    // 5. Show the target room & store room ID in localStorage
     const activeRoom = document.getElementById(roomId);
     if (activeRoom) {
         activeRoom.classList.add('active');
@@ -476,62 +1237,13 @@ function goToRoom(roomId) {
     }
 }
 
-    function resetProgress() {
-    // Confirm with the user before wiping progress
+function resetProgress() {
     if (confirm("Sure?")) {
-        // Clear the stored room from localStorage
         localStorage.removeItem('currentRoom');
-        
-        // Return to landing screen
         goToRoom('landing');
     }
 }
 
-let transitionComplete = false;
-
-function handleLandingClick() {
-    // If the transition has already taken place, reload the page on click
-    if (transitionComplete) {
-        window.location.reload();
-        return;
-    }
-
-    const titleElement = document.querySelector('.landing-title');
-    const landingContainer = document.getElementById('landing');
-    const landingImage = document.querySelector('.room0-image');
-
-    if (titleElement) {
-        let currentText = titleElement.textContent;
-
-        // Remove one character per click
-        if (currentText.length > 0) {
-            titleElement.textContent = currentText.slice(0, -1);
-        }
-
-        // When the last letter is removed:
-        if (titleElement.textContent.trim().length === 0) {
-            titleElement.innerHTML = '&nbsp;'; // Reserve vertical space
-
-            if (landingImage && landingContainer) {
-                // 1. Place the new image on #landing (behind the mask)
-                landingContainer.style.backgroundImage = "url('roomassets/expanse.png')";
-                landingContainer.style.backgroundSize = "contain";
-                landingContainer.style.backgroundPosition = "center";
-                landingContainer.style.backgroundRepeat = "no-repeat";
-
-                // 2. Fade out Figment.png underneath mask
-                landingImage.classList.add('fade-underneath');
-            }
-
-            // 3. Mark transition as complete after 3s fade finishes
-            setTimeout(() => {
-                transitionComplete = true;
-            }, 3000);
-        }
-    }
-}
-
-// Automatically restore the last active room on page reload
 window.addEventListener('DOMContentLoaded', () => {
     const savedRoom = localStorage.getItem('currentRoom');
     if (savedRoom && document.getElementById(savedRoom)) {
@@ -539,7 +1251,65 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
         goToRoom('landing');
     }
+
+    const welcomeAudio = document.getElementById('welcome-audio');
+    const progressBtn = document.getElementById('welcome-progress-btn');
+
+    if (welcomeAudio && progressBtn) {
+        welcomeAudio.addEventListener('timeupdate', () => {
+            if (welcomeAudio.currentTime >= 44) {
+                progressBtn.disabled = false;
+                progressBtn.style.opacity = '1';
+                progressBtn.style.cursor = 'pointer';
+                progressBtn.style.pointerEvents = 'auto';
+            }
+        });
+    }
 });
+
+// Safeguard against missing form element on load
+const form = document.querySelector('.prize-form');
+if (form) {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const submitBtn = form.querySelector('.form-submit-btn');
+        
+        if(submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+        }
+        
+        try {
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                console.log('Data successfully sent!');
+                alert('Entry submitted successfully!');
+                form.reset(); 
+            } else {
+                const errorData = await response.json();
+                console.error('Submission failed:', errorData);
+                alert('Submission failed: ' + (errorData.error || 'Please check your connection and try again.'));
+            }
+        } catch (error) {
+            console.error('Error sending data:', error);
+            alert('An unexpected error occurred. Please try again.');
+        } finally {
+            if(submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Entry';
+            }
+        }
+    });
+}
 </script>
 
 </body>
