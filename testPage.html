@@ -21,6 +21,7 @@
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
+            overflow-y: scroll;
         }
 
         /* Purely transparent container wrapper */
@@ -116,6 +117,37 @@
             transform: translateX(-50%);
             width: 100%;
             pointer-events: none;
+            
+            /* Enhanced styling to host independent letter nodes cleanly */
+            display: block;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* Dynamically split text styling rules */
+        .landing-letter {
+            display: inline-block;
+            position: relative;
+            transform-origin: bottom center;
+            letter-spacing: inherit;
+        }
+
+        .landing-letter.fall {
+            animation: randomTumble 5.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes randomTumble {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(120vh) rotate(var(--rot));
+                opacity: 0;
+            }
         }
 
         .room-header-group {
@@ -351,7 +383,7 @@
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
-            transition: all 0.4s ease-in-out;
+            transition: opacity 0.4s ease, transform 0.4s ease-in-out, text-shadow 0.4s ease-in-out;
             margin: 5px 0;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
             z-index: 5;
@@ -464,10 +496,10 @@
     <div id="landing" class="room">
         <div class="room-image-frame">
             <h1 class="landing-title">Liminal Labyrinth</h1>
-            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/Figment.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
-        <button class="nav-btn-landing" onclick="goToRoom('welcome')">
+        <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
             <span>It is time to wake up.<br>Enter...</span>
         </button>
     </div>
@@ -1265,6 +1297,53 @@ async function goToRoom(roomId) {
     }
 }
 
+function triggerLandingCollapse(buttonElement) {
+    const titleElement = document.querySelector('.landing-title');
+    if (!titleElement) return goToRoom('welcome');
+
+    buttonElement.style.opacity = '0';
+    buttonElement.style.pointerEvents = 'none';
+
+    if (!titleElement.querySelector('.landing-letter')) {
+        const textContent = titleElement.textContent;
+        titleElement.innerHTML = '';
+        
+        [...textContent].forEach(char => {
+            const span = document.createElement('span');
+            if (char === ' ') {
+                span.innerHTML = '&nbsp;';
+            } else {
+                span.textContent = char;
+            }
+            span.classList.add('landing-letter');
+            titleElement.appendChild(span);
+        });
+    }
+
+    const letters = titleElement.querySelectorAll('.landing-letter');
+
+    letters.forEach(letter => {
+        const randomRotation = Math.floor(Math.random() * 360) - 180 + 'deg';
+        const randomDelay = Math.random() * 1000; 
+
+        letter.style.setProperty('--rot', randomRotation);
+
+        setTimeout(() => {
+            letter.classList.add('fall');
+        }, randomDelay);
+    });
+
+    setTimeout(() => {
+        goToRoom('welcome');
+
+        setTimeout(() => {
+            titleElement.innerHTML = 'Liminal Labyrinth';
+            buttonElement.style.opacity = '';
+            buttonElement.style.pointerEvents = '';
+        }, 1000);
+    }, 1800); 
+} // <--- Added this missing closing bracket
+
 function resetProgress() {
     if (confirm("Sure?")) {
         localStorage.removeItem('currentRoom');
@@ -1295,7 +1374,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Safeguard against missing form element on load
 const form = document.querySelector('.prize-form');
 if (form) {
     form.addEventListener('submit', async (e) => {
