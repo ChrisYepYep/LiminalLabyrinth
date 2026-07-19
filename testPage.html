@@ -54,6 +54,7 @@
             box-shadow: none;
             padding: 0;
             position: relative;
+            transition: opacity 1s ease-in-out; /* Added smooth fade out transition */
         }
 
         /* ================= PLAYABLE ROOMS ================= */
@@ -1298,6 +1299,7 @@ async function goToRoom(roomId) {
 }
 
 function triggerLandingCollapse(buttonElement) {
+    const landingElement = document.getElementById('landing');
     const titleElement = document.querySelector('.landing-title');
     if (!titleElement) return goToRoom('welcome');
 
@@ -1333,16 +1335,23 @@ function triggerLandingCollapse(buttonElement) {
         }, randomDelay);
     });
 
+    // Start fading out the entire landing screen container as the letters cascade
+    setTimeout(() => {
+        if (landingElement) landingElement.style.opacity = '0';
+    }, 800);
+
+    // Change room once the container fade out animation completes cleanly
     setTimeout(() => {
         goToRoom('welcome');
 
         setTimeout(() => {
+            if (landingElement) landingElement.style.opacity = ''; // Reset for progress tracking loops
             titleElement.innerHTML = 'Liminal Labyrinth';
             buttonElement.style.opacity = '';
             buttonElement.style.pointerEvents = '';
         }, 1000);
     }, 1800); 
-} // <--- Added this missing closing bracket
+}
 
 function resetProgress() {
     if (confirm("Sure?")) {
