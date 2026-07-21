@@ -17,7 +17,7 @@
             color: #fff8fa;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
@@ -27,10 +27,9 @@
             width: 90%;
             max-width: 600px;
             text-align: center;
-            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 40px 0;
             box-sizing: border-box;
         }
@@ -39,7 +38,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             animation: fadeIn 1.5s ease-in-out;
             padding: 20px;
             box-sizing: border-box;
@@ -53,10 +52,8 @@
 
         .room-image-frame {
             width: 100%;
-            height: 300px;
             z-index: 1;
             position: relative;
-            margin-bottom: -80px;
         }
 
         .room-image-frame img {
@@ -72,14 +69,12 @@
         .room-image-mask { z-index: 3; }
 
         .room-header-group {
-            position: absolute;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
+            position: relative;
             width: 100%;
             z-index: 15;
             pointer-events: none;
             text-align: center;
+            margin-bottom: 20px;
         }
 
         h2 { 
@@ -105,7 +100,6 @@
             margin: 0 auto;
             z-index: 10;
             text-align: left;
-            margin-top: -80px; /* Seamless pull up over visual mask elements */
         }
 
         .policy-section-title {
@@ -210,18 +204,6 @@
             text-decoration: underline;
             text-underline-offset: 3px;
         }
-
-        .policy-text a {
-            color: #fff8fa;
-            text-decoration: underline;
-            opacity: 0.3;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .policy-text a:hover {
-            opacity: 1;
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
-        }
     </style>
 </head>
 <body>
@@ -264,7 +246,7 @@
             </p>
         </div>
         <div class="button-group">
-            <a href="index.html" class="nav-btn">Return</a>
+            <button onclick="window.close();" class="nav-btn">Return</button>
         </div>
         
     </div>
