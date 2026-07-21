@@ -1277,31 +1277,8 @@ function toggleAudio(btn) {
     }
 }
 
-async function goToRoom(roomId) {
-    const fadePromises = [];
-    document.querySelectorAll('audio').forEach(audio => {
-        if (!audio.paused) {
-            fadePromises.push(fadeAudioOut(audio, 500)); 
-        } else {
-            audio.currentTime = 0;
-        }
-    });
-
-    await Promise.all(fadePromises);
-
-    const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
-    allAudioBtns.forEach(btn => {
-        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
-        btn.classList.remove('playing');
-    });
-
-    const allIframes = document.querySelectorAll('iframe');
-    allIframes.forEach(iframe => {
-        const currentSrc = iframe.src;
-        iframe.src = '';
-        iframe.src = currentSrc;
-    });
-
+function goToRoom(roomId) {
+    // 1. Instantly transition room UI without awaiting promises
     const rooms = document.querySelectorAll('.room');
     rooms.forEach(room => {
         room.classList.remove('active');
@@ -1312,6 +1289,30 @@ async function goToRoom(roomId) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
     }
+
+    // 2. Reset audio toggle button states immediately
+    const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
+    allAudioBtns.forEach(btn => {
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.classList.remove('playing');
+    });
+
+    // 3. Reset any active iframes
+    const allIframes = document.querySelectorAll('iframe');
+    allIframes.forEach(iframe => {
+        const currentSrc = iframe.src;
+        iframe.src = '';
+        iframe.src = currentSrc;
+    });
+
+    // 4. Fade out audio smoothly in the background
+    document.querySelectorAll('audio').forEach(audio => {
+        if (!audio.paused) {
+            fadeAudioOut(audio, 500); 
+        } else {
+            audio.currentTime = 0;
+        }
+    });
 }
 
 function triggerLandingCollapse(buttonElement) {
