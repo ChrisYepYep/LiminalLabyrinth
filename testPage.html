@@ -557,7 +557,7 @@
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Static Void</p>
             <p class="room-blurb-text">The void isn't empty, it's just perfectly, violently still. It's a room with no walls, where the silence screams so loud you can taste it. If you stare long enough you realise it isn't the space waiting for you to move, it's you waiting for the space to blink.</p>
-            <p class="room-navi-text">Once you have completed room 'Expanse 01', press Progress.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
         <div class="audio-player-container">
@@ -567,6 +567,39 @@
         </div>
         <div class="button-group">
             <button class="nav-btn" onclick="goToRoom('welcome')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp1')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+        <!-- EXPANSE 1 -->
+    <div id="exp1" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">The void isn't empty, it's just perfectly, violently still. It's a room with no walls, where the silence screams so loud you can taste it. If you stare long enough you realise it isn't the space waiting for you to move, it's you waiting for the space to blink.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack01.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room1')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -590,7 +623,7 @@
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Apprehensive Living</p>
             <p class="room-blurb-text">Do you view life as an open road? A grand sequence of arrivals and departures? What a comforting delusion. You aren't traveling; you are merely lingering in the vestibule. Life isn't the journey you were promised—it is a perpetual waiting room with flickering fluorescent hums and vinyl chairs worn thin by the desperate. You sit, hands tight in your lap, terrified to leave your seat because you might miss your name being called, yet deeply, violently aware that no one is coming to open the door.</p>
-            <p class="room-navi-text">Once you have completed room 'Expanse 02', press Progress.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
         <div class="audio-player-container">
