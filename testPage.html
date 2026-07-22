@@ -1793,38 +1793,63 @@ function goToRoom(roomId) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
 
-        // --- TYPEWRITER EFFECT FOR EXPANSE PAGES ---
-        if (roomId.startsWith('exp')) {
-            const blurb = activeRoom.querySelector('.room-blurb-text');
-            if (blurb) {
-                // Save original text once if not already saved
-                if (!blurb.getAttribute('data-full-text')) {
-                    blurb.setAttribute('data-full-text', blurb.textContent);
-                }
-                
-                const fullText = blurb.getAttribute('data-full-text');
-                
-                // Reset state
-                clearInterval(typingIntervals[roomId]);
-                blurb.classList.remove('typing');
-                blurb.textContent = '';
-                
-                let charIndex = 0;
-                const typingSpeed = 80; // Delay in ms per character
+// --- TYPEWRITER EFFECT FOR EXPANSE PAGES ---
+if (roomId.startsWith('exp')) {
+    const blurb = activeRoom.querySelector('.room-blurb-text');
+    if (blurb) {
+        // Save original text once if not already saved
+        if (!blurb.getAttribute('data-full-text')) {
+            blurb.setAttribute('data-full-text', blurb.textContent);
+        }
+        
+        const fullText = blurb.getAttribute('data-full-text');
+        
+        // Clear any previous intervals or loop timeouts for this room
+        clearInterval(typingIntervals[roomId]);
+        clearTimeout(typingIntervals[roomId + '_loop']);
+        
+        // Reset element state
+        blurb.classList.remove('typing');
+        blurb.textContent = '';
 
+        // Configurable timing settings (in milliseconds)
+        const initialDelay = 2000; // 2 seconds before typing starts
+        const typingSpeed  = 80;   // Delay per character
+        const loopPause    = 5000; // How long to stay on finished text before restarting (5 seconds)
+
+        function startTypewriter() {
+            // Reset text and cursor before typing begins
+            blurb.textContent = '';
+            blurb.classList.remove('typing');
+
+            // 1. Initial Delay
+            typingIntervals[roomId + '_loop'] = setTimeout(() => {
+                let charIndex = 0;
+
+                // 2. Typing Phase
                 typingIntervals[roomId] = setInterval(() => {
                     if (charIndex < fullText.length) {
                         blurb.textContent += fullText.charAt(charIndex);
                         charIndex++;
                     } else {
-                        // Finished typing: Stop interval and attach blinking underscore cursor
+                        // Finished typing: stop interval and add blinking cursor
                         clearInterval(typingIntervals[roomId]);
                         blurb.classList.add('typing');
+
+                        // 3. Loop Phase: wait `loopPause`, then restart sequence
+                        typingIntervals[roomId + '_loop'] = setTimeout(() => {
+                            startTypewriter();
+                        }, loopPause);
                     }
                 }, typingSpeed);
-            }
+
+            }, initialDelay);
         }
+
+        // Trigger the sequence
+        startTypewriter();
     }
+}
 
     // 2. Reset audio toggle button states
     const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
