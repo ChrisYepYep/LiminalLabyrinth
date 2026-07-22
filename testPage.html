@@ -643,6 +643,39 @@
         </div>
     </div>
 
+    <!-- EXPANSE 2 -->
+    <div id="exp2" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack02.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room2')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('room3')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
     <!-- ROOM 3 -->
     <div id="room3" class="room">
         <div class="room-image-frame">
@@ -665,7 +698,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room2')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp2')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp3')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+     <!-- EXPANSE 3 -->
+    <div id="exp3" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack03.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room3')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -698,7 +764,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room3')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp3')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp3')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+     <!-- EXPANSE 4 -->
+    <div id="exp4" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack04.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room4')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -731,7 +830,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room4')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp4')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp5')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+     <!-- EXPANSE 5 -->
+    <div id="exp5" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack05.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room5')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -764,7 +896,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room5')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp5')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp6')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+     <!-- EXPANSE 6 -->
+    <div id="exp6" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack06.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room6')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -797,9 +962,42 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room6')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp6')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp7')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+     <!-- EXPANSE 7 -->
+    <div id="exp7" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack07.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room7')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
             <button class="nav-btn" onclick="goToRoom('room8')">Progress</button>
         </div>
@@ -832,7 +1030,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room7')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp7')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp8')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+     <!-- EXPANSE 8 -->
+    <div id="exp8" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack08.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room8')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -866,7 +1097,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room8')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp8')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp9')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+     <!-- EXPANSE 9 -->
+    <div id="exp9" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack09.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room9')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -899,7 +1163,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room9')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp9')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp10')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+     <!-- EXPANSE 10 -->
+    <div id="exp10" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack10.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room10')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -933,7 +1230,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room10')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp10')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp10')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+         <!-- EXPANSE 11 -->
+    <div id="exp11" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack11.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room11')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -966,7 +1296,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room11')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp11')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('exp12')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+         <!-- EXPANSE 12 -->
+    <div id="exp12" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Expanse</p>
+            <p class="room-blurb-text">Where are you?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/exptrack12.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room12')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -999,7 +1362,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room12')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('exp12')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('fig1')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- FIGMENT 1 -->
+    <div id="fig1" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/figment.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Figment</p>
+            <p class="room-blurb-text">Wake up.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/figment01.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room13')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -1032,7 +1428,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room13')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('fig1')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('fig2')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- FIGMENT 2 -->
+    <div id="fig2" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/figment.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Figment</p>
+            <p class="room-blurb-text">Wake up.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/figment02.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room14')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -1067,7 +1496,40 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room14')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('fig2')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('fig3')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- FIGMENT 3 -->
+    <div id="fig3" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/figment.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Figment</p>
+            <p class="room-blurb-text">Wake up.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/figment03.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room15')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
