@@ -1714,7 +1714,6 @@
     <p>This fan site is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
     <p>© 2026 Liminal Labyrinth. All rights reserved. | <a href="https://liminallabyrinth.quest/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a></p>
 </footer>
-</div>
 
 <script>
 const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
@@ -1770,7 +1769,7 @@ function toggleAudio(btn) {
         });
 
         audio.play();
-        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
         btn.classList.add('playing');
     } else {
         audio.pause();
@@ -1793,63 +1792,64 @@ function goToRoom(roomId) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
 
-// --- TYPEWRITER EFFECT FOR EXPANSE PAGES ---
-if (roomId.startsWith('exp')) {
-    const blurb = activeRoom.querySelector('.room-blurb-text');
-    if (blurb) {
-        // Save original text once if not already saved
-        if (!blurb.getAttribute('data-full-text')) {
-            blurb.setAttribute('data-full-text', blurb.textContent);
-        }
-        
-        const fullText = blurb.getAttribute('data-full-text');
-        
-        // Clear any previous intervals or loop timeouts for this room
-        clearInterval(typingIntervals[roomId]);
-        clearTimeout(typingIntervals[roomId + '_loop']);
-        
-        // Reset element state
-        blurb.classList.remove('typing');
-        blurb.textContent = '';
+        // --- TYPEWRITER EFFECT FOR EXPANSE PAGES ---
+        if (roomId.startsWith('exp')) {
+            const blurb = activeRoom.querySelector('.room-blurb-text');
+            if (blurb) {
+                // Save original text once if not already saved
+                if (!blurb.getAttribute('data-full-text')) {
+                    blurb.setAttribute('data-full-text', blurb.textContent);
+                }
+                
+                const fullText = blurb.getAttribute('data-full-text');
+                
+                // Clear any previous intervals or loop timeouts for this room
+                clearInterval(typingIntervals[roomId]);
+                clearTimeout(typingIntervals[roomId + '_loop']);
+                
+                // Reset element state
+                blurb.classList.remove('typing');
+                blurb.textContent = '';
 
-        // Configurable timing settings (in milliseconds)
-        const initialDelay = 2000; // 2 seconds before typing starts
-        const typingSpeed  = 85;   // Delay per character
-        const loopPause    = 7500; // How long to stay on finished text before restarting (5 seconds)
+                // Configurable timing settings (in milliseconds)
+                const initialDelay = 2000; // 2 seconds before typing starts
+                const typingSpeed  = 85;   // Delay per character
+                const loopPause    = 7500; // How long to stay on finished text before restarting (5 seconds)
 
-        function startTypewriter() {
-            // Reset text and cursor before typing begins
-            blurb.textContent = '';
-            blurb.classList.remove('typing');
+                function startTypewriter() {
+                    // Reset text and cursor before typing begins
+                    blurb.textContent = '';
+                    blurb.classList.remove('typing');
 
-            // 1. Initial Delay
-            typingIntervals[roomId + '_loop'] = setTimeout(() => {
-                let charIndex = 0;
+                    // 1. Initial Delay
+                    typingIntervals[roomId + '_loop'] = setTimeout(() => {
+                        let charIndex = 0;
 
-                // 2. Typing Phase
-                typingIntervals[roomId] = setInterval(() => {
-                    if (charIndex < fullText.length) {
-                        blurb.textContent += fullText.charAt(charIndex);
-                        charIndex++;
-                    } else {
-                        // Finished typing: stop interval and add blinking cursor
-                        clearInterval(typingIntervals[roomId]);
-                        blurb.classList.add('typing');
+                        // 2. Typing Phase
+                        typingIntervals[roomId] = setInterval(() => {
+                            if (charIndex < fullText.length) {
+                                blurb.textContent += fullText.charAt(charIndex);
+                                charIndex++;
+                            } else {
+                                // Finished typing: stop interval and add blinking cursor
+                                clearInterval(typingIntervals[roomId]);
+                                blurb.classList.add('typing');
 
-                        // 3. Loop Phase: wait `loopPause`, then restart sequence
-                        typingIntervals[roomId + '_loop'] = setTimeout(() => {
-                            startTypewriter();
-                        }, loopPause);
-                    }
-                }, typingSpeed);
+                                // 3. Loop Phase: wait `loopPause`, then restart sequence
+                                typingIntervals[roomId + '_loop'] = setTimeout(() => {
+                                    startTypewriter();
+                                }, loopPause);
+                            }
+                        }, typingSpeed);
 
-            }, initialDelay);
-        }
+                    }, initialDelay);
+                }
 
-        // Trigger the sequence
-        startTypewriter();
+                // Trigger the sequence
+                startTypewriter();
+            }
+        } // <--- Missing bracket was here!
     }
-}
 
     // 2. Reset audio toggle button states
     const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
