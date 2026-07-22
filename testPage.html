@@ -222,7 +222,19 @@
             width: 300px;
         }
 
-        /* FIXED WELCOME OVERRIDES */
+        .room-blurb-text.typing::after {
+            content: '_';
+            display: inline-block;
+            opacity: 1;
+            animation: blink 0.8s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
         #welcome .room-blurb-text {
             width: 350px;
             margin: 0 auto;
@@ -1767,8 +1779,10 @@ function toggleAudio(btn) {
     }
 }
 
+let typingIntervals = {}; // Store active typing timers per room element
+
 function goToRoom(roomId) {
-    // 1. Instantly transition room UI without awaiting promises
+    // 1. Transition room UI
     const rooms = document.querySelectorAll('.room');
     rooms.forEach(room => {
         room.classList.remove('active');
@@ -1778,9 +1792,41 @@ function goToRoom(roomId) {
     if (activeRoom) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
+
+        // --- TYPEWRITER EFFECT FOR EXPANSE PAGES ---
+        if (roomId.startsWith('exp')) {
+            const blurb = activeRoom.querySelector('.room-blurb-text');
+            if (blurb) {
+                // Save original text once if not already saved
+                if (!blurb.getAttribute('data-full-text')) {
+                    blurb.setAttribute('data-full-text', blurb.textContent);
+                }
+                
+                const fullText = blurb.getAttribute('data-full-text');
+                
+                // Reset state
+                clearInterval(typingIntervals[roomId]);
+                blurb.classList.remove('typing');
+                blurb.textContent = '';
+                
+                let charIndex = 0;
+                const typingSpeed = 80; // Delay in ms per character
+
+                typingIntervals[roomId] = setInterval(() => {
+                    if (charIndex < fullText.length) {
+                        blurb.textContent += fullText.charAt(charIndex);
+                        charIndex++;
+                    } else {
+                        // Finished typing: Stop interval and attach blinking underscore cursor
+                        clearInterval(typingIntervals[roomId]);
+                        blurb.classList.add('typing');
+                    }
+                }, typingSpeed);
+            }
+        }
     }
 
-    // 2. Reset audio toggle button states immediately
+    // 2. Reset audio toggle button states
     const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
     allAudioBtns.forEach(btn => {
         btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
