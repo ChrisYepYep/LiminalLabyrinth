@@ -1565,7 +1565,7 @@
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Postponement</p>
             <p class="room-blurb-text">You are doing exceptionally well. Keep pushing forward; your productivity metrics have never looked better, and the finish line is practically within your grasp. You just need to clear the fog from your eyes and wake up.</p>
-            <p class="room-navi-text">Once you have completed room 'Spare 'oom', press Progress.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
         <div class="audio-player-container">
@@ -1575,6 +1575,39 @@
         </div>
         <div class="button-group">
             <button class="nav-btn" onclick="goToRoom('fig3')">Return</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn" onclick="goToRoom('spareoom')">Progress</button>
+        </div>
+        <div class="btn-sub">
+            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
+        </div>
+    </div>
+
+    <!-- SPARE OOM -->
+    <div id="spareoom" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/spareoom.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Spare 'oom</p>
+            <p class="room-blurb-text">Hello?</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/spareoom.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('room16')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -1607,7 +1640,7 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('room16')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('spareoom')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
