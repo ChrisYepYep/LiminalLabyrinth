@@ -8,80 +8,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liminal Labyrinth</title>
     <style>
-        /* Barrel Distortion Wrapper on Body */
-        body::before {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), 
-                        linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03));
-            z-index: 9999;
-            background-size: 100% 3px, 3px 100%;
-            pointer-events: none;
-        }
+       /* ================= REALISTIC CRT MONITOR SYSTEM ================= */
 
-        /* CRT Overlay Container */
-        .crt-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none; /* Allows clicks to pass through completely */
-            z-index: 9999;
-            
-            /* Subtle scanlines using a repeating linear gradient */
-            background: linear-gradient(
-                rgba(18, 16, 16, 0) 50%, 
-                rgba(0, 0, 0, 0.25) 50%
-            ), linear-gradient(
-                90deg,
-                rgba(255, 0, 0, 0.03),
-                rgba(0, 255, 0, 0.01),
-                rgba(0, 0, 255, 0.03)
-            );
-            background-size: 100% 4px, 6px 100%;
-            
-            /* Vignette dark corners typical of curved CRT glass */
-            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.7);
-            
-            /* Subtle continuous flicker animation */
-            animation: crtFlicker 0.15s infinite;
-        }
+/* 1. Curved Glass Frame Distortion for the entire page body */
+body {
+    position: relative;
+    box-sizing: border-box;
+    /* Soft ambient phosphor glow spilling around screen edges */
+    box-shadow: inset 0 0 80px rgba(18, 16, 16, 0.9), 0 0 50px rgba(0, 255, 102, 0.05);
+}
 
-        @keyframes crtFlicker {
-            0% { opacity: 0.97; }
-            50% { opacity: 1; }
-            100% { opacity: 0.98; }
-        }
+/* Base CRT Wrapper Layer */
+.crt-screen-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Allows buttons/forms to remain fully clickable */
+    z-index: 9999;
+    overflow: hidden;
+}
 
-        /* Curved Corner Vignette */
-        body::after {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.9) 100%);
-            z-index: 9998;
-            pointer-events: none;
-        }
+/* 2. Moving Horizontal Scanlines + Rolling Scan Beam */
+.crt-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Dense line grid + faint vertical aperture grille */
+    background: 
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
+    background-size: 100% 3px, 4px 100%;
+}
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Oswald', sans-serif;
-            font-size: 16px;
-            background-color: #000000;
-            color: #fff8fa;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            overflow-y: scroll;
-        }
+/* Subtle continuous vertical beam rolling downwards */
+.crt-scanlines::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(0, 0, 0, 0.1) 100%);
+    opacity: 0.8;
+    animation: rollScanBeam 8s linear infinite;
+}
+
+/* 3. Authentic 3D Glass Bulge & Edge Curvature Vignette */
+.crt-glass-bulge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Combined Radial Glare & Heavy Curved Corner Shadowing */
+    background: 
+        radial-gradient(ellipse at 50% 35%, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 60%),
+        radial-gradient(circle at center, transparent 55%, rgba(0, 0, 0, 0.6) 80%, rgba(0, 0, 0, 0.98) 100%);
+    /* Inner border simulation to mimic the thick plastic monitor bezel */
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), inset 0 0 120px rgba(0, 0, 0, 0.8);
+}
+
+/* 4. Phosphor Screen Jitter & Flicker Animation */
+.crt-flicker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 16, 16, 0.02);
+    opacity: 0;
+    animation: crtJitter 0.12s infinite;
+}
+
+/* 5. RGB Chromatic Aberration Text Shadowing across titles */
+h1, h2, h4, h5, .room-title-text {
+    text-shadow: 
+        2px 0 2px rgba(255, 0, 80, 0.5), 
+        -2px 0 2px rgba(0, 220, 255, 0.5),
+        0 0 8px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Enhanced Phosphor Green Glow for Terminal Blurbs */
+div[id^="exp"] .room-blurb-text {
+    font-family: 'Courier New', Courier, monospace;
+    color: #00ff66;
+    text-shadow: 
+        1.5px 0 1px rgba(255, 0, 0, 0.4),
+        -1.5px 0 1px rgba(0, 255, 255, 0.4),
+        0 0 8px rgba(0, 255, 102, 0.8) !important;
+    animation: textFlicker 0.08s infinite alternate;
+}
+
+/* ================= ANIMATIONS ================= */
+@keyframes rollScanBeam {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+@keyframes crtJitter {
+    0% { opacity: 0.1; transform: scale(1.0005, 1.0003); }
+    50% { opacity: 0.02; transform: scale(1, 1); }
+    100% { opacity: 0.08; transform: scale(0.9998, 1.0002); }
+}
+
+@keyframes textFlicker {
+    0% { opacity: 0.95; }
+    100% { opacity: 1; }
+}
 
         .container {
             width: 90%;
@@ -569,7 +604,11 @@
     </style>
 </head>
 <body>
-<div class="crt-overlay"></div>
+<div class="crt-screen-wrapper">
+        <div class="crt-scanlines"></div>
+        <div class="crt-flicker"></div>
+        <div class="crt-glass-bulge"></div>
+    </div>
 <div class="container">
     <!-- LANDING SCREEN -->
     <div id="landing" class="room">
