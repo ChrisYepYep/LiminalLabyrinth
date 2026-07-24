@@ -223,6 +223,7 @@
             min-height: 1.4em;
         }
 
+        /* Cleaned up green glow styling for expanse rooms */
         div[id^="exp"] .room-blurb-text {
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
@@ -230,32 +231,6 @@
             position: relative;
             text-shadow: 0 0 6px rgba(0, 255, 102, 0.7);
         }
-
-        div[id^="exp"] .room-blurb-text::before,
-        div[id^="exp"] .room-blurb-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-            text-align: inherit;
-            mix-blend-mode: screen;
-        }
-
-        .room-blurb-text.typing::after {
-            content: '_';
-            display: inline-block;
-            opacity: 1;
-            animation: blink 0.8s infinite;
-            margin-left: 2px;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
 
         .room-blurb-text.typing::after {
             content: '_';
@@ -1846,10 +1821,9 @@ function toggleAudio(btn) {
     }
 }
 
-let typingIntervals = {}; // Store active typing timers per room element
+let typingIntervals = {}; 
 
 function goToRoom(roomId) {
-    // 1. Transition room UI
     const rooms = document.querySelectorAll('.room');
     rooms.forEach(room => {
         room.classList.remove('active');
@@ -1860,50 +1834,40 @@ function goToRoom(roomId) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
 
-        // --- TYPEWRITER EFFECT FOR EXPANSE PAGES ---
         if (roomId.startsWith('exp')) {
             const blurb = activeRoom.querySelector('.room-blurb-text');
             if (blurb) {
-                // Save original text once if not already saved
                 if (!blurb.getAttribute('data-full-text')) {
                     blurb.setAttribute('data-full-text', blurb.textContent);
                 }
                 
                 const fullText = blurb.getAttribute('data-full-text');
                 
-                // Clear any previous intervals or loop timeouts for this room
                 clearInterval(typingIntervals[roomId]);
                 clearTimeout(typingIntervals[roomId + '_loop']);
                 
-                // Reset element state
                 blurb.classList.remove('typing');
                 blurb.textContent = '';
 
-                // Configurable timing settings (in milliseconds)
-                const initialDelay = 2000; // 2 seconds before typing starts
-                const typingSpeed  = 85;   // Delay per character
-                const loopPause    = 12000; // How long to stay on finished text before restarting (5 seconds)
+                const initialDelay = 2000; 
+                const typingSpeed  = 85;   
+                const loopPause    = 12000; 
 
                 function startTypewriter() {
-                    // Reset text and cursor before typing begins
                     blurb.textContent = '';
                     blurb.classList.remove('typing');
 
-                    // 1. Initial Delay
                     typingIntervals[roomId + '_loop'] = setTimeout(() => {
                         let charIndex = 0;
 
-                        // 2. Typing Phase
                         typingIntervals[roomId] = setInterval(() => {
                             if (charIndex < fullText.length) {
                                 blurb.textContent += fullText.charAt(charIndex);
                                 charIndex++;
                             } else {
-                                // Finished typing: stop interval and add blinking cursor
                                 clearInterval(typingIntervals[roomId]);
                                 blurb.classList.add('typing');
 
-                                // 3. Loop Phase: wait `loopPause`, then restart sequence
                                 typingIntervals[roomId + '_loop'] = setTimeout(() => {
                                     startTypewriter();
                                 }, loopPause);
@@ -1913,20 +1877,17 @@ function goToRoom(roomId) {
                     }, initialDelay);
                 }
 
-                // Trigger the sequence
                 startTypewriter();
             }
-        } // <--- Missing bracket was here!
+        } 
     }
 
-    // 2. Reset audio toggle button states
     const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
     allAudioBtns.forEach(btn => {
         btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
         btn.classList.remove('playing');
     });
 
-    // 3. Reset any active iframes
     const allIframes = document.querySelectorAll('iframe');
     allIframes.forEach(iframe => {
         const currentSrc = iframe.src;
@@ -1934,7 +1895,6 @@ function goToRoom(roomId) {
         iframe.src = currentSrc;
     });
 
-    // 4. Fade out audio smoothly in the background
     document.querySelectorAll('audio').forEach(audio => {
         if (!audio.paused) {
             fadeAudioOut(audio, 500); 
@@ -1948,7 +1908,6 @@ function triggerLandingCollapse(buttonElement) {
     const landingElement = document.getElementById('landing');
     const titleElement = document.querySelector('.landing-title');
     
-    // 1. Prepare text animation (Staggered falls)
     if (!titleElement.querySelector('.landing-letter')) {
         const textContent = titleElement.textContent;
         titleElement.innerHTML = '';
@@ -1960,31 +1919,24 @@ function triggerLandingCollapse(buttonElement) {
         });
     }
 
-    // 2. Hide button
     buttonElement.style.opacity = '0';
     buttonElement.style.pointerEvents = 'none';
 
-    // 3. Trigger the individual letter fall animation with RANDOM delays
     const letters = titleElement.querySelectorAll('.landing-letter');
     letters.forEach(letter => {
         const randomRotation = Math.floor(Math.random() * 360) - 180 + 'deg';
         letter.style.setProperty('--rot', randomRotation);
-        // Staggered timing: each letter starts its fall between 0ms and 1000ms
         setTimeout(() => { letter.classList.add('fall'); }, Math.random() * 1000); 
     });
 
-    // 4. Start the container fade-out (3 seconds long)
     landingElement.classList.add('fade-out');
 
-    // 5. Navigate to the next room after the container fade completes
     setTimeout(() => {
         goToRoom('welcome');
 
-        // Reset for the next session
         setTimeout(() => {
             landingElement.classList.remove('fade-out');
             landingElement.style.opacity = '1';
-            // Restore title text
             titleElement.innerHTML = 'Liminal Labyrinth';
             buttonElement.style.opacity = '';
             buttonElement.style.pointerEvents = '';
@@ -1993,12 +1945,10 @@ function triggerLandingCollapse(buttonElement) {
 }
 
 function resetProgress() {
-    // Show the custom modal instead of prompt
     document.getElementById('reset-modal').style.display = 'flex';
 }
 
 function confirmReset(isConfirmed) {
-    // Hide the modal
     document.getElementById('reset-modal').style.display = 'none';
     
     if (isConfirmed) {
