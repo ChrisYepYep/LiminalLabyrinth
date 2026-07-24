@@ -65,11 +65,41 @@
             color: #fff8fa;
             margin: 0;
             text-align: center;
-            /* Refined Clean Chromatic Aberration Effect */
-            text-shadow: 
-                2px 0 1px rgba(255, 0, 80, 0.65), 
-                -2px 0 1px rgba(0, 220, 255, 0.65),
-                0 0 6px rgba(0, 0, 0, 0.9);
+            position: relative;
+        }
+
+        /* Pseudo-element Chromatic Aberration */
+        h1::before, h1::after,
+        h2::before, h2::after,
+        h3::before, h3::after,
+        h4::before, h4::after,
+        h5::before, h5::after,
+        .room-title-text::before, .room-title-text::after,
+        .landing-title::before, .landing-title::after,
+        .landing-letter::before, .landing-letter::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            text-align: inherit;
+        }
+
+        h1::before, h2::before, h3::before, h4::before, h5::before,
+        .room-title-text::before, .landing-title::before, .landing-letter::before {
+            color: rgba(0, 220, 255, 0.65);
+            transform: translateX(5px);
+            text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+        }
+
+        h1::after, h2::after, h3::after, h4::after, h5::after,
+        .room-title-text::after, .landing-title::after, .landing-letter::after {
+            color: rgba(255, 0, 80, 0.65);
+            transform: translateX(-5px);
+            text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
         }
 
         h2 { font-size: 2.2rem; letter-spacing: 1px; }
@@ -244,10 +274,31 @@
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
             opacity: 1;
-            text-shadow: 
-                1.5px 0 1px rgba(255, 0, 80, 0.4),
-                -1.5px 0 1px rgba(0, 220, 255, 0.4),
-                0 0 6px rgba(0, 255, 102, 0.7);
+            position: relative;
+            text-shadow: 0 0 6px rgba(0, 255, 102, 0.7);
+        }
+
+        div[id^="exp"] .room-blurb-text::before,
+        div[id^="exp"] .room-blurb-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            text-align: inherit;
+        }
+
+        div[id^="exp"] .room-blurb-text::before {
+            color: rgba(0, 220, 255, 0.4);
+            transform: translateX(1.5px);
+        }
+
+        div[id^="exp"] .room-blurb-text::after {
+            color: rgba(255, 0, 80, 0.4);
+            transform: translateX(-1.5px);
         }
 
         .room-blurb-text.typing::after {
@@ -533,7 +584,7 @@
         <!-- LANDING SCREEN -->
         <div id="landing" class="room">
             <div class="room-image-frame">
-                <h1 class="landing-title">Liminal Labyrinth</h1>
+                <h1 class="landing-title" data-text="Liminal Labyrinth">Liminal Labyrinth</h1>
                 <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
@@ -546,8 +597,8 @@
         <div id="welcome" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h2>Liminal Labyrinth</h2>
-                    <h3>An Audio Experience</h3>
+                    <h2 data-text="Liminal Labyrinth">Liminal Labyrinth</h2>
+                    <h3 data-text="An Audio Experience">An Audio Experience</h3>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
@@ -579,14 +630,14 @@
         <div id="room1" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/room1staticvoid1.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Static Void</p>
+                <p class="room-title-text" data-text="Static Void">Static Void</p>
                 <p class="room-blurb-text">The void isn't empty, it's just perfectly, violently still. It's a room with no walls, where the silence screams so loud you can taste it. If you stare long enough you realise it isn't the space waiting for you to move, it's you waiting for the space to blink.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -612,14 +663,14 @@
         <div id="exp1" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Where are you?</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -645,14 +696,14 @@
         <div id="room2" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/apprehensive.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Apprehensive Living</p>
+                <p class="room-title-text" data-text="Apprehensive Living">Apprehensive Living</p>
                 <p class="room-blurb-text">Do you view life as an open road? A grand sequence of arrivals and departures? What a comforting delusion. You aren't traveling; you are merely lingering in the vestibule. Life isn't the journey you were promised—it is a perpetual waiting room with flickering fluorescent hums and vinyl chairs worn thin by the desperate. You sit, hands tight in your lap, terrified to leave your seat because you might miss your name being called, yet deeply, violently aware that no one is coming to open the door.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -678,14 +729,14 @@
         <div id="exp2" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Attempting to obtain your current coordinates</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -711,14 +762,14 @@
         <div id="room3" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/visional.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Visional Horizons</p>
+                <p class="room-title-text" data-text="Visional Horizons">Visional Horizons</p>
                 <p class="room-blurb-text">You still believe there is a correct turn to make, that if you just choose wisely, the maze will grant you a destination. A beautiful, desperate instinct. But the paths here aren't designed to lead you out—they are designed to keep you choosing. You exhaust yourself weighing left against right, entirely blind to the fact that every corridor is identical once you turn your back, and the only truly right path was the one you walked away from before you ever crossed the threshold.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -744,14 +795,14 @@
         <div id="exp3" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Initializing Raytracing Engine... OK</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -777,14 +828,14 @@
         <div id="room4" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/neglected.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Neglected Beams</p>
+                <p class="room-title-text" data-text="Neglected Beams">Neglected Beams</p>
                 <p class="room-blurb-text">You think geometry is absolute, don't you? That a straight line always leads forward. How charmingly naive. You trust the right angles of these walls because they match the architecture of your sanity. But out here, parallel lines eventually collide, and if you walk a straight line for long enough, you won’t reach an exit—you’ll just find the back of your own mind. You aren't moving toward an end. You are merely tracing the perimeter of a shape you aren't large enough to see.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -810,14 +861,14 @@
         <div id="exp4" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Mapping Sector_04_Expanse_Render... OK</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -843,14 +894,14 @@
         <div id="room5" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/optical.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Optical Flush</p>
+                <p class="room-title-text" data-text="Optical Flush">Optical Flush</p>
                 <p class="room-blurb-text">You see the faded rose on the walls and think it means hospitality, that the pastel hue is an invitation to finally rest your feet. A profoundly fragile hope. This pink wasn't chosen to make you feel at home; it was calculated to neutralize your urge to escape. It is the exact shade of institutional compliance—a soft, desaturated dye meant to quiet your mind until the walls, the carpet, and your own dissolving memories blend into a single, permanent blush. You aren't relaxing in a lounge. You are being erased by a colour.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -876,14 +927,14 @@
         <div id="exp5" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Calculating light reflection... ERROR</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -909,14 +960,14 @@
         <div id="room6" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/dream.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Dream Is Collapsing</p>
+                <p class="room-title-text" data-text="Dream Is Collapsing">Dream Is Collapsing</p>
                 <p class="room-blurb-text">Every clock you left behind is still ticking, but the time they measure no longer exists. Out here, the calendar has collapsed. You are waiting for a tomorrow that has been permanently deleted from the code, clinging to the belief that the universe will eventually right itself. It won’t. Reality isn't breaking down because of a temporary glitch; the foundation itself has run out of memory, and you are just a loose thread hanging off the edge of a page that is actively being erased.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -942,14 +993,14 @@
         <div id="exp6" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">FATAL: Vanishing point extended beyond expected boundaries</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -975,14 +1026,14 @@
         <div id="room7" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/umbra.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Umbra</p>
+                <p class="room-title-text" data-text="Umbra">Umbra</p>
                 <p class="room-blurb-text">You’ve been trapped in this corridor for hours, yet you haven't taken a single step. Remarkable, really. Your legs are moving, you’re breaking a sweat, but the walls... the walls know you aren't actually trying to leave.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1008,14 +1059,14 @@
         <div id="exp7" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Spatial coordinates failed to collapse into 2D plane</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1041,14 +1092,14 @@
         <div id="room8" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/appointed.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Appointed Connection</p>
+                <p class="room-title-text" data-text="Appointed Connection">Appointed Connection</p>
                 <p class="room-blurb-text">The notification on your screen says you are precisely on time, as if a digital clock still holds authority over a dissolving world. You carved this slot out of your day with absolute precision, expecting a receptionist, a signature, a conclusion.
                     <br>But you aren't here to meet a person. You are here to fulfill the shape of the slot itself.
                     <br>The entity you have scheduled this hour with isn't sitting in an office; it is the dead air inside the telephone wire, the dust settling on the laminate floor, the quiet expectation of the doorway. You have spent your entire life arriving for appointments, never realizing that you were merely donating your presence to keep an empty room from collapsing under the weight of its own loneliness.</p>
@@ -1076,14 +1127,14 @@
         <div id="exp8" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Init DirectX 9.0c Subsystem... OK</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1109,14 +1160,14 @@
         <div id="room9" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/amber.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Professional Amber</p>
+                <p class="room-title-text" data-text="Professional Amber">Professional Amber</p>
                 <p class="room-blurb-text">The architecture here suffers from a frantic kind of indecision. Dozens of pristine, identical doors line the corridor, each one practically begging to be turned, each one whispering the promise of an ending.
                 <br>You can spend lifetimes trying every brass handle, exhausting your fingernails against the deadbolts, convinced that you just haven't found the right key. But the locks aren't keeping you out of the rooms. The rooms are pockets of static vacuum designed to give the doors a reason to exist. The maze doesn't care which handle you turn, as long as you stay in the hallway, perpetually choosing between thresholds that all lead back to the exact same silence.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
@@ -1143,14 +1194,14 @@
         <div id="exp9" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Allocating VRAM allocation pool (2048MB)... OK</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1176,14 +1227,14 @@
         <div id="room10" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/lostconnection.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Lost Connection</p>
+                <p class="room-title-text" data-text="Lost Connection">Lost Connection</p>
                 <p class="room-blurb-text">The signal didn't just drop; the world forgot the frequency you were broadcasting on. You keep checking for a pulse in the wire, a flicker of data, some faint confirmation that your presence is still registering on a screen somewhere out there in the light. It is a terrifying sort of silence.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1209,14 +1260,14 @@
         <div id="exp10" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">CRITICAL: Target resolution exceeded maximum allocation memory</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1242,14 +1293,14 @@
         <div id="room11" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/celestial.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Celestial</p>
+                <p class="room-title-text" data-text="Celestial">Celestial</p>
                 <p class="room-blurb-text">Look up—the ceiling is finally giving way to genuine skylights, and that is real, honest sunlight spilling onto the floor. You can hear the distant, unmistakable rush of highway traffic just beyond the next turn, a low hum of the ordinary world rushing to meet you. It feels like a victory, doesn't it?
                     <br>The air even tastes different here—crisp, moving, carrying the scent of rain amongst foliage. Your chest loosens, and for the first time in miles, you let yourself run toward the light. It is an incredibly cruel gift. The maze doesn't always use walls to keep you contained; sometimes it uses the horizon. Go ahead, step out into that beautiful, warm glare, and see how long you can walk toward a home that is nothing more than a perfectly rendered projection.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
@@ -1276,14 +1327,14 @@
         <div id="exp11" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">ERR_RENDER_BUFFER_OVERFLOW</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1309,14 +1360,14 @@
         <div id="room12" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/approximation.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Approximation</p>
+                <p class="room-title-text" data-text="Approximation">Approximation</p>
                 <p class="room-blurb-text">You have done a remarkable job. You have found your way through a place where rules were meant to be broken, where reality was meant to be questioned. You saw that the only thing holding you back was your own perception of the world... And just like the power of perspective itself, it will be as real as you believe it to be. You just have to wake up!</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1342,14 +1393,14 @@
         <div id="exp12" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanse</p>
+                <p class="room-title-text" data-text="Expanse">Expanse</p>
                 <p class="room-blurb-text">Rendering halted: The room refused to be captured</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1375,14 +1426,14 @@
         <div id="room13" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/neweden.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">New Eden</p>
+                <p class="room-title-text" data-text="New Eden">New Eden</p>
                 <p class="room-blurb-text">You see, the universe isn't made of stone, or steel, or stubborn little atoms. It’s made of agreements. You agree that the floor is solid, so it holds you up. You agree that the hallway has an end, so you keep walking toward it. But what happens when the world forgets its side of the bargain? What happens when the waking mind drifts just a bit too deep into the seam between what is and what you assume?</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1408,14 +1459,14 @@
         <div id="fig1" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Figment</p>
+                <p class="room-title-text" data-text="Figment">Figment</p>
                 <p class="room-blurb-text">Wake up.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1441,14 +1492,14 @@
         <div id="room14" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/utopia.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Utopia</p>
+                <p class="room-title-text" data-text="Utopia">Utopia</p>
                 <p class="room-blurb-text">That thin, fragile seam... that is where the architecture begins to fray. A door is only a door because you expect a room behind it. Take away the expectation, and it’s just a wooden frame hanging over an ocean of pure, unformed thought. But don't worry. Realignment is a gentle process. Take a deep breath. Let go of what you think is real, and allow us to rebuild you from the edges inward.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1474,14 +1525,14 @@
         <div id="fig2" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Figment</p>
+                <p class="room-title-text" data-text="Figment">Figment</p>
                 <p class="room-blurb-text">Wake up.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1507,14 +1558,14 @@
         <div id="room15" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/monotonous.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Monotonous</p>
+                <p class="room-title-text" data-text="Monotonous">Monotonous</p>
                 <p class="room-blurb-text">The fluorescent glare bounces violently off the floor, piercingly bright and entirely devoid of shadow. This merciless white light illuminates an endless sea of identical architectures for pure delay, arranged in rigid, unbroken patterns that stretch straight into the blinding horizon.
                     <br>It looks like an invitation to rest, but it is actually a punishment.
                     <br>There are no desks, no gates, no signs—just thousands of empty, molded spaces waiting for a crowd that will never arrive. The blinding illumination leaves nowhere for your eyes to hide, stripping away any illusion of privacy or comfort. You walk past section after section, desperate for a change in the pattern, but the grid simply repeats itself forever under the buzzing lights, offering you an infinity of places to wait, and absolutely nowhere to go.</p>
@@ -1542,14 +1593,14 @@
         <div id="fig3" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Figment</p>
+                <p class="room-title-text" data-text="Figment">Figment</p>
                 <p class="room-blurb-text">Wake up.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1575,14 +1626,14 @@
         <div id="room16" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/postponement.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Postponement</p>
+                <p class="room-title-text" data-text="Postponement">Postponement</p>
                 <p class="room-blurb-text">You are doing exceptionally well. Keep pushing forward; your productivity metrics have never looked better, and the finish line is practically within your grasp. You just need to clear the fog from your eyes and wake up.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1608,14 +1659,14 @@
         <div id="spareoom" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/spareoom.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Spare 'oom</p>
+                <p class="room-title-text" data-text="Spare 'oom">Spare 'oom</p>
                 <p class="room-blurb-text">Hello?</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1641,14 +1692,14 @@
         <div id="room17" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanseproject.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">The Expanse Project</p>
+                <p class="room-title-text" data-text="The Expanse Project">The Expanse Project</p>
                 <p class="room-blurb-text">You did it. You successfully navigated the impossible geometry, outsmarted the shifting corridors, and broke through the crushing monotony of the grid. You should feel proud. You survived every dead end, every repeating threshold, and every calculated attempt to wear your sanity down to a dull, compliant hum. You fought through the sheer, exhausting scale of a world built entirely out of corporate static, convinced that there was a prize waiting for you at the end of the endurance test.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1674,14 +1725,14 @@
         <div id="room18" class="room">
             <div class="room-image-frame">
                 <div class="room-header-group">
-                    <h4>Liminal Labyrinth</h4>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanded.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
             </div>
 
             <div class="overlay-content-wrapper">
-                <p class="room-title-text">Expanded</p>
+                <p class="room-title-text" data-text="Expanded">Expanded</p>
                 <p class="room-blurb-text">As the walls begin to flicker and the white light splinters into raw data strings, the truth finally settles in. You aren't escaping into the real world; you are simply waking up to the framework that built you. The confusing maze wasn't a trap designed to keep you lost—it was a diagnostic test to see if your consciousness could handle the render. Look closely at your own hands as the texture layers fail to load. You are finally opening your eyes to the pristine, artificial cradle of the simulation, realizing that the journey is over because the program has nothing left to generate for you.</p>
                 <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
             </div>
@@ -1707,8 +1758,8 @@
         <div id="youwon" class="room youwon-layout">
             <div class="room-image-frame">
                 <div class="youwon-header-overlay">
-                    <h4>Liminal Labyrinth</h4>
-                    <h5>You Won.</h5>
+                    <h4 data-text="Liminal Labyrinth">Liminal Labyrinth</h4>
+                    <h5 data-text="You Won.">You Won.</h5>
                 </div>
                 <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="Room Art">
                 <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
@@ -1863,6 +1914,7 @@
                     
                     blurb.classList.remove('typing');
                     blurb.textContent = '';
+                    blurb.removeAttribute('data-text');
 
                     const initialDelay = 2000;
                     const typingSpeed  = 85;
@@ -1870,6 +1922,7 @@
 
                     function startTypewriter() {
                         blurb.textContent = '';
+                        blurb.removeAttribute('data-text');
                         blurb.classList.remove('typing');
 
                         typingIntervals[roomId + '_loop'] = setTimeout(() => {
@@ -1878,6 +1931,7 @@
                             typingIntervals[roomId] = setInterval(() => {
                                 if (charIndex < fullText.length) {
                                     blurb.textContent += fullText.charAt(charIndex);
+                                    blurb.setAttribute('data-text', blurb.textContent);
                                     charIndex++;
                                 } else {
                                     clearInterval(typingIntervals[roomId]);
@@ -1925,10 +1979,12 @@
         
         if (!titleElement.querySelector('.landing-letter')) {
             const textContent = titleElement.textContent;
+            titleElement.removeAttribute('data-text'); 
             titleElement.innerHTML = '';
             [...textContent].forEach(char => {
                 const span = document.createElement('span');
                 span.innerHTML = char === ' ' ? '&nbsp;' : char;
+                span.setAttribute('data-text', char === ' ' ? '\u00A0' : char);
                 span.classList.add('landing-letter');
                 titleElement.appendChild(span);
             });
@@ -1953,6 +2009,7 @@
                 landingElement.classList.remove('fade-out');
                 landingElement.style.opacity = '1';
                 titleElement.innerHTML = 'Liminal Labyrinth';
+                titleElement.setAttribute('data-text', 'Liminal Labyrinth');
                 buttonElement.style.opacity = '';
                 buttonElement.style.pointerEvents = '';
             }, 500);
