@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liminal Labyrinth - Expanse 8</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            background-color: #000000;
+            color: #fff8fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+
+        .room {
+            display: none;
+        }
+
+        .room.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.6s ease-in-out;
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .room-image-frame {
+            width: 100%;
+            height: 400px;
+            z-index: 1;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .room-image-frame img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .room-image-bg {
+            z-index: 2;
+        }
+
+        .room-image-mask {
+            z-index: 3;
+        }
+
+        .room-header-group {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            z-index: 15;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        h4 {
+            color: #fff8fa;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
+            margin: 0;
+            text-align: center;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .overlay-content-wrapper {
+            position: relative;
+            width: 85%;
+            max-width: 100%;
+            margin: -150px auto 0 auto;
+            z-index: 10;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .room-title-text {
+            font-size: 1.6rem;
+            margin: 0 0 6px 0;
+            letter-spacing: 2px;
+            color: #fff8fa;
+        }
+
+        .room-blurb-text {
+            font-size: 0.7rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 300;
+            margin: 0 auto;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #00ff66;
+            opacity: 1;
+            width: 300px;
+            min-height: 1.4em;
+            position: relative;
+            text-shadow: 
+                0 0 2px rgba(127, 255, 0, 0.9),
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 6px rgba(0, 255, 100, 0.6),
+                0 0 8px rgba(0, 255, 100, 0.4);
+        }
+
+        .room-blurb-text.typing::after {
+            content: '_';
+            display: inline-block;
+            opacity: 1;
+            animation: blink 0.8s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .room-navi-text {
+            font-size: 0.8rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 10px 0 0 0;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.6;
+        }
+
+        .audio-player-container {
+            margin: 0;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: #fff8fa;
+            border: transparent;
+            padding: 5px 10px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            margin: 0;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
+            z-index: 5;
+            width: 120px;
+            text-align: center;
+        }
+
+        .nav-btn-left {
+            text-align: right;
+        }
+
+        .nav-btn-right {
+            text-align: left;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .audio-toggle-btn {
+            background-color: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+        }
+
+        .audio-toggle-btn:hover {
+            transform: scale(1.1);
+        }
+
+        audio { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="exp8" class="room active">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-blurb-text">Maze Initialising...</p>
+            <p class="room-navi-text">The Labyrinth is not ready for you yet, come back on August 22nd.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/teasertrack.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn nav-btn-left">August 22nd</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn nav-btn-right">17:00 UTC</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
+const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
+
+function fadeAudioOut(audio, duration = 1500) {
+    return new Promise((resolve) => {
+        if (!audio || audio.paused || audio.volume === 0) {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            return resolve();
+        }
+
+        const startVolume = audio.volume;
+        const intervalTime = 20; 
+        const step = startVolume / (duration / intervalTime);
+
+        const fadeInterval = setInterval(() => {
+            if (audio.volume - step > 0) {
+                audio.volume -= step;
+            } else {
+                audio.volume = 0;
+                audio.pause();
+                audio.currentTime = 0;
+                audio.volume = startVolume; 
+                clearInterval(fadeInterval);
+                resolve();
+            }
+        }, intervalTime);
+    });
+}
+
+function toggleAudio(btn) {
+    const room = btn.closest('.room');
+    const audio = room ? room.querySelector('audio') : null;
+
+    if (!audio) return;
+
+    if (audio.paused) {
+        document.querySelectorAll('audio').forEach(a => {
+            if (a !== audio) {
+                a.pause();
+            }
+        });
+
+        document.querySelectorAll('.audio-toggle-btn').forEach(b => {
+            if (b !== btn) {
+                b.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+                b.classList.remove('playing');
+            }
+        });
+
+        audio.play();
+        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
+        btn.classList.add('playing');
+    } else {
+        audio.pause();
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
+        btn.classList.remove('playing');
+    }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const activeRoom = document.getElementById('exp8');
+    if (activeRoom) {
+        const blurb = activeRoom.querySelector('.room-blurb-text');
+        if (blurb) {
+            // Define your rotation sentences here (or fetch them from the data attribute above)
+            const rawPhrases = blurb.getAttribute('data-phrases') || "Maze Initialising|Loading teaser audio... OK|Drawing furni sprites... OK|Building rooms... OK|Teleport linking... OK|Pathfinding difficulty:...|[FAILED] Unable to determine difficulty";
+            const phrases = rawPhrases.split('|');
+            
+            let phraseIndex = 0;
+            const initialDelay = 1000; 
+            const typingSpeed  = 85;   
+            const loopPause    = 3500; 
+
+            function startTypewriter() {
+                const currentText = phrases[phraseIndex];
+                blurb.textContent = '';
+                blurb.classList.remove('typing');
+
+                setTimeout(() => {
+                    let charIndex = 0;
+                    const typingInterval = setInterval(() => {
+                        if (charIndex < currentText.length) {
+                            blurb.textContent += currentText.charAt(charIndex);
+                            charIndex++;
+                        } else {
+                            clearInterval(typingInterval);
+                            blurb.classList.add('typing');
+                            
+                            // Move to the next phrase, loop back to the start if at the end
+                            phraseIndex = (phraseIndex + 1) % phrases.length;
+
+                            setTimeout(startTypewriter, loopPause);
+                        }
+                    }, typingSpeed);
+                }, initialDelay);
+            }
+
+            startTypewriter();
+        }
+    }
+});
+</script>
+
+</body>
+</html>
