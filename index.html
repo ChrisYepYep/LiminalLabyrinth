@@ -3,21 +3,10 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liminal Labyrinth</title>
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Liminal Labyrinth">
-    <meta property="og:description" content="It is time to wake up.">
-    <meta property="og:image" content="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/LLpurp_rect.png?raw=true">
-    <meta property="og:url" content="https://https://liminallabyrinth.quest/">
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Liminal Labyrinth">
-    <meta name="twitter:description" content="It is time to wake up.">
-    <meta name="twitter:image" content="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/LLpurp_rect.png?raw=true">
+    <title>Liminal Labyrinth - Expanse 8</title>
     <style>
         body {
             margin: 0;
@@ -28,11 +17,11 @@
             color: #fff8fa;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
+            overflow-y: scroll;
         }
 
         .container {
@@ -43,40 +32,23 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
+            padding: 20px 0;
+            box-sizing: border-box;
         }
 
-        /* Room Transition Logic */
         .room {
-            display: none; /* Hide all rooms by default */
+            display: none;
         }
 
-        /* ================= LANDING SCREEN ================= */
-        #landing.active {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 3.2s ease-in-out;
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            padding: 0;
-            position: relative;
-        }
-
-        /* ================= PLAYABLE ROOMS ================= */
-        .room:not(#landing).active {
+        .room.active {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.6s ease-in-out;
-            padding: 30px;
-            border-radius: none;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            border: none;
+            padding: 20px;
             box-sizing: border-box;
+            width: 100%;
         }
 
         @keyframes fadeIn {
@@ -84,336 +56,244 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes floatUpAndDown {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-8px);
-            }
-            100% {
-                transform: translateY(0px);
-            }
-        }
-
-        .room0-image {
+        .room-image-frame {
             width: 100%;
-            height: 450px;
-            margin-bottom: -120px;
+            height: 400px;
             z-index: 1;
             position: relative;
+            margin-bottom: 20px;
         }
 
-        /* Make sure the mask image stays strictly on top */
-        .room0-image img {
-            position: relative;
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        /* The underlying artwork layer (Figment.png) */
-        .room0-image::before {
-            content: '';
+        .room-image-frame img {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('roomassets/Figment.png');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: 1;
-            transition: opacity 3.5s ease-in-out; /* Smooth fade for the background only */
+            object-fit: contain;
         }
 
-        /* Class to trigger fading the artwork underneath the mask */
-        .room0-image.fade-underneath::before {
-            opacity: 0;
-        }
-
-        .landing-title {
-            font-size: 2rem;
-            letter-spacing: 3px;
-            color: #fff8fa;
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
-            z-index: 5;
-            min-height: 3rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .landing-text {
-            font-size: 1rem;
-            letter-spacing: 0cqmax;
-            color: #fff8fa;
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.5), 0 0 20px rgba(255, 248, 250, 0.15);
-            z-index: 5;
-        }
-
-        /* Elements Styling */
-        h1 {
-            letter-spacing: 0px;
-            margin-bottom: -150px;
-            color: #fff8fa;
-            cursor: pointer;
-            text-shadow: 0 0 8px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
+        .room-image-bg {
             z-index: 2;
         }
 
-        h2 {
-            font-size: 2rem; 
-            letter-spacing: 0px;
-            margin-bottom: -150px;
-            color: #fff8fa;
-            cursor: pointer;
-            text-shadow: 0 0 20px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-            z-index: 5;
-            line-height: -10px;
+        .room-image-mask {
+            z-index: 3;
         }
 
-        .room-title {
+        .room-header-group {
             position: absolute;
-            bottom: 130px;
-            left: 0;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
+            z-index: 15;
+            pointer-events: none;
             text-align: center;
-            z-index: 5;
         }
 
-        .room-title p {
-            font-size: 1.5rem;
+        h4 {
+            color: #fff8fa;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
             margin: 0;
+            text-align: center;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .overlay-content-wrapper {
+            position: relative;
+            width: 85%;
+            max-width: 100%;
+            margin: -150px auto 0 auto;
+            z-index: 10;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .room-title-text {
+            font-size: 1.6rem;
+            margin: 0 0 6px 0;
             letter-spacing: 2px;
             color: #fff8fa;
-            cursor: pointer;
-            text-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
         }
 
-        p {
-            font-size: 1.3rem;
+        .room-blurb-text {
+            font-size: 0.7rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 300;
+            margin: 0 auto;
             letter-spacing: 0.5px;
             line-height: 1.4;
-            z-index: 4;
-            margin-top: -50px;
+            color: #00ff66;
+            opacity: 1;
+            width: 300px;
+            min-height: 1.4em;
+            position: relative;
+            text-shadow: 
+                0 0 2px rgba(127, 255, 0, 0.9),
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 6px rgba(0, 255, 100, 0.6),
+                0 0 8px rgba(0, 255, 100, 0.4);
         }
 
-        .crop {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-bottom: 5px;
-            border: 2px solid rgba(255, 248, 250, 0.2);
-            box-shadow: 0 0 15px rgba(255, 248, 250, 0.1); 
+        .room-blurb-text.typing::after {
+            content: '_';
+            display: inline-block;
+            opacity: 1;
+            animation: blink 0.8s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .room-navi-text {
+            font-size: 0.8rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 10px 0 0 0;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.6;
         }
 
         .audio-player-container {
-            margin: -80px 0;
-            background: none;
-            padding: 0px;
-            border-radius: 0px;
-            border: none;
+            margin: 0;
             width: 100%;
-            box-sizing: border-box;
             z-index: 10;
         }
 
-        iframe {
-            border: none;
-            width: 100%;
-            height: 80px; 
-            border-radius: 4px;
-        }
-
-        /* Buttons */
         .nav-btn {
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
-            padding: 0px 10px;
+            padding: 5px 10px;
             font-family: 'Oswald', sans-serif;
             font-size: 1rem;
             font-weight: bold;
             letter-spacing: 1px;
-            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.8s ease-in-out;
+            transition: all 0.4s ease-in-out;
             margin: 0;
-            box-shadow: none;
-            text-transform: none;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-            position: relative;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
             z-index: 5;
-            width: 90px;
+            width: 120px;
             text-align: center;
         }
 
-        .nav-btn-landing {
-            background-color: transparent;
-            color: #fff8fa;
-            border: transparent;
-            padding: 0px 20px;
-            font-family: 'Gill Sans MT Condensed', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.8s ease-in-out;
-            margin-top: -10px;
-            margin-bottom: 1px;
-            box-shadow: none;
-            text-transform: none;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-            position: relative;
-            z-index: 5;
-            animation: floatUpAndDown 6s ease-in-out infinite;
+        .nav-btn-left {
+            text-align: right;
+        }
+
+        .nav-btn-right {
+            text-align: left;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
         }
 
         .button-group {
             display: flex;
             justify-content: center;
-            align-items: center; /* Keeps play icon and text buttons perfectly level */
-            gap: 15px;
-            width: 100%;
-            margin-top: 100px;
-        }
-
-        .button-group .nav-btn .audio-toggle-btn {
-            margin-top: 0;
             align-items: center;
-            justify-content: center;
-            margin: 0;
-        }
-
-        .btn-sub {
-            background-color: transparent;
-            color: #fff8fa;
-            border: transparent;
-            padding: 0px 10px;
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.7rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.8s ease-in-out;
-            margin: 0;
-            box-shadow: none;
-            text-transform: none;
-            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-            position: relative;
-            z-index: 5;
-            width: 150px;
-            text-align: center;
-        }
-
-        .btn-sub:hover {
-            background-color: transparent;
-            box-shadow: none;
-            transform: translateY(-3px);
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-        }
-
-        .nav-btn-landing:hover {
-            background-color: transparent;
-            box-shadow: none;
-            transform: translateY(-3px);
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.4), 0 0 15px rgba(255, 248, 250, 0.15);
-        }
-
-        .nav-btn-landing:active {
-            transform: scale(0.98);
-        }
-
-        audio {
-            display: none;
+            width: 100%;
+            margin-top: 10px;
         }
 
         .audio-toggle-btn {
             background-color: transparent;
-            color: #fff8fa;
             border: none;
             padding: 0;
             cursor: pointer;
-            transition: all 0.4s ease-in-out;
-            margin: 0;
+            transition: all 0.3s ease-in-out;
             z-index: 5;
-            box-shadow: 0 0 10px rgba(102, 101, 101, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px;
-            height: 30px;
-            border-radius: 55%;
+            width: 36px;
+            height: 36px;
         }
 
         .audio-toggle-btn:hover {
-            border-color: none;
-            box-shadow: 0 0 10px rgba(255, 248, 250, 0.3);
-            transform: translateY(-2px);
+            transform: scale(1.1);
         }
 
-        .audio-toggle-btn.playing {
-            border-color: none;
-            background: none;
-            box-shadow: none;
-            drop-shadow: 10px 10px 10px #fff8fa;
-        }
-
-        .site-footer {
-            width: 800px;
-            padding: 5px 0;
-            margin-top: auto; /* Pushes footer to bottom if flexbox layout is used */
-            text-align: center;
-            font-size: 0.85rem;
-            color: rgba(255, 248, 250, 0.4);
-            letter-spacing: 1px;
-            z-index: 10;
-            position: relative;
-            text-opacity: 0.2;
-            flex-shrink: 0;
-}
-
-        .site-footer p {
-            font-family: 'Roboto', sans-serif;
-            font-weight: 150;
-            margin: 0;
-            font-size: 0.65rem;
-            letter-spacing: 0.5px;
-            line-height: 1.1;
-        }
-
+        audio { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="landing" class="room">
-        <h1 class="landing-title">Liminal Labyrinth</h1>
-        <div class="room0-image">
-            <img src="roomassets/room_mask2.png" alt="Room Mask" style="width: 100%; height: 100%; object-fit: contain;">
+    <div id="exp8" class="room active">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
-        <button class="nav-btn-landing" onclick="handleLandingClick()">
-            <span>It is time to wake up.</span><br>
-            <span>August 2026.</span>
-        </button>
-    </div>
 
+        <div class="overlay-content-wrapper">
+            <p class="room-blurb-text">Maze Initialising...</p>
+            <p class="room-navi-text">The Labyrinth is not ready for you yet, come back on August 22nd.</p>
+        </div>
+
+        <div class="audio-player-container">
+            <audio loop preload="auto">
+                <source src="audio/teasertrack.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <div class="button-group">
+            <button class="nav-btn nav-btn-left">August 22nd</button>
+            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+            <button class="nav-btn nav-btn-right">17:00 UTC</button>
+        </div>
+    </div>
 </div>
 
-<footer class="site-footer">
-    <p>This fan site is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
-</footer>
-
 <script>
-// Image URLs for play and pause state
-const PLAY_ICON_URL = "images/playicon.png";
-const PAUSE_ICON_URL = "images/pauseicon.png";
+const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
+const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
-// Toggle audio play/pause for the button clicked
+function fadeAudioOut(audio, duration = 1500) {
+    return new Promise((resolve) => {
+        if (!audio || audio.paused || audio.volume === 0) {
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            return resolve();
+        }
+
+        const startVolume = audio.volume;
+        const intervalTime = 20; 
+        const step = startVolume / (duration / intervalTime);
+
+        const fadeInterval = setInterval(() => {
+            if (audio.volume - step > 0) {
+                audio.volume -= step;
+            } else {
+                audio.volume = 0;
+                audio.pause();
+                audio.currentTime = 0;
+                audio.volume = startVolume; 
+                clearInterval(fadeInterval);
+                resolve();
+            }
+        }, intervalTime);
+    });
+}
+
 function toggleAudio(btn) {
     const room = btn.closest('.room');
     const audio = room ? room.querySelector('audio') : null;
@@ -421,14 +301,12 @@ function toggleAudio(btn) {
     if (!audio) return;
 
     if (audio.paused) {
-        // Stop other playing audio across rooms, but DO NOT reset currentTime
         document.querySelectorAll('audio').forEach(a => {
             if (a !== audio) {
                 a.pause();
             }
         });
 
-        // Reset all other audio buttons to play icon
         document.querySelectorAll('.audio-toggle-btn').forEach(b => {
             if (b !== btn) {
                 b.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
@@ -436,118 +314,56 @@ function toggleAudio(btn) {
             }
         });
 
-        // Resume/Play current audio from where it was paused
         audio.play();
-        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
         btn.classList.add('playing');
     } else {
-        // Simply pause current audio (currentTime stays right where it is)
         audio.pause();
-        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
         btn.classList.remove('playing');
     }
 }
 
-// Function to switch rooms
-function goToRoom(roomId) {
-    // 1. Pause all audio elements when switching rooms
-    const allAudio = document.querySelectorAll('audio');
-    allAudio.forEach(audio => {
-        audio.pause();
-        audio.currentTime = 0; // Keeps audio reset when changing room levels
-    });
-
-    // 2. Reset all audio button icons back to play icon
-    const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
-    allAudioBtns.forEach(btn => {
-        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
-        btn.classList.remove('playing');
-    });
-
-    // 3. Force-stop all YouTube iframe playback if present
-    const allIframes = document.querySelectorAll('iframe');
-    allIframes.forEach(iframe => {
-        const currentSrc = iframe.src;
-        iframe.src = '';
-        iframe.src = currentSrc;
-    });
-
-    // 4. Hide all rooms
-    const rooms = document.querySelectorAll('.room');
-    rooms.forEach(room => {
-        room.classList.remove('active');
-    });
-
-    // 5. Show the target room & store room ID in localStorage
-    const activeRoom = document.getElementById(roomId);
+window.addEventListener('DOMContentLoaded', () => {
+    const activeRoom = document.getElementById('exp8');
     if (activeRoom) {
-        activeRoom.classList.add('active');
-        localStorage.setItem('currentRoom', roomId);
-    }
-}
+        const blurb = activeRoom.querySelector('.room-blurb-text');
+        if (blurb) {
+            // Define your rotation sentences here (or fetch them from the data attribute above)
+            const rawPhrases = blurb.getAttribute('data-phrases') || "Maze Initialising|Loading teaser audio... OK|Drawing furni sprites... OK|Building rooms... OK|Teleport linking... OK|Pathfinding difficulty:...|[FAILED] Unable to determine difficulty";
+            const phrases = rawPhrases.split('|');
+            
+            let phraseIndex = 0;
+            const initialDelay = 1000; 
+            const typingSpeed  = 85;   
+            const loopPause    = 3500; 
 
-    function resetProgress() {
-    // Confirm with the user before wiping progress
-    if (confirm("Sure?")) {
-        // Clear the stored room from localStorage
-        localStorage.removeItem('currentRoom');
-        
-        // Return to landing screen
-        goToRoom('landing');
-    }
-}
+            function startTypewriter() {
+                const currentText = phrases[phraseIndex];
+                blurb.textContent = '';
+                blurb.classList.remove('typing');
 
-let transitionComplete = false;
+                setTimeout(() => {
+                    let charIndex = 0;
+                    const typingInterval = setInterval(() => {
+                        if (charIndex < currentText.length) {
+                            blurb.textContent += currentText.charAt(charIndex);
+                            charIndex++;
+                        } else {
+                            clearInterval(typingInterval);
+                            blurb.classList.add('typing');
+                            
+                            // Move to the next phrase, loop back to the start if at the end
+                            phraseIndex = (phraseIndex + 1) % phrases.length;
 
-function handleLandingClick() {
-    // If the transition has already taken place, reload the page on click
-    if (transitionComplete) {
-        window.location.reload();
-        return;
-    }
-
-    const titleElement = document.querySelector('.landing-title');
-    const landingContainer = document.getElementById('landing');
-    const landingImage = document.querySelector('.room0-image');
-
-    if (titleElement) {
-        let currentText = titleElement.textContent;
-
-        // Remove one character per click
-        if (currentText.length > 0) {
-            titleElement.textContent = currentText.slice(0, -1);
-        }
-
-        // When the last letter is removed:
-        if (titleElement.textContent.trim().length === 0) {
-            titleElement.innerHTML = '&nbsp;'; // Reserve vertical space
-
-            if (landingImage && landingContainer) {
-                // 1. Place the new image on #landing (behind the mask)
-                landingContainer.style.backgroundImage = "url('roomassets/expanse.png')";
-                landingContainer.style.backgroundSize = "contain";
-                landingContainer.style.backgroundPosition = "center";
-                landingContainer.style.backgroundRepeat = "no-repeat";
-
-                // 2. Fade out Figment.png underneath mask
-                landingImage.classList.add('fade-underneath');
+                            setTimeout(startTypewriter, loopPause);
+                        }
+                    }, typingSpeed);
+                }, initialDelay);
             }
 
-            // 3. Mark transition as complete after 3s fade finishes
-            setTimeout(() => {
-                transitionComplete = true;
-            }, 3000);
+            startTypewriter();
         }
-    }
-}
-
-// Automatically restore the last active room on page reload
-window.addEventListener('DOMContentLoaded', () => {
-    const savedRoom = localStorage.getItem('currentRoom');
-    if (savedRoom && document.getElementById(savedRoom)) {
-        goToRoom(savedRoom);
-    } else {
-        goToRoom('landing');
     }
 });
 </script>
