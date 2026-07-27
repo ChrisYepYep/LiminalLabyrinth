@@ -259,6 +259,18 @@
                 0 0 8px rgba(0, 255, 100, 0.4);
         }
 
+        #youwontext {
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff66;
+            opacity: 1;
+            position: relative;
+            text-shadow: 
+                0 0 2px rgba(127, 255, 0, 0.9),
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 6px rgba(0, 255, 100, 0.6),
+                0 0 8px rgba(0, 255, 100, 0.4);
+        }
+
         p[id="youwontext"] .room-blurb-text {
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
@@ -1907,7 +1919,7 @@ function goToRoom(roomId) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
 
-        if (roomId.startsWith('exp')) {
+        if (roomId.startsWith('exp')|| roomId === 'youwon') {
             const blurb = activeRoom.querySelector('.room-blurb-text');
             if (blurb) {
                 if (!blurb.getAttribute('data-full-text')) {
