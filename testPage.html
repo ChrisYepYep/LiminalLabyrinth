@@ -2030,15 +2030,25 @@ const form = document.querySelector('.prize-form');
 if (form) {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
+        // 1. Validate Image File Size (e.g., 5MB Max)
+        const fileInput = document.getElementById('screenshot-file');
+        const file = fileInput ? fileInput.files[0] : null;
+        const maxSizeBytes = 5 * 1024 * 1024;
+
+        if (file && file.size > maxSizeBytes) {
+            showSubmitModal('File is too large! Please upload an image under 5MB.');
+            return;
+        }
+
         const formData = new FormData(form);
         const submitBtn = form.querySelector('.form-submit-btn');
-        
-        if(submitBtn) {
+
+        if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
         }
-        
+
         try {
             const response = await fetch(form.action, {
                 method: form.method,
@@ -2047,26 +2057,24 @@ if (form) {
                     'Accept': 'application/json'
                 }
             });
-            
+
             if (response.ok) {
-                console.log('Data sent!');
                 showSubmitModal('Entry submitted!');
-                form.reset(); 
+                form.reset();
             } else {
                 const errorData = await response.json();
-                console.error('Submission failed:', errorData);
                 showSubmitModal('Submission failed: ' + (errorData.error || 'Please check your connection and try again.'));
             }
         } catch (error) {
-            console.error('Error sending data:', error);
             showSubmitModal('An unexpected error occurred. Please try again.');
         } finally {
-            if(submitBtn) {
+            if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Submit Entry';
             }
         }
     });
+}
 }
 </script>
 
