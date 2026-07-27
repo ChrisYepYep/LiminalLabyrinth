@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liminal Elevator - Full Width Floor</title>
+  <style>
+    :root {
+      --bg-color: #0b0805;
+      --wall-color: #2b1f13;
+      --accent-glow: #ffb703;
+      --text-main: #d1d5db;
+      --font-mono: 'Courier New', Courier, monospace;
+      --item-height: 45px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 20%, #3a2a1b 0%, #0d0a07 85%);
+    }
+
+    /* Outer Wrapper - Spans Full Width of Viewport */
+    .elevator-frame {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* --- WALL SECTION (FULL WIDTH BG, CENTERED CONTENT) --- */
+    .wall-section {
+      flex: 1;
+      width: 100%;
+      background: 
+        /* Subtle wall texture and vignette overlay */
+        radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.75) 100%),
+        var(--wall-color);
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Overhead Light Fixture */
+    .ceiling-light-fixture {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(800px, 80vw);
+      height: 6px;
+      background: #ffea9f;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+      box-shadow: 
+        0 0 15px rgba(255, 220, 130, 0.9),
+        0 0 35px rgba(255, 183, 3, 0.6),
+        0 20px 80px rgba(255, 183, 3, 0.25);
+      z-index: 10;
+    }
+
+    /* Downward Light Beam/Cone */
+    .light-cone {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 900px;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(255, 210, 120, 0.07) 0%, rgba(255, 183, 3, 0.02) 60%, transparent 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Centered Inner Container for Doors and Controls */
+    .wall-container {
+      width: 100%;
+      max-width: 850px;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 30px 30px 0 30px;
+      position: relative;
+      z-index: 3;
+    }
+
+    /* Continuous Skirting Board along the full width of the wall */
+    .skirting-board {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 18px;
+      background: linear-gradient(180deg, #1f150b 0%, #110b05 100%);
+      border-top: 1px solid #4e3a28;
+      z-index: 1;
+    }
+
+    /* Elevator Door Frame (Left Side) */
+    .elevator-door-area {
+      position: relative;
+      width: 60%;
+      height: 100%;
+      max-height: 650px;
+      border: 10px solid #1a130b;
+      border-bottom: none;
+      box-shadow: 
+        inset 0 0 30px rgba(0,0,0,0.9),
+        0 0 20px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    /* Metallic Door Sill / Threshold */
+    .door-sill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(180deg, #4a5054 0%, #1a1c1e 100%);
+      border-top: 1px solid #6b7278;
+      z-index: 5;
+    }
+
+    /* Interior revealed behind the opening doors */
+    .elevator-interior {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 30%, #5a4836 0%, #0d0a07 85%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .elevator-interior.revealed {
+      opacity: 1;
+    }
+
+    .winner-reveal-box {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .winner-label {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      color: #a8a8a8;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .winner-name-display {
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: var(--accent-glow);
+      text-shadow: 0 0 20px rgba(255, 183, 3, 0.8), 0 0 40px rgba(255, 183, 3, 0.4);
+      letter-spacing: 2px;
+      word-break: break-word;
+    }
+
+    /* Elevator Sliding Doors */
+    .elevator-doors-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .door-panel {
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(135deg, #2a3335 0%, #1a2021 100%);
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+      transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1);
+      position: relative;
+    }
+
+    .door-panel.left {
+      border-right: 2px solid #0a0d0e;
+    }
+
+    .door-panel.right {
+      border-left: 2px solid #0a0d0e;
+    }
+
+    /* Open doors animation classes */
+    .elevator-frame.open .door-panel.left {
+      transform: translateX(-88%);
+    }
+
+    .elevator-frame.open .door-panel.right {
+      transform: translateX(88%);
+    }
+
+    /* Mounted Metal Control Panel Plate (Right Side Wall) - SMALLER, HIGHER, WITH AMBIENT GLOW */
+    .elevator-container {
+      width: 18%;
+      max-width: 210px;
+      height: 300px;
+      margin-bottom: 150px;
+      margin-right: 70px;
+      background: linear-gradient(145deg, #2a3436, #1a2022);
+      border: 3px solid #5d3a10;
+      border-radius: 8px;
+      padding: 12px 10px;
+      box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.85),
+        0 0 30px rgba(255, 183, 3, 0.08), /* Subtle ambient back-glow */
+        inset 0 1px 2px rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 4;
+      position: relative;
+    }
+
+    .elevator-container::before,
+    .elevator-container::after {
+      content: '•';
+      position: absolute;
+      top: 4px;
+      color: #5d3a10;
+      font-size: 0.85rem;
+    }
+    .elevator-container::before { left: 8px; }
+    .elevator-container::after { right: 8px; }
+
+    /* Admin Entry Section */
+    .admin-section {
+      width: 100%;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      height: 95px;
+    }
+
+    .admin-section.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      color: #8a8a9e;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      height: 70px;
+      background: #060608;
+      border: 1px solid #333344;
+      color: #e0e0e0;
+      padding: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      border-radius: 4px;
+      resize: none;
+      outline: none;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+    }
+
+    textarea:focus {
+      border-color: var(--accent-glow);
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 0 8px rgba(255, 183, 3, 0.3);
+    }
+
+    /* Elevator Display Window */
+    .display-frame {
+      background: #000;
+      border: 2px solid #111;
+      border-radius: 6px;
+      padding: 6px 8px;
+      text-align: center;
+      width: 100%;
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.9), 0 0 8px rgba(255, 183, 3, 0.15);
+      position: relative;
+    }
+
+    .floor-label {
+      font-size: 0.55rem;
+      letter-spacing: 1.2px;
+      color: #666;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .scroll-viewport {
+      height: var(--item-height);
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      border-top: 1px solid rgba(255, 183, 3, 0.2);
+      border-bottom: 1px solid rgba(255, 183, 3, 0.2);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+    }
+
+    .scroll-track {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      will-change: transform;
+    }
+
+    .name-item {
+      height: var(--item-height);
+      line-height: var(--item-height);
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--accent-glow);
+      text-shadow: 0 0 8px rgba(255, 183, 3, 0.5);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .name-item.arrived {
+      animation: pulse-glow 1.5s infinite alternate;
+    }
+
+    .direction-light {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #222;
+      margin: 0 auto 3px auto;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .direction-light.active {
+      background: #ff3333;
+      box-shadow: 0 0 10px #ff3333, 0 0 18px rgba(255, 51, 51, 0.6);
+    }
+
+    .btn {
+      background: linear-gradient(180deg, #1f2526, #121617);
+      border: 2px solid var(--accent-glow);
+      color: var(--accent-glow);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 30px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.6), 0 0 8px rgba(255, 183, 3, 0.1);
+      width: 100%;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--accent-glow);
+      color: #000;
+      box-shadow: 0 0 15px rgba(255, 183, 3, 0.6);
+    }
+
+    .btn:disabled {
+      border-color: #444;
+      color: #444;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-reset {
+      border-color: #555;
+      color: #888;
+      font-size: 0.65rem;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+
+    .btn-reset:hover {
+      border-color: #aaa;
+      color: #fff;
+    }
+
+    /* --- FULL-WIDTH FLAT HALLWAY FLOOR SECTION --- */
+    .hallway-floor {
+      height: 100px;
+      width: 100vw;
+      background: 
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0px, rgba(0, 0, 0, 0.5) 2px, transparent 2px, transparent 120px),
+        linear-gradient(180deg, #18110a 0%, #0a0704 100%);
+      border-top: 3px solid #0d0804;
+      position: relative;
+      z-index: 4;
+      box-shadow: inset 0 12px 25px rgba(0, 0, 0, 0.95);
+    }
+
+    /* Ambient glow on floor centered under elevator doors when opened */
+    .floor-light-cast {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 850px;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .floor-light-cast::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 30px;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(255, 183, 3, 0.28) 0%, rgba(255, 183, 3, 0.05) 70%, transparent 100%);
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .elevator-frame.open .floor-light-cast::before {
+      opacity: 1;
+    }
+
+    @keyframes pulse-glow {
+      0% { text-shadow: 0 0 6px rgba(255, 183, 3, 0.4); }
+      100% { text-shadow: 0 0 18px rgba(255, 183, 3, 0.9); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="elevator-frame" id="elevatorFrame">
+    
+    <!-- WALL SECTION -->
+    <div class="wall-section">
+      <div class="ceiling-light-fixture"></div>
+      <div class="light-cone"></div>
+      <div class="skirting-board"></div>
+
+      <!-- Inner Content Container -->
+      <div class="wall-container">
+        <!-- Elevator Door Structure -->
+        <div class="elevator-door-area">
+          <div class="door-sill"></div>
+
+          <!-- Interior reveal screen -->
+          <div class="elevator-interior" id="elevatorInterior">
+            <div class="winner-reveal-box">
+              <div class="winner-label">Floor Reached</div>
+              <div class="winner-name-display" id="winnerDisplay">---</div>
+            </div>
+          </div>
+
+          <!-- Sliding Metal Doors -->
+          <div class="elevator-doors-container">
+            <div class="door-panel left"></div>
+            <div class="door-panel right"></div>
+          </div>
+        </div>
+
+        <!-- Control Panel Plate -->
+        <div class="elevator-container">
+          
+          <div class="display-frame">
+            <div class="direction-light" id="dirLight"></div>
+            <div class="floor-label" id="statusLabel">Idle</div>
+            
+            <div class="scroll-viewport">
+              <div class="scroll-track" id="scrollTrack">
+                <div class="name-item">G</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-section" id="adminSection">
+            <label for="usernameInput">Submissions</label>
+            <textarea id="usernameInput" placeholder="ChrisYepYep&#10;Macklebee&#10;Wowin&#10;"></textarea>
+          </div>
+
+          <button class="btn" id="drawBtn" onclick="startElevatorDraw()">Transit</button>
+          <button class="btn btn-reset" id="resetBtn" onclick="resetDraw()" style="display: none;">Reset</button>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FULL-WIDTH FLOOR SECTION -->
+    <div class="hallway-floor">
+      <div class="floor-light-cast"></div>
+    </div>
+
+  </div>
+
+<script>
+  const elevatorFrame = document.getElementById('elevatorFrame');
+  const elevatorInterior = document.getElementById('elevatorInterior');
+  const winnerDisplay = document.getElementById('winnerDisplay');
+  const adminSection = document.getElementById('adminSection');
+  const usernameInput = document.getElementById('usernameInput');
+  const scrollTrack = document.getElementById('scrollTrack');
+  const statusLabel = document.getElementById('statusLabel');
+  const dirLight = document.getElementById('dirLight');
+  const drawBtn = document.getElementById('drawBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  const ITEM_HEIGHT = 45;
+  let animationFrameId = null;
+
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+
+  function playElevatorChime() {
+    if (!audioCtx) {
+      audioCtx = new AudioContext();
+    } else if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+
+    const now = audioCtx.currentTime;
+    const frequencies = [659.25, 987.77];
+
+    frequencies.forEach(freq => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 2.5);
+    });
+  }
+
+  function startElevatorDraw() {
+    if (!audioCtx) {
+      audioCtx = new AudioContext();
+    }
+
+    const rawText = usernameInput.value.trim();
+    if (!rawText) {
+      alert("Enter usernames...");
+      return;
+    }
+
+    const users = rawText.split('\n').map(u => u.trim()).filter(u => u.length > 0);
+    if (users.length === 0) {
+      alert("No valid usernames found.");
+      return;
+    }
+
+    const winnerIndex = Math.floor(Math.random() * users.length);
+    const winner = users[winnerIndex];
+
+    const repeatCount = 12;
+    let fullSequence = [];
+    for (let i = 0; i < repeatCount; i++) {
+      fullSequence.push(...users);
+    }
+    const targetIndex = (repeatCount - 2) * users.length + winnerIndex;
+
+    scrollTrack.innerHTML = '';
+    fullSequence.forEach((name, idx) => {
+      const div = document.createElement('div');
+      div.className = 'name-item';
+      div.textContent = name;
+      if (idx === targetIndex) div.id = 'winningItem';
+      scrollTrack.appendChild(div);
+    });
+
+    adminSection.classList.add('hidden');
+    drawBtn.disabled = true;
+    statusLabel.textContent = "Transit...";
+    dirLight.classList.add('active');
+
+    const totalDistance = targetIndex * ITEM_HEIGHT;
+    let startTime = null;
+    const duration = 12000;
+
+    function quarticEaseOut(t) {
+      return 1 - Math.pow(1 - t, 4);
+    }
+
+    function animateScroll(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      const easedProgress = quarticEaseOut(progress);
+      const currentPos = easedProgress * totalDistance;
+
+      scrollTrack.style.transform = `translateY(-${currentPos}px)`;
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animateScroll);
+      } else {
+        scrollTrack.style.transform = `translateY(-${totalDistance}px)`;
+        const winningEl = document.getElementById('winningItem');
+        if (winningEl) winningEl.classList.add('arrived');
+
+        statusLabel.textContent = "Arrived";
+        dirLight.classList.remove('active');
+        resetBtn.style.display = 'block';
+        drawBtn.style.display = 'none';
+
+        winnerDisplay.textContent = winner;
+        elevatorFrame.classList.add('open');
+        elevatorInterior.classList.add('revealed');
+
+        playElevatorChime();
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(animateScroll);
+  }
+
+  function resetDraw() {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+    elevatorFrame.classList.remove('open');
+    elevatorInterior.classList.remove('revealed');
+    
+    adminSection.classList.remove('hidden');
+    drawBtn.disabled = false;
+    drawBtn.style.display = 'block';
+    resetBtn.style.display = 'none';
+    
+    scrollTrack.style.transform = 'translateY(0px)';
+    scrollTrack.innerHTML = '<div class="name-item">G</div>';
+    
+    statusLabel.textContent = 'Idle';
+    dirLight.classList.remove('active');
+  }
+</script>
+</body>
+</html>
