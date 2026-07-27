@@ -247,16 +247,27 @@
             min-height: 1.4em;
         }
 
-        /* Cleaned up green glow styling for expanse rooms */
         div[id^="exp"] .room-blurb-text {
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
             opacity: 1;
             position: relative;
             text-shadow: 
-                0 0 2px rgba(127, 255, 0, 0.9),   /* Sharp inner core */
-                0 0 4px rgba(0, 255, 100, 0.8),  /* Medium bloom */
-                0 0 6px rgba(0, 255, 100, 0.6),  /* Wide ambient glow */
+                0 0 2px rgba(127, 255, 0, 0.9),
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 6px rgba(0, 255, 100, 0.6),
+                0 0 8px rgba(0, 255, 100, 0.4);
+        }
+
+        p[id="youwontext"] .room-blurb-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff66;
+            opacity: 1;
+            position: relative;
+            text-shadow: 
+                0 0 2px rgba(127, 255, 0, 0.9),
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 6px rgba(0, 255, 100, 0.6),
                 0 0 8px rgba(0, 255, 100, 0.4);
         }
 
@@ -1740,7 +1751,7 @@
             <!-- Headers placed securely on top inside the absolute framework context -->
             <div class="youwon-header-overlay">
                 <h4>Liminal Labyrinth</h4>
-                <h5>You Won.</h5>
+                <p id="youwontext" class="room-blurb-text">Process Completed</p>
             </div>
             <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="Room Art">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
