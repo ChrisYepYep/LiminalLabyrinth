@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behind the Labyrinth</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            background-color: #000000;
+            color: #fff8fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding: 40px 0;
+            box-sizing: border-box;
+        }
+
+        .about-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            animation: fadeIn 1.5s ease-in-out;
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .room-image-frame {
+            width: 100%;
+            z-index: 1;
+            position: relative;
+        }
+
+        .room-image-frame img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .room-image-bg { z-index: 2; }
+        .room-image-mask { z-index: 3; }
+
+        .room-header-group {
+            position: relative;
+            width: 100%;
+            z-index: 15;
+            pointer-events: none;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        h2 { 
+            font-size: 2.2rem; 
+            letter-spacing: 1px; 
+            color: #fff8fa;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
+            margin: 0;
+        }
+        
+        h3 { 
+            font-size: 1rem; 
+            font-weight: normal; 
+            margin-top: 2px; 
+            color: rgba(255,248,250,0.9); 
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
+        }
+
+        .about-content-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 480px;
+            margin: 0 auto;
+            z-index: 10;
+            text-align: left;
+        }
+
+        /* Tabs Grid */
+        .tabs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+            width: 100%;
+            justify-items: center;
+        }
+
+        .tab-card {
+            position: relative;
+            width: 100%;
+            max-width: 220px;
+            aspect-ratio: 16 / 9; /* Widescreen 16:9 aspect ratio */
+            background: rgba(255, 255, 255, 0.03);
+            border: 0px solid rgba(255, 248, 250, 0.15);
+            border-radius: 12px;
+            padding: 0;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .tab-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(255, 248, 250, 0.5);
+            box-shadow: 0 0 15px rgba(255, 248, 250, 0.25);
+        }
+
+        /* Dark overlay effect on hover to elevate text readability */
+        .tab-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.35);
+            transition: background 0.3s ease;
+            z-index: 2;
+        }
+
+        .tab-card:hover::after {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            background-color: #111;
+        }
+
+        .tab-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            width: 90%;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 1.5px;
+            color: #fff8fa;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.9);
+            pointer-events: none;
+        }
+
+        /* Modal Backdrop & Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 0.9;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #000;
+            border: 0px solid rgba(255, 248, 250, 0.2);
+            border-radius: 20px;
+            padding: 15px 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 85%;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 0 10px rgba(240, 226, 230, 0.25);
+
+        }
+
+        .about-section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            margin: 0 0 10px 0;
+            letter-spacing: 1.5px;
+            color: #fff8fa;
+            text-transform: uppercase;
+        }
+
+        .about-text {
+            font-size: 0.75rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            text-align: justify;
+            color: #fff8fa;
+            opacity: 0.75;
+            margin: 5px 0 15px 0;
+        }
+
+        .about-text code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            font-family: monospace;
+            font-size: 0.7rem;
+            border-radius: 4px;
+        }
+
+        .about-text a {
+            color: #fff8fa;
+            text-decoration: underline;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .about-text a:hover {
+            opacity: 1;
+            text-shadow: 0 0 5px rgba(255, 248, 250, 0.6);
+        }
+
+        .modal-btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: #fff8fa;
+            border: transparent;
+            padding: 5px 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s ease-in-out;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+        }
+
+        .site-footer {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            padding: 0px 0 5px 0;
+            box-sizing: border-box;
+            margin-top: auto;
+        }
+
+        .site-footer p {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 150;
+            opacity: 0.3;
+            margin: 0;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+
+        .site-footer p a {
+            color: inherit;
+            opacity: 1;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .site-footer p a:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="about-layout">
+        
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h2>Behind The Labyrinth</h2>
+                <h3>Inside the Mind</h3>
+            </div>
+        </div>
+
+        <div class="about-content-wrapper">
+            <p class="about-text" style="text-align: center; font-style: italic; opacity: 0.5; margin-top: -15px; margin-bottom: 10px;">
+                Dive into the mind behind Liminal Labyrinth<br>Selected insights and inspirations behind the maze are detailed below
+            </p>
+
+            <!-- Clickable Image Tabs -->
+            <div class="tabs-grid">
+                <div class="tab-card" onclick="openModal('modal-inspiration')">
+                    <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/superlim1.jpg?raw=true" alt="Inspiration" class="tab-image">
+                    <span class="tab-title">SUPERLIMINAL</span>
+                </div>
+
+                <div class="tab-card" onclick="openModal('modal-soundtrack')">
+                    <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/mirrors.jpg?raw=true" alt="Soundtrack" class="tab-image">
+                    <span class="tab-title">MIRROR'S EDGE</span>
+                </div>
+
+                <div class="tab-card" onclick="openModal('modal-cache')">
+                    <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/swthome.png?raw=true" alt="Spatial Cache" class="tab-image">
+                    <span class="tab-title">ILLUSION MAZES</span>
+                </div>
+
+                <div class="tab-card" onclick="openModal('modal-logs')">
+                    <img src="YOUR_LOGS_IMAGE_URL_HERE.jpg" alt="Environmental Logs" class="tab-image">
+                    <span class="tab-title">REMOVING BARRIERS</span>
+                </div>
+
+            </div>
+
+        </div>
+        
+        <div class="button-group">
+            <button onclick="window.open('', '_self'); window.close();" class="nav-btn">Return</button>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Modal Popups -->
+<div id="modal-inspiration" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-inspiration')">
+    <div class="modal-box">
+        <div class="about-section-title">SUPERLIMINAL</div>
+        <p class="about-text">
+            The design philosophy behind Liminal Labyrinth is rooted in a overwhelming admiration for SuperLiminal, a game that redefined how we perceive space and perspective. Every element here, from the tone of the voiceover, to the surreal narrative beats and visual aesthetic, is a direct homage to its clever puzzle design and dreamlike atmosphere.<br>
+            <br>Liminal Labyrinth was built to capture just a fraction of that perspective-shifting magic. If traversing this maze resonated with you, stepping into the world of Superliminal is the natural next step. It is a masterpiece in every sense of the word, and an absolute must-play.
+        </p>
+        <div class="modal-btn-group">
+            <button class="nav-btn" onclick="closeModal('modal-inspiration')">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-soundtrack" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-soundtrack')">
+    <div class="modal-box">
+        <div class="about-section-title">MIRROR'S EDGE</div>
+        <p class="about-text">
+            The core mechanics of Liminal Labyrinth stem from the illusion maze genre, drawing immense inspiration from julius <i>(make sure to check out his Illusion Maze on Habbo Origins!)</i>. His rooms may appear deceptively simple at first glance, but hours later you'll find yourself trapped in the exact same loop, searching for a way out—with his stunning visual design making the journey an absolute pleasure.<br>
+            <br>Alongside these spatial illusions, Liminal Labyrinth often operates as a paradoxical puzzle. Your brain instinctively overcomplicates the rules, assuming invisible walls and complex barriers stand between you and the exit. In reality, once you abandon those initial assumptions, the path forward becomes delightfully trivial. If you’ve ever braved markeh’s <i>A Horrible Maze</i>, this spatial trickery might feel strangely familiar! His deception maze was a major spark of inspiration when Liminal Labyrinth was first conceived.
+        </p>
+        <div class="modal-btn-group">
+            <button class="nav-btn" onclick="closeModal('modal-soundtrack')">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-cache" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-cache')">
+    <div class="modal-box">
+        <div class="about-section-title">ILLUSION MAZES</div>
+        <p class="about-text">
+            The mechanics of Liminal Labyrinth has roots within the illusion maze category, which takes a lot of inspiration from julius <i>(Check out his Illusion Maze in Habbo Origins!)</i>, his maze rooms can appear simple upon first glance, but you'll find yourself in the same room hours later still trying to find a route through; julius' stunning designs make his maze such a pleasure to try.<br>
+            <br>Alongside illusion, the Labyrinth can be somewhat a paradoxical puzzle at times, your brain overcomplicates the rules, and you assume there are complex barriers between you and the exit, but in actual fact once you abandon your initial assumptions the simplistic action required is trivial.
+        </p>
+        <div class="modal-btn-group">
+            <button class="nav-btn" onclick="closeModal('modal-cache')">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-logs" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-logs')">
+    <div class="modal-box">
+        <div class="about-section-title">REMOVING BARRIERS</div>
+        <p class="about-text">
+            This diagnostic environment runs deployed atop the <strong>GitHub Pages</strong> server matrix. Due to this server architecture, network metadata (including standard IP allocations, browser configurations, and structural request timestamp parameters) is logged inherently by operational frameworks. To verify how this structural code environment works, read the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement</a>[cite: 5].
+        </p>
+        <div class="modal-btn-group">
+            <button class="nav-btn" onclick="closeModal('modal-logs')">Close</button>
+        </div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <p>This fan site is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
+    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a href="privacy.html">Privacy Policy & Event Rules</a></p>
+</footer>
+
+<script>
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function closeModalOnOutsideClick(event, id) {
+        if (event.target === document.getElementById(id)) {
+            closeModal(id);
+        }
+    }
+</script>
+
+</body>
+</html>
