@@ -471,7 +471,7 @@
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
-            padding: 5px 10px;
+            padding: 5px 2px;
             font-family: 'Oswald', sans-serif;
             font-size: 1.1rem;
             font-weight: bold;
@@ -481,8 +481,16 @@
             margin: 0;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
             z-index: 5;
-            width: 95px;
+            width: auto;
             text-align: center;
+        }
+
+        .button-group .nav-btn:first-child {
+            text-align: right;
+        }
+
+        .button-group .nav-btn:last-child {
+            text-align: left;
         }
 
         .nav-btn-landing {
@@ -509,8 +517,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 0.25rem;
             width: 100%;
-            margin-top: 10px;
+            margin: 0 auto;
+        }
+
+        .button-group button {
+            /* Gives side buttons equal width so the play button stays centered */
+            flex: 1; 
+            max-width: 80px;
+        }
+
+        .play-btn {
+            flex: 0 0 auto;   /* Keeps play button at its explicit size */
         }
 
         .btn-sub {
@@ -580,19 +599,6 @@
         }
 
         audio { display: none; }
-
-        .site-footer {
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
-            padding: 0px 0 5px 0;
-            box-sizing: border-box;
-            margin-top: auto;
-        }
-
-        .site-footer p a[onclick] {
-            cursor: pointer;
-        }
 
         .site-footer {
             width: 90%;
