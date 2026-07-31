@@ -334,9 +334,9 @@
             margin-bottom: 10px;
         }
 
-        .youwon-layout .btn-sub {
+        .youwon-layout .btn-end {
             position: absolute;
-            bottom: -5px;
+            bottom: -80px;
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
@@ -344,7 +344,6 @@
             padding: 0;
         }
 
-        /* Prize Draw Form Styling */
         .prize-form {
             margin: 25px auto 10px auto;
             width: 85%;
@@ -418,7 +417,7 @@
         }
 
         .form-submit-btn {
-            background-color: transparent;
+            background-color: rgba(255, 255, 255, 0.05);
             color: #fff8fa;
             border: 1px solid rgba(255, 248, 250, 0.4);
             padding: 8px 0;
@@ -521,6 +520,42 @@
             margin-top: 2px;
         }
 
+        .btn-end {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto 0 auto;
+            z-index: 5;
+        }
+
+        .btn-end a {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 248, 250, 0.2);
+            color: #fff8fa;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+            border-radius: 20px; 
+            transition: all 0.3s ease-in-out;
+            opacity: 0.8;
+        }
+
+        .btn-end a:hover {
+            border-color: rgba(255, 248, 250, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            text-shadow: 0 0 8px rgba(255, 248, 250, 0.6);
+        }
+
         .nav-btn:hover, .nav-btn-landing:hover {
             transform: translateY(-2px);
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
@@ -555,27 +590,48 @@
             margin-top: auto;
         }
 
+        .site-footer p a[onclick] {
+            cursor: pointer;
+        }
+
+        .site-footer {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            padding: 0px 0 5px 0;
+            box-sizing: border-box;
+            margin-top: auto;
+        }
+
+        .site-footer p a[onclick] {
+            cursor: pointer;
+        }
+
         .site-footer p {
             font-family: 'Roboto', sans-serif;
             font-weight: 150;
-            opacity: 0.3;
+            color: rgba(255, 248, 250, 0.3);
             margin: 0;
             font-size: 0.65rem;
             letter-spacing: 0.5px;
             line-height: 1.3;
         }
 
-        .site-footer p a {
-            color: inherit;
-            opacity: 1;
+        .site-footer p a.resetlink,
+        .site-footer p a.privacylink {
+            opacity: 0.3;
+            font-weight: 400;
             text-decoration: none;
             transition: all 0.3s ease-in-out;
+            color: #fff8fa;
+            text-shadow: 0 0 6px rgba(255, 248, 250, 0.4);
         }
 
-        .site-footer p a:hover {
+        .site-footer p a.privacylink:hover,
+        .site-footer p a.resetlink:hover {
             opacity: 1;
             text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
-            text-decoration: underline;
+            text-decoration: none;
             text-underline-offset: 3px;
         }
 
@@ -1777,7 +1833,7 @@
             <!-- Headers placed securely on top inside the absolute framework context -->
             <div class="youwon-header-overlay">
                 <h4>Liminal Labyrinth</h4>
-                <p id="youwontext" class="room-blurb-text">Process Completed</p>
+                <p id="youwontext" class="room-blurb-text">Process Complete</p>
             </div>
             <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="Room Art">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
@@ -1795,7 +1851,7 @@
             <p class="room-blurb-text">Well, you made it out of Liminal Labyrinth.</p>
             <p class="room-blurb-text">How do you feel?</p>
             <p class="room-blurb-text">Deflated? Cold? Sad?</p>
-            <p class="room-navi-text">Write your Habbo Origins username in the box below, and upload a screenshot of your Habbo in the finishing room of the maze.</p>
+            <p class="room-navi-text">Write your Habbo Origins username in the box below, and upload a screenshot of your Habbo in the finishing room of the maze, to enter the prize draw to win a £50 Steam gift card.</p>
         </div>
 
         <div class="audio-player-container">
@@ -1819,11 +1875,10 @@
             <button type="submit" class="form-submit-btn">Submit Entry</button>
         </form>
 
-        <div class="btn-sub">
-            <button class="nav-btn-landing" onclick="resetProgress()" style="opacity: 0.6; font-size: 0.85rem;">Reset Progress</button>
-            <a href="https://liminallabyrinth.quest/about" style="text-decoration: none;">
-                <button class="nav-btn-landing" style="opacity: 0.6; font-size: 0.85rem;">Behind The Labyrinth</button>
-            </a>
+        <div class="btn-end">
+            <a href="https://liminallabyrinth.quest/about" target="_blank" rel="noopener noreferrer">Behind The Labyrinth</a>
+            <a href="https://furniindex.com/" target="_blank" rel="noopener noreferrer">Furni Index</a>
+            <a href="https://leet.show/" target="_blank" rel="noopener noreferrer">The Leet Show</a>
         </div>
     </div>
 </div>
@@ -1875,8 +1930,9 @@
 </div>
 
 <footer class="site-footer">
+    <p><a class="resetlink" onclick="resetProgress()">Reset Progress</a></p>
     <p>This fan site is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
-    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a href="https://liminallabyrinth.quest/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy & Event Rules</a></p>
+    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a class="privacylink" href="https://liminallabyrinth.quest/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy & Event Rules</a></p>
 </footer>
 
 <script>
