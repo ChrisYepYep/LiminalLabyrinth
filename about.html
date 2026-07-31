@@ -3,7 +3,7 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Behind the Labyrinth</title>
@@ -88,7 +88,7 @@
         h3 { 
             font-size: 1rem; 
             font-weight: normal; 
-            margin-top: 2px; 
+            margin-top: -5px; 
             color: rgba(255,248,250,0.9); 
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
         }
@@ -233,6 +233,16 @@
             margin: 5px 0 15px 0;
         }
 
+        .about-text b, 
+        .about-text strong {
+            font-weight: 700;
+        }
+
+        .about-text i, 
+        .about-text em {
+            font-style: italic;
+        }
+
         .about-text code {
             background: rgba(255, 255, 255, 0.1);
             padding: 2px 5px;
@@ -335,7 +345,7 @@
         </div>
 
         <div class="about-content-wrapper">
-            <p class="about-text" style="text-align: center; font-style: italic; opacity: 0.5; margin-top: -15px; margin-bottom: 10px;">
+            <p class="about-text" style="text-align: center; font-weight: bold; opacity: 0.8; margin-top: 0px; margin-bottom: 10px;">
                 Dive into the mind behind Liminal Labyrinth<br>Selected insights and inspirations behind the maze are detailed below
             </p>
 
@@ -357,8 +367,8 @@
                 </div>
 
                 <div class="tab-card" onclick="openModal('modal-logs')">
-                    <img src="YOUR_LOGS_IMAGE_URL_HERE.jpg" alt="Environmental Logs" class="tab-image">
-                    <span class="tab-title">REMOVING BARRIERS</span>
+                    <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/backrooms.jpg?raw=true" alt="Environmental Logs" class="tab-image">
+                    <span class="tab-title">BACKROOMS</span>
                 </div>
 
             </div>
@@ -379,7 +389,7 @@
     <div class="modal-box">
         <div class="about-section-title">SUPERLIMINAL</div>
         <p class="about-text">
-            The design philosophy behind Liminal Labyrinth is rooted in a overwhelming admiration for SuperLiminal, a game that redefined how we perceive space and perspective. Every element here, from the tone of the voiceover, to the surreal narrative beats and visual aesthetic, is a direct homage to its clever puzzle design and dreamlike atmosphere.<br>
+            The design philosophy behind Liminal Labyrinth is rooted in a overwhelming admiration for <b>SuperLiminal</b>, a game that redefined how we perceive space and perspective. Every element here, from the tone of the voiceover, to the surreal narrative beats and visual aesthetic, is a direct homage to its clever puzzle design and dreamlike atmosphere.<br>
             <br>Liminal Labyrinth was built to capture just a fraction of that perspective-shifting magic. If traversing this maze resonated with you, stepping into the world of Superliminal is the natural next step. It is a masterpiece in every sense of the word, and an absolute must-play.
         </p>
         <div class="modal-btn-group">
@@ -393,7 +403,7 @@
         <div class="about-section-title">MIRROR'S EDGE</div>
         <p class="about-text">
             I’ve always believed that music is the true heartbeat of any world worth exploring. Whether it's the rich score of a film or the ambient backdrop of a video game, an underlying symphony has the power to strike precise chords within your mind. It transforms a simple journey into something profound, bridging the gap between playing a game and truly living inside its environment.
-            <br><br>Mirror’s Edge (2008) achieved this magic effortlessly. As you fluidly leap across its stark, pristine architecture, the soundtrack delivers a euphoric, dreamlike harmony that feels completely inseparable from the world itself. It’s an iconic auditory experience—one that still gives me goosebumps to this day.
+            <br><br><b>Mirror’s Edge</b>, released all the way back in 2008, achieved this magic effortlessly. As you fluidly leap across its stark, pristine architecture, the soundtrack delivers a euphoric, dreamlike harmony that feels completely inseparable from the world itself. It’s an iconic auditory experience—one that still gives me goosebumps to this day.
         </p>
         <div class="modal-btn-group">
             <button class="nav-btn" onclick="closeModal('modal-soundtrack')">Close</button>
@@ -405,8 +415,8 @@
     <div class="modal-box">
         <div class="about-section-title">ILLUSION MAZES</div>
         <p class="about-text">
-            The mechanics of Liminal Labyrinth has roots within the illusion maze category, which takes a lot of inspiration from julius <i>(Check out his Illusion Maze in Habbo Origins!)</i>, his maze rooms can appear simple upon first glance, but you'll find yourself in the same room hours later still trying to find a route through; julius' stunning designs make his maze such a pleasure to try.<br>
-            <br>Alongside illusion, the Labyrinth can be somewhat a paradoxical puzzle at times, your brain overcomplicates the rules, and you assume there are complex barriers between you and the exit, but in actual fact once you abandon your initial assumptions the simplistic action required is trivial.
+            The core mechanics of Liminal Labyrinth stem from the illusion maze genre, drawing immense inspiration from <b>julius</b> <i>(make sure to check out his Illusion Maze on Habbo Origins!)</i>. His rooms may appear deceptively simple at first glance, but hours later you'll find yourself trapped in the exact same loop, searching for a way out with his stunning visual design making the journey an absolute pleasure.
+            <br><br>Alongside these spatial illusions, the Labyrinth often operates as a paradoxical puzzle. Your brain instinctively overcomplicates the rules, assuming invisible walls and complex barriers stand between you and the exit. In reality, once you abandon those initial assumptions, the path forward becomes delightfully trivial. If you’ve ever braved <b>markeh</b>’s <i>A Horrible Maze</i>, this spatial trickery might feel strangely familiar! His deception maze was a major spark of inspiration when Liminal Labyrinth was first conceived.
         </p>
         <div class="modal-btn-group">
             <button class="nav-btn" onclick="closeModal('modal-cache')">Close</button>
@@ -416,9 +426,10 @@
 
 <div id="modal-logs" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-logs')">
     <div class="modal-box">
-        <div class="about-section-title">REMOVING BARRIERS</div>
+        <div class="about-section-title">BACKROOMS</div>
         <p class="about-text">
-            This diagnostic environment runs deployed atop the <strong>GitHub Pages</strong> server matrix. Due to this server architecture, network metadata (including standard IP allocations, browser configurations, and structural request timestamp parameters) is logged inherently by operational frameworks. To verify how this structural code environment works, read the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement</a>[cite: 5].
+            The concept of the <b>Backrooms</b> has always been deeply intriguing to me, the unsettling thought of a hidden world coexisting within our own reality, yet completely detached and impossibly out of reach. It's a space defined by infinite yellow corridors, flickering fluorescent hums, and an overwhelming sense of isolation.
+            <br><br>That distinct feeling of uncanny familiarity and subtle dread naturally bled into the DNA of Liminal Labyrinth. The Labyrinth wasn't just built as a set of rules to solve, but as an eerie, transitional space to inhabit; a place where every turn feels like a wrong turn, and the environment itself seems to react to your presence.
         </p>
         <div class="modal-btn-group">
             <button class="nav-btn" onclick="closeModal('modal-logs')">Close</button>
@@ -427,7 +438,7 @@
 </div>
 
 <footer class="site-footer">
-    <p>This fan site is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
+    <p>Liminal Labyrinth: An Audio Experience, is created solely by ChrisYepYep; Liminal Labyrinth is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
     <p>© 2026 Liminal Labyrinth. All rights reserved. | <a href="privacy.html">Privacy Policy & Event Rules</a></p>
 </footer>
 
