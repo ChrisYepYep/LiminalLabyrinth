@@ -3,7 +3,7 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liminal Labyrinth</title>
@@ -294,7 +294,7 @@
                 0 0 8px rgba(0, 255, 100, 0.4);
         }
 
-        p[id="youwontext"] .room-blurb-text {
+        p[id="youwontext"] .expanse-blurb-text {
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
             opacity: 1;
@@ -306,7 +306,7 @@
                 0 0 8px rgba(0, 255, 100, 0.4);
         }
 
-        .room-blurb-text.typing::after {
+        .expanse-blurb-text.typing::after {
             content: '_';
             display: inline-block;
             opacity: 1;
@@ -331,12 +331,13 @@
         .room-navi-text {
             font-size: 0.8rem;
             font-family: 'Roboto', sans-serif;
-            font-weight: 300;
+            font-style: bold;
             margin: 10px 0 0 0;
             letter-spacing: 0.5px;
             line-height: 1.4;
             color: #fff8fa;
-            opacity: 0.8;
+            opacity: 0.9;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.6);
         }
 
         .youwon-text {
@@ -1840,7 +1841,7 @@
         <div class="room-image-frame">
             <div class="youwon-header-overlay">
                 <h4>Liminal Labyrinth</h4>
-                <p id="youwontext" class="room-blurb-text">Process Complete</p>
+                <p id="youwontext" class="expanse-blurb-text">Process Complete</p>
             </div>
             <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="Room Art">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
@@ -1855,9 +1856,9 @@
         </div>
 
         <div class="overlay-content-wrapper">
-            <p class="room-blurb-text">Well, you made it out of Liminal Labyrinth.</p>
-            <p class="room-blurb-text">How do you feel?</p>
-            <p class="room-blurb-text">Deflated? Cold? Sad?</p>
+            <p class="figment-blurb-text">Well, you made it out of Liminal Labyrinth.</p>
+            <p class="figment-blurb-text">How do you feel?</p>
+            <p class="figment-blurb-text">Deflated? Cold? Sad?</p>
             <p class="youwon-text">Write your Habbo Origins username in the box below, and upload a screenshot of your Habbo in the finishing room of the maze, to enter the prize draw to win a £50 Steam gift card.
                 Submissions will close on August 29th - after 19:00UTC, during Vincent's closing Stream on Twitch.</p>
             <p class="youwon-small"><i>A flexible closing time gives us the opportunity to inlude any late comers that attempt to complete last minute!</i></p>
