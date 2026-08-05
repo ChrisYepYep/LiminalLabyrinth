@@ -239,9 +239,38 @@
             opacity: 0.8;
             width: 300px;
             min-height: 1.4em;
+            text-align: justify;
         }
 
-        div[id^="exp"] .room-blurb-text {
+        .figment-blurb-text {
+            font-size: 0.7rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 0 auto;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.8;
+            width: 300px;
+            min-height: 1.4em;
+            text-align: center;
+        }
+
+        .expanse-blurb-text {
+            font-size: 0.7rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 0 auto;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.8;
+            width: 300px;
+            min-height: 2.8em;
+            text-align: center;
+        }
+
+        div[id^="exp"] .expanse-blurb-text {
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
             opacity: 1;
@@ -817,7 +846,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">Where are you?</p>
+            <p class="expanse-blurb-text">Where are you?</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -877,7 +906,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[SYS_INIT] Loading geometry pipeline... DONE</p>
+            <p class="expanse-blurb-text">[SYS_INIT] Loading geometry pipeline... DONE</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -940,7 +969,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[ENGINE] V-Sync enabled. Compiling depth map...</p>
+            <p class="expanse-blurb-text">[ENGINE] V-Sync enabled. Compiling depth map...</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1000,7 +1029,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[HARDWARE] Bus clock synchronized. Querying GPU core...</p>
+            <p class="expanse-blurb-text">[HARDWARE] Bus clock synchronized. Querying GPU core...</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1063,7 +1092,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[MEM] Allocating spatial matrix (4096KB)... OK</p>
+            <p class="expanse-blurb-text">[MEM] Allocating spatial matrix (4096KB)... OK</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1123,7 +1152,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[WARN] Depth buffer breached. Wall collision ignored.</p>
+            <p class="expanse-blurb-text">[WARN] Depth buffer breached. Wall collision ignored.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1183,7 +1212,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[ERR_0x000F] Spatial orientation lost in translation.</p>
+            <p class="expanse-blurb-text">[ERR_0x000F] Spatial orientation lost in translation.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1245,7 +1274,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[CRITICAL] Vanishing point extended beyond boundary.</p>
+            <p class="expanse-blurb-text">[CRITICAL] Vanishing point extended beyond boundary.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1306,7 +1335,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[WARN] Unhandled vertex displacement at floor boundary.</p>
+            <p class="expanse-blurb-text">[WARN] Unhandled vertex displacement at floor boundary.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1366,7 +1395,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[FATAL] Polygon count exceeded available memory universe.</p>
+            <p class="expanse-blurb-text">[FATAL] Polygon count exceeded available memory universe.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1427,7 +1456,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[DIAGNOSTIC] Subject coordinates out of bounds.</p>
+            <p class="expanse-blurb-text">[DIAGNOSTIC] Subject coordinates out of bounds.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1487,7 +1516,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Expanse</p>
-            <p class="room-blurb-text">[LOG] Texture layer missing: 'Reality_V2.png'</p>
+            <p class="expanse-blurb-text">[LOG] Texture layer missing: 'Reality_V2.png'</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1547,7 +1576,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Figment</p>
-            <p class="room-blurb-text">Wake up.</p>
+            <p class="figment-blurb-text">Wake up.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1607,7 +1636,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Figment</p>
-            <p class="room-blurb-text">Wake up.</p>
+            <p class="figment-blurb-text">Wake up.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1669,7 +1698,7 @@
 
         <div class="overlay-content-wrapper">
             <p class="room-title-text">Figment</p>
-            <p class="room-blurb-text">Wake up.</p>
+            <p class="figment-blurb-text">Wake up.</p>
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
@@ -1993,7 +2022,7 @@ function goToRoom(roomId) {
         localStorage.setItem('currentRoom', roomId);
 
         if (roomId.startsWith('exp')|| roomId === 'youwon') {
-            const blurb = activeRoom.querySelector('.room-blurb-text');
+            const blurb = activeRoom.querySelector('.expanse-blurb-text');
             if (blurb) {
                 if (!blurb.getAttribute('data-full-text')) {
                     blurb.setAttribute('data-full-text', blurb.textContent);
