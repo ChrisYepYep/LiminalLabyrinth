@@ -60,6 +60,96 @@
         #landing.fade-out {
             opacity: 0;
             pointer-events: none;
+        } 
+
+        /* ================= COUNTDOWN & OPENING SEQUENCE ================= */
+        .countdown-wrapper {
+            margin-top: -140px;
+            z-index: 15;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 1s ease-in-out;
+        }
+
+        .countdown-label {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            color: #00ff66; /* CRT Phosphor Green */
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 
+                0 0 3px rgba(0, 255, 102, 0.9),
+                0 0 8px rgba(0, 255, 102, 0.5);
+            animation: slowBlink 4s ease-in-out infinite;
+        }
+
+        @keyframes slowBlink {
+            0%, 100% {
+                opacity: 1;
+                text-shadow: 
+                    0 0 3px rgba(0, 255, 102, 0.9),
+                    0 0 8px rgba(0, 255, 102, 0.5);
+            }
+            50% {
+                opacity: 0.4;
+                text-shadow: 
+                    0 0 1px rgba(0, 255, 102, 0.2),
+                    0 0 2px rgba(0, 255, 102, 0.1);
+            }
+        }
+
+        .countdown-digits {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #00ff66; /* CRT Phosphor Green */
+            text-shadow: 
+                0 0 4px rgba(0, 255, 102, 0.9),
+                0 0 12px rgba(0, 255, 102, 0.5),
+                0 0 22px rgba(0, 255, 102, 0.3);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .landing-action-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(15px);
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, visibility 1.5s ease-in-out;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .landing-action-group.revealed {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .signal-flash {
+            animation: pulseFlash 6s ease-out forwards;
+        }
+
+        @keyframes pulseFlash {
+            0% { 
+                filter: brightness(1); 
+            }
+            25% { 
+                filter: brightness(3.5) drop-shadow(0 0 50px #00ff66) drop-shadow(0 0 100px rgba(0, 255, 102, 0.8)); 
+            }
+            50% { 
+                filter: brightness(1.02) drop-shadow(0 0 0px transparent); 
+            }
+            100% { 
+                filter: brightness(1.25) drop-shadow(0 0 25px #00ff66) drop-shadow(0 0 50px rgba(0, 255, 102, 0.6)); 
+            }
         }
 
         /* ================= PLAYABLE ROOMS ================= */
@@ -307,11 +397,13 @@
         }
 
         .expanse-blurb-text.typing::after {
-            content: '_';
+            content: '█';
             display: inline-block;
+            vertical-align: text-bottom;
+            font-size: 0.9em;
             opacity: 1;
             animation: blink 0.8s infinite;
-            margin-left: 2px;
+            margin-left: 3px;
         }
 
         @keyframes blink {
@@ -560,7 +652,7 @@
         }
 
         #landing .nav-btn-landing {
-            margin-top: -140px;
+            margin-top: 0px;
         }
 
         .button-group {
@@ -764,15 +856,24 @@
 <div class="container">
     <!-- LANDING SCREEN -->
     <div id="landing" class="room">
-        <div class="room-image-frame">
+        <div class="room-image-frame" id="landing-frame">
             <h1 class="landing-title">Liminal Labyrinth</h1>
             <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
-        <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
-            <span>It is time to wake up.<br>Enter...</span>
-        </button>
-        <button class="nav-btn" onclick="goToRoom('youwon')">Progress</button>
+
+        <!-- COUNTDOWN CONTAINER -->
+        <div id="countdown-container" class="countdown-wrapper">
+            <p id="countdown-label" class="countdown-label">[TRANSMISSION LOCKED - AWAITING SIGNAL]</p>
+            <div id="countdown-timer" class="countdown-digits">00d : 00h : 00m : 00s</div>
+        </div>
+
+        <!-- HIDDEN BUTTONS (Revealed on Opening) -->
+        <div id="landing-action-group" class="landing-action-group">
+            <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
+                <span>It is time to wake up.<br>Enter.</span>
+            </button>
+        </div>
     </div>
 
     <!-- WELCOME SCREEN -->
@@ -1950,6 +2051,9 @@
 const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
 const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
+// Set your target launch date/time here (e.g., UTC stream date)
+const TARGET_DATE = new Date("2026-08-17T18:28:00Z").getTime();
+
 function fadeAudioOut(audio, duration = 1500) {
     return new Promise((resolve) => {
         if (!audio || audio.paused || audio.volume === 0) {
@@ -2022,7 +2126,7 @@ function goToRoom(roomId) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
 
-        if (roomId.startsWith('exp')|| roomId === 'youwon') {
+        if (roomId.startsWith('exp') || roomId === 'youwon') {
             const blurb = activeRoom.querySelector('.expanse-blurb-text');
             if (blurb) {
                 if (!blurb.getAttribute('data-full-text')) {
@@ -2076,13 +2180,6 @@ function goToRoom(roomId) {
         btn.classList.remove('playing');
     });
 
-    const allIframes = document.querySelectorAll('iframe');
-    allIframes.forEach(iframe => {
-        const currentSrc = iframe.src;
-        iframe.src = '';
-        iframe.src = currentSrc;
-    });
-
     document.querySelectorAll('audio').forEach(audio => {
         if (!audio.paused) {
             fadeAudioOut(audio, 500); 
@@ -2132,13 +2229,97 @@ function triggerLandingCollapse(buttonElement) {
     }, 3000); 
 }
 
+/* ================= COUNTDOWN & GRAND UNVEILING LOGIC ================= */
+let hasUnveiled = false;
+
+const UTC_MILESTONES = [
+    { time: new Date("2026-08-16T00:00:00Z").getTime(), label: "[TRANSMISSION LOCKED - FREQUENCY ENCRYPTED]" },
+    { time: new Date("2026-08-21T12:00:00Z").getTime(), label: "[FREQUENCY ALIGNED - ESTABLISHING CONNECTION]" },
+    { time: new Date("2026-08-22T16:50:00Z").getTime(), label: "[CARRIER WAVE LOCATED - CONFIRMING STREAM ACTIVE]" },
+    { time: new Date("2026-08-22T17:00:00Z").getTime(), label: "[SIGNAL IMMINENT - FINALIZING TRANSMISSION]" },
+    { time: new Date("2026-08-22T17:01:00Z").getTime(), label: "[STREAM DETECTION ENABLED - THE LEET SHOW]" },
+    { time: new Date("2026-08-22T17:10:00Z").getTime(), label: "[TRANSMISSION LIVE - ACCESS GRANTED]" }
+];
+
+function updateCountdown() {
+    const now = new Date().getTime(); // Always UTC timestamp in milliseconds
+    const distance = TARGET_DATE - now;
+
+    const timerElem = document.getElementById('countdown-timer');
+    const labelElem = document.getElementById('countdown-label');
+
+    if (distance <= 0) {
+        if (timerElem) timerElem.textContent = "00d : 00h : 00m : 00s";
+        triggerGrandUnveiling();
+        return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Update label based on current UTC time
+    if (labelElem) {
+        let currentLabel = "[TRANSMISSION LOCKED - AWAITING SIGNAL]"; // Default before first milestone
+
+        for (const milestone of UTC_MILESTONES) {
+            if (now >= milestone.time) {
+                currentLabel = milestone.label;
+            }
+        }
+
+        labelElem.textContent = currentLabel;
+    }
+
+    const pad = num => String(num).padStart(2, '0');
+    if (timerElem) {
+        timerElem.textContent = `${pad(days)}d : ${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`;
+    }
+
+    setTimeout(updateCountdown, 1000);
+}
+
+function triggerGrandUnveiling() {
+    if (hasUnveiled) return;
+    hasUnveiled = true;
+
+    const labelElem = document.getElementById('countdown-label');
+    const timerElem = document.getElementById('countdown-timer');
+    const landingActionGroup = document.getElementById('landing-action-group');
+    const landingFrame = document.getElementById('landing-frame');
+
+    // 1. Flash effect on frame
+    if (landingFrame) {
+        landingFrame.classList.add('signal-flash');
+    }
+
+    // 2. Lock text in unlocked CRT terminal state (does not hide text)
+    if (labelElem) {
+        labelElem.textContent = "[SIGNAL RECEIVED - TRANSMISSION UNLOCKED]";
+        labelElem.style.animation = "none";
+        labelElem.style.opacity = "1";
+    }
+
+    if (timerElem) {
+        timerElem.style.textShadow = "0 0 8px rgba(0, 255, 102, 1), 0 0 18px rgba(0, 255, 102, 0.8)";
+    }
+
+    // 3. Unhide and fade in action buttons underneath terminal text
+    if (landingActionGroup) {
+        setTimeout(() => {
+            landingActionGroup.classList.add('revealed');
+        }, 50);
+    }
+}
+
+/* ================= MODALS & PROGRESS RESET ================= */
 function resetProgress() {
     document.getElementById('reset-modal').style.display = 'flex';
 }
 
 function confirmReset(isConfirmed) {
     document.getElementById('reset-modal').style.display = 'none';
-    
     if (isConfirmed) {
         localStorage.removeItem('currentRoom');
         goToRoom('landing');
@@ -2158,7 +2339,6 @@ function closeSubmitModal() {
     document.getElementById('submit-modal').style.display = 'none';
 }
 
-/* Rules Modal Handlers */
 function openRulesModal() {
     const rulesModal = document.getElementById('rules-modal');
     const checkbox = document.getElementById('rules-checkbox');
@@ -2198,7 +2378,32 @@ function confirmRulesAndSubmit() {
     executeFormSubmission();
 }
 
+function executeFormSubmission() {
+    const form = document.querySelector('.prize-form');
+    if (!form) return;
+
+    const formData = new FormData(form);
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+    }).then(response => {
+        if (response.ok) {
+            showSubmitModal("Entry submitted successfully!");
+            form.reset();
+        } else {
+            showSubmitModal("Submission failed. Please try again.");
+        }
+    }).catch(() => {
+        showSubmitModal("Network error. Please try again.");
+    });
+}
+
+/* ================= INITIALIZATION ================= */
 window.addEventListener('DOMContentLoaded', () => {
+    // Start countdown clock
+    updateCountdown();
+
     const savedRoom = localStorage.getItem('currentRoom');
     if (savedRoom && document.getElementById(savedRoom)) {
         goToRoom(savedRoom);
@@ -2206,12 +2411,13 @@ window.addEventListener('DOMContentLoaded', () => {
         goToRoom('landing');
     }
 
+    // Unlock Welcome Progress Button after 5 seconds of audio playback
     const welcomeAudio = document.getElementById('welcome-audio');
     const progressBtn = document.getElementById('welcome-progress-btn');
 
     if (welcomeAudio && progressBtn) {
         welcomeAudio.addEventListener('timeupdate', () => {
-            if (welcomeAudio.currentTime >= 51) {
+            if (welcomeAudio.currentTime >= 5) {
                 progressBtn.disabled = false;
                 progressBtn.style.opacity = '1';
                 progressBtn.style.cursor = 'pointer';
@@ -2219,64 +2425,16 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
 
-const form = document.querySelector('.prize-form');
-if (form) {
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        // Validate image file size before opening rules popup
-        const fileInput = document.getElementById('screenshot-file');
-        const file = fileInput ? fileInput.files[0] : null;
-        const maxSizeBytes = 5 * 1024 * 1024;
-
-        if (file && file.size > maxSizeBytes) {
-            showSubmitModal('File is too large! Please upload an image under 5MB.');
-            return;
-        }
-
-        // Show rules popup modal for user confirmation
-        openRulesModal();
-    });
-}
-
-async function executeFormSubmission() {
-    if (!form) return;
-
-    const formData = new FormData(form);
-    const submitBtn = form.querySelector('.form-submit-btn');
-
-    if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Submitting...';
-    }
-
-    try {
-        const response = await fetch(form.action, {
-            method: form.method,
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
+    // Intercept prize form submit to trigger rules modal
+    const prizeForm = document.querySelector('.prize-form');
+    if (prizeForm) {
+        prizeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            openRulesModal();
         });
-
-        if (response.ok) {
-            showSubmitModal('Entry submitted!');
-            form.reset();
-        } else {
-            const errorData = await response.json();
-            showSubmitModal('Submission failed: ' + (errorData.error || 'Please check your connection and try again.'));
-        }
-    } catch (error) {
-        showSubmitModal('An unexpected error occurred. Please try again.');
-    } finally {
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit Entry';
-        }
     }
-}
+});
 </script>
 
 </body>
