@@ -191,6 +191,21 @@
             object-fit: contain;
         }
 
+                /* Isolated glow positioned above the top edge of the image frame */
+        .room-image-frame::before {
+            content: '';
+            position: absolute;
+            top: -25px; /* Adjusts how high above the top edge the glow sits */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 30px;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 102, 0.7) 0%, rgba(0, 255, 102, 0) 75%);
+            filter: blur(12px);
+            pointer-events: none;
+            z-index: 0; /* Keeps the glow rendered strictly behind/outside the image elements */
+        }
+
         .room-image-bg {
             z-index: 2;
         }
