@@ -209,30 +209,12 @@
             object-fit: contain;
         }
 
-        .room-image-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #2a00ff;
-            mix-blend-mode: overlay; /* Creates an overlay filter effect over the image */
-            z-index: 2.5;            /* Sits directly on top of the image (z-index 2) and under the mask (z-index 3) */
-            pointer-events: none;
-            opacity: 1;
-            transition: opacity 2s ease-in-out; /* Controls how smoothly the overlay fades out */
-        }
-
-        .room-image-overlay.fade-out {
-            opacity: 0;
-        }
-
         .room-image-bg {
             z-index: 2;
         }
 
         .room-image-mask {
-            z-index: 3;
+            z-index: 4;
         }
 
         /* Title Overlap Configurations */
@@ -279,6 +261,17 @@
                 transform: translateY(120vh) rotate(var(--rot));
                 opacity: 0;
             }
+        }
+
+        .room-image-crt {
+            z-index: 3;
+            opacity: 1;
+            transition: opacity 4s ease-in-out;
+            pointer-events: none;
+        }
+
+        .room-image-crt.fade-out {
+            opacity: 0;
         }
 
         .room-header-group {
@@ -894,8 +887,8 @@
     <div id="landing" class="room">
         <div class="room-image-frame" id="landing-frame">
             <h1 class="landing-title">Liminal Labyrinth</h1>
-            <div id="landing-overlay" class="room-image-overlay"></div>
             <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
+            <img id="landing-crt" class="room-image-crt" src="roomassets/figmentCRT.png?raw=true" alt="CRT Room Display">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
 
@@ -910,7 +903,6 @@
             <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
                 <span>It is time to wake up.<br>Enter.</span>
             </button>
-                        <button class="nav-btn" onclick="goToRoom('youwon')">Progress</button>
         </div>
     </div>
 
@@ -2084,7 +2076,7 @@ const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLaby
 const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
 // Set your target launch date/time here (e.g., UTC stream date)
-const TARGET_DATE = new Date("2026-08-17T19:10:00Z").getTime();
+const TARGET_DATE = new Date("2026-08-17T19:23:50Z").getTime();
 
 function fadeAudioOut(audio, duration = 1500) {
     return new Promise((resolve) => {
@@ -2333,7 +2325,7 @@ function triggerGrandUnveiling() {
 
     // 2. Lock text in unlocked CRT terminal state (does not hide text)
     if (labelElem) {
-        labelElem.textContent = "[SIGNAL RECEIVED - TRANSMISSION UNLOCKED]";
+        labelElem.textContent = "[TRANSMISSION LIVE - ACCESS GRANTED]";
         labelElem.style.animation = "none";
         labelElem.style.opacity = "1";
     }
@@ -2342,7 +2334,10 @@ function triggerGrandUnveiling() {
         timerElem.style.textShadow = "0 0 8px rgba(0, 255, 102, 1), 0 0 18px rgba(0, 255, 102, 0.8)";
     }
 
-    // 3. Unhide and fade in action buttons underneath terminal text
+    const crtImage = document.getElementById('landing-crt');
+    if (crtImage) {
+        crtImage.classList.add('fade-out');
+    }
     if (landingActionGroup) {
         setTimeout(() => {
             landingActionGroup.classList.add('revealed');
