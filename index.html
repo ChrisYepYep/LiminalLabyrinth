@@ -28,7 +28,8 @@
             width: 90%;
             max-width: 600px;
             text-align: center;
-            flex: 1;
+            /* Remove flex: 1; and use auto margins for true vertical centering */
+            margin: auto 0; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -690,6 +691,8 @@
             align-items: center;
             gap: 0.25rem;
             width: 100%;
+            position: relative;
+            z-index: 25;
             margin: 0 auto;
         }
 
@@ -763,6 +766,7 @@
             justify-content: center;
             width: 36px;
             height: 36px;
+            pointer-events: auto;
         }
 
         .audio-toggle-btn:hover {
@@ -891,11 +895,19 @@
             <img id="landing-crt" class="room-image-crt" src="roomassets/figmentCRT.png?raw=true" alt="CRT Room Display">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
-
-        <!-- COUNTDOWN CONTAINER -->
         <div id="countdown-container" class="countdown-wrapper">
+
             <p id="countdown-label" class="countdown-label">[TRANSMISSION LOCKED - AWAITING SIGNAL]</p>
             <div id="countdown-timer" class="countdown-digits">00d : 00h : 00m : 00s</div>
+        </div>
+
+        <div class="button-group">
+            <audio loop preload="auto">
+                <source src="audio/teasertrack.mp3" type="audio/mpeg">
+            </audio>
+            <button class="audio-toggle-btn play-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
         </div>
 
         <!-- HIDDEN BUTTONS (Revealed on Opening) -->
@@ -967,10 +979,15 @@ function toggleAudio(btn) {
                 b.classList.remove('playing');
             }
         });
-
-        audio.play();
-        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
-        btn.classList.add('playing');
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
+                btn.classList.add('playing');
+            }).catch(error => {
+                console.error("Audio playback failed or blocked:", error);
+            });
+        }
     } else {
         audio.pause();
         btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
