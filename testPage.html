@@ -891,6 +891,7 @@
             <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
                 <span>It is time to wake up.<br>Enter.</span>
             </button>
+                        <button class="nav-btn" onclick="goToRoom('youwon')">Progress</button>
         </div>
     </div>
 
@@ -2067,7 +2068,7 @@ const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLaby
 const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
 // Set your target launch date/time here (e.g., UTC stream date)
-const TARGET_DATE = new Date("2026-08-17T18:50:00Z").getTime();
+const TARGET_DATE = new Date("2026-08-17T18:45:00Z").getTime();
 
 function fadeAudioOut(audio, duration = 1500) {
     return new Promise((resolve) => {
