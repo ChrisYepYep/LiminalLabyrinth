@@ -3,13 +3,9 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Liminal Labyrinth">
-    <meta property="og:description" content="It is time to wake up.">
-    <meta property="og:image" content="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/LLdatePromo01.png?raw=true">
-    <meta property="og:type" content="website">
     <title>Liminal Labyrinth</title>
     <style>
         body {
@@ -40,17 +36,151 @@
             box-sizing: border-box;
         }
 
+        /* Room Transition Logic */
         .room {
-            display: none;
+            display: none; /* Hide all rooms by default */
         }
 
-        .room.active {
+        /* ================= LANDING SCREEN ================= */
+        #landing.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1.2s ease-in-out;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            position: relative;
+            opacity: 1;
+            transition: opacity 3s ease-in-out;
+        }
+
+        #landing.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        } 
+
+        /* ================= COUNTDOWN & OPENING SEQUENCE ================= */
+        .countdown-wrapper {
+            margin-top: -140px;
+            z-index: 15;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 1s ease-in-out;
+        }
+
+        .countdown-label {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            color: #00ff66; /* CRT Phosphor Green */
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 
+                0 0 3px rgba(0, 255, 102, 0.9),
+                0 0 8px rgba(0, 255, 102, 0.5);
+            animation: slowBlink 4s ease-in-out infinite;
+        }
+
+        @keyframes slowBlink {
+            0%, 100% {
+                opacity: 1;
+                text-shadow: 
+                    0 0 3px rgba(0, 255, 102, 0.9),
+                    0 0 8px rgba(0, 255, 102, 0.5);
+            }
+            50% {
+                opacity: 0.4;
+                text-shadow: 
+                    0 0 1px rgba(0, 255, 102, 0.2),
+                    0 0 2px rgba(0, 255, 102, 0.1);
+            }
+        }
+
+        .countdown-digits {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #00ff66; /* CRT Phosphor Green */
+            text-shadow: 
+                0 0 4px rgba(0, 255, 102, 0.9),
+                0 0 12px rgba(0, 255, 102, 0.5),
+                0 0 22px rgba(0, 255, 102, 0.3);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .landing-action-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(15px);
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, visibility 1.5s ease-in-out;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .landing-action-group.revealed {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .signal-flash.landing-title,
+        .signal-flash .landing-title {
+            animation: textPulseFlash 6s ease-out forwards;
+        }
+
+        /* Image flash: pure brightness pulse without green drop-shadow glow */
+        @keyframes imagePulseFlash {
+            0% { 
+                filter: brightness(1); 
+            }
+            25% { 
+                filter: brightness(3.5); 
+            }
+            50% { 
+                filter: brightness(1.02); 
+            }
+            100% { 
+                filter: brightness(1.25); 
+            }
+        }
+
+        /* Title text flash: retains CRT green phosphor drop-shadow glow */
+        @keyframes textPulseFlash {
+            0% { 
+                filter: brightness(1); 
+            }
+            25% { 
+                filter: brightness(3.5) drop-shadow(0 0 50px #00ff66) drop-shadow(0 0 100px rgba(0, 255, 102, 0.8)); 
+            }
+            50% { 
+                filter: brightness(1.02) drop-shadow(0 0 0px transparent); 
+            }
+            100% { 
+                filter: brightness(1.25) drop-shadow(0 0 25px #00ff66) drop-shadow(0 0 50px rgba(0, 255, 102, 0.6)); 
+            }
+        }
+
+        /* ================= PLAYABLE ROOMS ================= */
+        .room:not(#landing).active {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.6s ease-in-out;
             padding: 20px;
+            border-radius: 0;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            border: 0;
             box-sizing: border-box;
             width: 100%;
         }
@@ -60,6 +190,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Fixed Image Frame Layering System */
         .room-image-frame {
             width: 100%;
             height: 400px;
@@ -68,6 +199,7 @@
             margin-bottom: 20px;
         }
 
+        /* Absolute positioning forces identical layout calculations */
         .room-image-frame img {
             position: absolute;
             top: 0;
@@ -82,7 +214,64 @@
         }
 
         .room-image-mask {
+            z-index: 4;
+        }
+
+        /* Title Overlap Configurations */
+        .landing-title {
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            color: #fff8fa;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
+            margin: 0;
+            z-index: 15;
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            pointer-events: none;
+            
+            /* Enhanced styling to host independent letter nodes cleanly */
+            display: block;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .landing-letter {
+            display: inline-block;
+            position: relative;
+            transform-origin: bottom center;
+            letter-spacing: inherit;
+        }
+
+        .landing-letter.fall {
+            animation: randomTumble 5.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes randomTumble {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(120vh) rotate(var(--rot));
+                opacity: 0;
+            }
+        }
+
+        .room-image-crt {
             z-index: 3;
+            opacity: 1;
+            transition: opacity 4s ease-in-out;
+            pointer-events: none;
+        }
+
+        .room-image-crt.fade-out {
+            opacity: 0;
         }
 
         .room-header-group {
@@ -96,25 +285,59 @@
             text-align: center;
         }
 
-        h4 {
+        .youwon-header-overlay {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            z-index: 15;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        h1, h2, h3, h4, h5 {
             color: #fff8fa;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
             margin: 0;
             text-align: center;
-            font-size: 1.8rem;
-            letter-spacing: 1px;
         }
 
+        h2 { font-size: 2.2rem; letter-spacing: 1px; }
+        h3 { font-size: 1rem; font-weight: normal; margin-top: 2px; color: rgba(255,248,250,0.9); }
+        h4 { font-size: 1.8rem; letter-spacing: 1px; }
+        h5 { font-size: 3.2rem; letter-spacing: 1px; margin-top: -23px; z-index: 11; }
+
+        /* ================= DYNAMIC NATURAL LAYOUT SYSTEM ================= */
         .overlay-content-wrapper {
             position: relative;
             width: 85%;
             max-width: 100%;
-            margin: -150px auto 0 auto;
+            margin: -170px auto 0 auto;
             z-index: 10;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
+        }
+
+        .subm-rules {
+            font-size: 0.65rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .subm-rules p {
+            margin: 0;
         }
 
         .room-title-text {
@@ -126,15 +349,50 @@
 
         .room-blurb-text {
             font-size: 0.7rem;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Roboto', sans-serif;
             font-weight: 300;
             margin: 0 auto;
             letter-spacing: 0.5px;
             line-height: 1.4;
-            color: #00ff66;
-            opacity: 1;
+            color: #fff8fa;
+            opacity: 0.8;
             width: 300px;
             min-height: 1.4em;
+            text-align: justify;
+        }
+
+        .figment-blurb-text {
+            font-size: 0.7rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 0 auto;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.8;
+            width: 300px;
+            min-height: 1.4em;
+            text-align: center;
+        }
+
+        .expanse-blurb-text {
+            font-size: 0.7rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 0 auto;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.8;
+            width: 300px;
+            min-height: 2.8em;
+            text-align: center;
+        }
+
+        div[id^="exp"] .expanse-blurb-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff66;
+            opacity: 1;
             position: relative;
             text-shadow: 
                 0 0 2px rgba(127, 255, 0, 0.9),
@@ -143,12 +401,38 @@
                 0 0 8px rgba(0, 255, 100, 0.4);
         }
 
-        .room-blurb-text.typing::after {
-            content: '_';
+        #youwontext {
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff66;
+            opacity: 1;
+            position: relative;
+            text-shadow: 
+                0 0 2px rgba(127, 255, 0, 0.9),
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 6px rgba(0, 255, 100, 0.6),
+                0 0 8px rgba(0, 255, 100, 0.4);
+        }
+
+        p[id="youwontext"] .expanse-blurb-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff66;
+            opacity: 1;
+            position: relative;
+            text-shadow: 
+                0 0 2px rgba(127, 255, 0, 0.9),
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 6px rgba(0, 255, 100, 0.6),
+                0 0 8px rgba(0, 255, 100, 0.4);
+        }
+
+        .expanse-blurb-text.typing::after {
+            content: '█';
             display: inline-block;
+            vertical-align: text-bottom;
+            font-size: 0.9em;
             opacity: 1;
             animation: blink 0.8s infinite;
-            margin-left: 2px;
+            margin-left: 3px;
         }
 
         @keyframes blink {
@@ -156,7 +440,28 @@
             50% { opacity: 0; }
         }
 
+        #welcome .room-blurb-text {
+            width: 350px;
+            margin: 0 auto;
+        }
+
+        #room8 .room-blurb-text {
+            width: 300px;
+        }
+
         .room-navi-text {
+            font-size: 0.8rem;
+            font-family: 'Roboto', sans-serif;
+            font-style: bold;
+            margin: 10px 0 0 0;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.9;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.6);
+        }
+
+        .youwon-text {
             font-size: 0.8rem;
             font-family: 'Roboto', sans-serif;
             font-weight: 300;
@@ -164,9 +469,169 @@
             letter-spacing: 0.5px;
             line-height: 1.4;
             color: #fff8fa;
-            opacity: 0.6;
+            opacity: 0.8;
+            text-align: justify;
         }
 
+        .youwon-small {
+            font-size: 0.7rem;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            margin: 10px 0 0 0;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+            color: #fff8fa;
+            opacity: 0.5;
+            margin-top: 5px;
+        }
+
+        .youwon-layout {
+            position: relative; 
+            padding-bottom: 20px;
+        }
+
+        .youwon-layout .room-image-frame {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .youwon-layout .overlay-content-wrapper {
+            margin-top: 10px;
+        }
+
+        .youwon-layout .room-title-text {
+            margin-top: 0; 
+        }
+        
+        .youwon-layout .button-group {
+            margin-top: -150px;
+            margin-bottom: 10px;
+        }
+
+        .youwon-layout .btn-end {
+            position: relative;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .prize-form {
+            margin: 25px auto 10px auto;
+            width: 85%;
+            max-width: 450px; 
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            text-align: left;
+            z-index: 10;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 14px;
+            width: 100%;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1; 
+        }
+
+        .form-group label {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.6rem;
+            color: rgba(255, 248, 250, 0.7);
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 248, 250, 0.2);
+            color: #fff8fa;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.55rem;
+            box-sizing: border-box;
+            border-radius: 20px; 
+            transition: all 0.3s ease-in-out;
+        }
+
+        .form-input[type="file"] {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        .form-input[type="file"]::file-selector-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 248, 250, 0.3);
+            color: #fff8fa;
+            border-radius: 12px;
+            padding: 2px 8px;
+            margin-right: 8px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.55rem;
+            transition: background 0.3s ease;
+        }
+
+        .form-input[type="file"]::file-selector-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 248, 250, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-submit-btn {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff8fa;
+            border: 1px solid rgba(255, 248, 250, 0.4);
+            padding: 8px 0;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 20px; 
+            transition: all 0.4s ease-in-out;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
+            text-align: center;
+            width: 100%;
+            max-width: 200px;
+            margin: 15px auto 0 auto;
+        }
+
+        .form-submit-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 248, 250, 0.8);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .rules-checkbox-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.7rem;
+            color: #fff8fa;
+        }
+
+        .rules-checkbox-group input[type="checkbox"] {
+            accent-color: #fff8fa;
+            cursor: pointer;
+        }
+
+        /* ==================== CONTROLS SYSTEM ==================== */
         .audio-player-container {
             margin: 0;
             width: 100%;
@@ -177,9 +642,9 @@
             background-color: transparent;
             color: #fff8fa;
             border: transparent;
-            padding: 5px 10px;
+            padding: 5px 2px;
             font-family: 'Oswald', sans-serif;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
             letter-spacing: 1px;
             cursor: pointer;
@@ -187,29 +652,103 @@
             margin: 0;
             text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
             z-index: 5;
-            width: 120px;
+            width: auto;
             text-align: center;
         }
 
-        .nav-btn-left {
+        .button-group .nav-btn:first-child {
             text-align: right;
         }
 
-        .nav-btn-right {
+        .button-group .nav-btn:last-child {
             text-align: left;
         }
 
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+        .nav-btn-landing {
+            background-color: transparent;
+            color: #fff8fa;
+            border: transparent;
+            padding: 5px 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: opacity 0.4s ease, transform 0.4s ease-in-out, text-shadow 0.4s ease-in-out;
+            margin: 5px 0;
+            text-shadow: 0 0 4px rgba(255, 248, 250, 0.4);
+            z-index: 5;
+        }
+
+        #landing .nav-btn-landing {
+            margin-top: 0px;
         }
 
         .button-group {
             display: flex;
             justify-content: center;
             align-items: center;
+            gap: 0.25rem;
             width: 100%;
-            margin-top: 10px;
+            margin: 0 auto;
+        }
+
+        .button-group button {
+            /* Gives side buttons equal width so the play button stays centered */
+            flex: 1; 
+            max-width: 80px;
+        }
+
+        .play-btn {
+            flex: 0 0 auto;   /* Keeps play button at its explicit size */
+        }
+
+        .btn-sub {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        .btn-end {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto 0 auto;
+            z-index: 5;
+        }
+
+        .btn-end a {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 248, 250, 0.2);
+            color: #fff8fa;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+            border-radius: 20px; 
+            transition: all 0.3s ease-in-out;
+            opacity: 0.8;
+        }
+
+        .btn-end a:hover {
+            border-color: rgba(255, 248, 250, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            text-shadow: 0 0 8px rgba(255, 248, 250, 0.6);
+        }
+
+        .nav-btn:hover, .nav-btn-landing:hover {
+            transform: translateY(-2px);
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
         }
 
         .audio-toggle-btn {
@@ -231,43 +770,154 @@
         }
 
         audio { display: none; }
+
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: rgba(0,0,0,0.6);
+            border: 0px rgba(255, 248, 250, 0.2);
+            padding: 15px 15px;
+            text-align: center;
+            border-radius: 20px;
+            width: 85%;
+            max-width: 360px;
+            box-shadow: 0 0 20px rgba(185, 179, 181, 0.15);
+            box-sizing: border-box;
+        }
+
+        .modal-title {
+            margin: 0 0 8px 0;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        .modal-subtext {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.75rem;
+            color: rgba(255, 248, 250, 0.7);
+            margin: 0 0 20px 0;
+            line-height: 1.4;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .modal-action-btn {
+            padding: 6px 22px;
+            font-size: 0.95rem;
+        }
+
+        .site-footer {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            padding: 0px 0 5px 0;
+            box-sizing: border-box;
+            margin-top: auto;
+        }
+
+        .site-footer p a[onclick] {
+            cursor: pointer;
+        }
+
+        .site-footer p {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 150;
+            color: rgba(255, 248, 250, 0.3);
+            margin: 0;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+
+        .site-footer p a.resetlink,
+        .site-footer p a.privacylink {
+            opacity: 0.3;
+            font-weight: 400;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            color: #fff8fa;
+            text-shadow: 0 0 6px rgba(255, 248, 250, 0.4);
+        }
+
+        .site-footer p a.privacylink:hover,
+        .site-footer p a.resetlink:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+            text-decoration: none;
+            text-underline-offset: 3px;
+        }
+
+        .policy-text a {
+            color: #fff8fa;
+            text-decoration: underline;
+            opacity: 0.3;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .policy-text a:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+        }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="exp8" class="room active">
-        <div class="room-image-frame">
-            <div class="room-header-group">
-                <h4>Liminal Labyrinth</h4>
-            </div>
+    <!-- LANDING SCREEN -->
+    <div id="landing" class="room">
+        <div class="room-image-frame" id="landing-frame">
+            <h1 class="landing-title">Liminal Labyrinth</h1>
             <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
+            <img id="landing-crt" class="room-image-crt" src="roomassets/figmentCRT.png?raw=true" alt="CRT Room Display">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
 
-        <div class="overlay-content-wrapper">
-            <p class="room-blurb-text">Maze Initialising...</p>
-            <p class="room-navi-text">The Labyrinth is not ready for you yet, come back on August 22nd.</p>
+        <!-- COUNTDOWN CONTAINER -->
+        <div id="countdown-container" class="countdown-wrapper">
+            <p id="countdown-label" class="countdown-label">[TRANSMISSION LOCKED - AWAITING SIGNAL]</p>
+            <div id="countdown-timer" class="countdown-digits">00d : 00h : 00m : 00s</div>
         </div>
 
-        <div class="audio-player-container">
-            <audio loop preload="auto">
-                <source src="audio/teasertrack.mp3" type="audio/mpeg">
-            </audio>
-        </div>
-        <div class="button-group">
-            <button class="nav-btn nav-btn-left">August 22nd</button>
-            <button class="audio-toggle-btn" onclick="toggleAudio(this)">
-                <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+        <!-- HIDDEN BUTTONS (Revealed on Opening) -->
+        <div id="landing-action-group" class="landing-action-group">
+            <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
+                <span>It is time to wake up.<br>Enter.</span>
             </button>
-            <button class="nav-btn nav-btn-right">17:00 UTC</button>
         </div>
     </div>
-</div>
+
+<footer class="site-footer">
+    <p><a class="resetlink" onclick="resetProgress()">Reset Progress</a></p>
+    <p>Liminal Labyrinth: An Audio Experience, is created solely by ChrisYepYep; Liminal Labyrinth is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
+    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a class="privacylink" href="https://liminallabyrinth.quest/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy & Event Rules</a></p>
+</footer>
 
 <script>
 const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
 const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
+
+// Set your target launch date/time here (e.g., UTC stream date)
+const TARGET_DATE = new Date("2026-08-22T17:10:00Z").getTime();
 
 function fadeAudioOut(audio, duration = 1500) {
     return new Promise((resolve) => {
@@ -328,46 +978,334 @@ function toggleAudio(btn) {
     }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    const activeRoom = document.getElementById('exp8');
+let typingIntervals = {}; 
+
+function goToRoom(roomId) {
+    const rooms = document.querySelectorAll('.room');
+    rooms.forEach(room => {
+        room.classList.remove('active');
+    });
+
+    const activeRoom = document.getElementById(roomId);
     if (activeRoom) {
-        const blurb = activeRoom.querySelector('.room-blurb-text');
-        if (blurb) {
-            // Define your rotation sentences here (or fetch them from the data attribute above)
-            const rawPhrases = blurb.getAttribute('data-phrases') || "Maze Initialising|Loading teaser audio... OK|Drawing furni sprites... OK|Building rooms... OK|Teleport linking... OK|Pathfinding difficulty:...|[FAILED] Unable to determine difficulty";
-            const phrases = rawPhrases.split('|');
-            
-            let phraseIndex = 0;
-            const initialDelay = 1000; 
-            const typingSpeed  = 85;   
-            const loopPause    = 3500; 
+        activeRoom.classList.add('active');
+        localStorage.setItem('currentRoom', roomId);
 
-            function startTypewriter() {
-                const currentText = phrases[phraseIndex];
-                blurb.textContent = '';
+        if (roomId.startsWith('exp') || roomId === 'youwon') {
+            const blurb = activeRoom.querySelector('.expanse-blurb-text');
+            if (blurb) {
+                if (!blurb.getAttribute('data-full-text')) {
+                    blurb.setAttribute('data-full-text', blurb.textContent);
+                }
+                
+                const fullText = blurb.getAttribute('data-full-text');
+                
+                clearInterval(typingIntervals[roomId]);
+                clearTimeout(typingIntervals[roomId + '_loop']);
+                
                 blurb.classList.remove('typing');
+                blurb.textContent = '';
 
-                setTimeout(() => {
-                    let charIndex = 0;
-                    const typingInterval = setInterval(() => {
-                        if (charIndex < currentText.length) {
-                            blurb.textContent += currentText.charAt(charIndex);
-                            charIndex++;
-                        } else {
-                            clearInterval(typingInterval);
-                            blurb.classList.add('typing');
-                            
-                            // Move to the next phrase, loop back to the start if at the end
-                            phraseIndex = (phraseIndex + 1) % phrases.length;
+                const initialDelay = 2000; 
+                const typingSpeed  = 85;   
+                const loopPause    = 12000; 
 
-                            setTimeout(startTypewriter, loopPause);
-                        }
-                    }, typingSpeed);
-                }, initialDelay);
+                function startTypewriter() {
+                    blurb.textContent = '';
+                    blurb.classList.remove('typing');
+
+                    typingIntervals[roomId + '_loop'] = setTimeout(() => {
+                        let charIndex = 0;
+
+                        typingIntervals[roomId] = setInterval(() => {
+                            if (charIndex < fullText.length) {
+                                blurb.textContent += fullText.charAt(charIndex);
+                                charIndex++;
+                            } else {
+                                clearInterval(typingIntervals[roomId]);
+                                blurb.classList.add('typing');
+
+                                typingIntervals[roomId + '_loop'] = setTimeout(() => {
+                                    startTypewriter();
+                                }, loopPause);
+                            }
+                        }, typingSpeed);
+
+                    }, initialDelay);
+                }
+
+                startTypewriter();
             }
+        } 
+    }
 
-            startTypewriter();
+    const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
+    allAudioBtns.forEach(btn => {
+        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
+        btn.classList.remove('playing');
+    });
+
+    document.querySelectorAll('audio').forEach(audio => {
+        if (!audio.paused) {
+            fadeAudioOut(audio, 500); 
+        } else {
+            audio.currentTime = 0;
         }
+    });
+}
+
+function triggerLandingCollapse(buttonElement) {
+    const landingElement = document.getElementById('landing');
+    const titleElement = document.querySelector('.landing-title');
+    
+    if (!titleElement.querySelector('.landing-letter')) {
+        const textContent = titleElement.textContent;
+        titleElement.innerHTML = '';
+        [...textContent].forEach(char => {
+            const span = document.createElement('span');
+            span.innerHTML = char === ' ' ? '&nbsp;' : char;
+            span.classList.add('landing-letter');
+            titleElement.appendChild(span);
+        });
+    }
+
+    buttonElement.style.opacity = '0';
+    buttonElement.style.pointerEvents = 'none';
+
+    const letters = titleElement.querySelectorAll('.landing-letter');
+    letters.forEach(letter => {
+        const randomRotation = Math.floor(Math.random() * 360) - 180 + 'deg';
+        letter.style.setProperty('--rot', randomRotation);
+        setTimeout(() => { letter.classList.add('fall'); }, Math.random() * 1000); 
+    });
+
+    landingElement.classList.add('fade-out');
+
+    setTimeout(() => {
+        goToRoom('welcome');
+
+        setTimeout(() => {
+            landingElement.classList.remove('fade-out');
+            landingElement.style.opacity = '1';
+            titleElement.innerHTML = 'Liminal Labyrinth';
+            buttonElement.style.opacity = '';
+            buttonElement.style.pointerEvents = '';
+        }, 500);
+    }, 3000); 
+}
+
+/* ================= COUNTDOWN & GRAND UNVEILING LOGIC ================= */
+let hasUnveiled = false;
+
+const UTC_MILESTONES = [
+    { time: new Date("2026-08-16T00:00:00Z").getTime(), label: "[TRANSMISSION LOCKED - FREQUENCY ENCRYPTED]" },
+    { time: new Date("2026-08-21T12:00:00Z").getTime(), label: "[FREQUENCY ALIGNED - ESTABLISHING CONNECTION]" },
+    { time: new Date("2026-08-22T16:50:00Z").getTime(), label: "[CARRIER WAVE LOCATED - CONFIRMING STREAM ACTIVE]" },
+    { time: new Date("2026-08-22T17:00:00Z").getTime(), label: "[SIGNAL IMMINENT - FINALIZING TRANSMISSION]" },
+    { time: new Date("2026-08-22T17:01:00Z").getTime(), label: "[STREAM DETECTION ENABLED - THE LEET SHOW]" },
+    { time: new Date("2026-08-22T17:10:00Z").getTime(), label: "[TRANSMISSION LIVE - ACCESS GRANTED]" }
+];
+
+function updateCountdown() {
+    const now = new Date().getTime(); // Always UTC timestamp in milliseconds
+    const distance = TARGET_DATE - now;
+
+    const timerElem = document.getElementById('countdown-timer');
+    const labelElem = document.getElementById('countdown-label');
+
+    if (distance <= 0) {
+        if (timerElem) timerElem.textContent = "00d : 00h : 00m : 00s";
+
+        const overlay = document.getElementById('landing-overlay');
+        if (overlay) {
+            overlay.classList.add('fade-out');
+        }
+        triggerGrandUnveiling();
+        return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // Update label based on current UTC time
+    if (labelElem) {
+        let currentLabel = "[TRANSMISSION LOCKED - AWAITING SIGNAL]"; // Default before first milestone
+
+        for (const milestone of UTC_MILESTONES) {
+            if (now >= milestone.time) {
+                currentLabel = milestone.label;
+            }
+        }
+
+        labelElem.textContent = currentLabel;
+    }
+
+    const pad = num => String(num).padStart(2, '0');
+    if (timerElem) {
+        timerElem.textContent = `${pad(days)}d : ${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`;
+    }
+
+    setTimeout(updateCountdown, 1000);
+}
+
+function triggerGrandUnveiling() {
+    if (hasUnveiled) return;
+    hasUnveiled = true;
+
+    const labelElem = document.getElementById('countdown-label');
+    const timerElem = document.getElementById('countdown-timer');
+    const landingActionGroup = document.getElementById('landing-action-group');
+    const landingFrame = document.getElementById('landing-frame');
+
+    // 1. Flash effect on frame
+    if (landingFrame) {
+        landingFrame.classList.add('signal-flash');
+    }
+
+    // 2. Lock text in unlocked CRT terminal state (does not hide text)
+    if (labelElem) {
+        labelElem.textContent = "[TRANSMISSION LIVE - ACCESS GRANTED]";
+        labelElem.style.animation = "none";
+        labelElem.style.opacity = "1";
+    }
+
+    if (timerElem) {
+        timerElem.style.textShadow = "0 0 8px rgba(0, 255, 102, 1), 0 0 18px rgba(0, 255, 102, 0.8)";
+    }
+
+    const crtImage = document.getElementById('landing-crt');
+    if (crtImage) {
+        crtImage.classList.add('fade-out');
+    }
+    if (landingActionGroup) {
+        setTimeout(() => {
+            landingActionGroup.classList.add('revealed');
+        }, 50);
+    }
+}
+
+/* ================= MODALS & PROGRESS RESET ================= */
+function resetProgress() {
+    document.getElementById('reset-modal').style.display = 'flex';
+}
+
+function confirmReset(isConfirmed) {
+    document.getElementById('reset-modal').style.display = 'none';
+    if (isConfirmed) {
+        localStorage.removeItem('currentRoom');
+        goToRoom('landing');
+    }
+}
+
+function showSubmitModal(message) {
+    const modal = document.getElementById('submit-modal');
+    const title = document.getElementById('submit-modal-title');
+    if (modal && title) {
+        title.textContent = message;
+        modal.style.display = 'flex';
+    }
+}
+
+function closeSubmitModal() {
+    document.getElementById('submit-modal').style.display = 'none';
+}
+
+function openRulesModal() {
+    const rulesModal = document.getElementById('rules-modal');
+    const checkbox = document.getElementById('rules-checkbox');
+    const confirmBtn = document.getElementById('modal-confirm-btn');
+    if (rulesModal) {
+        checkbox.checked = false;
+        confirmBtn.disabled = true;
+        confirmBtn.style.opacity = '0.3';
+        confirmBtn.style.cursor = 'not-allowed';
+        rulesModal.style.display = 'flex';
+    }
+}
+
+function closeRulesModal() {
+    const rulesModal = document.getElementById('rules-modal');
+    if (rulesModal) {
+        rulesModal.style.display = 'none';
+    }
+}
+
+function toggleModalSubmitBtn() {
+    const checkbox = document.getElementById('rules-checkbox');
+    const confirmBtn = document.getElementById('modal-confirm-btn');
+    if (checkbox.checked) {
+        confirmBtn.disabled = false;
+        confirmBtn.style.opacity = '1';
+        confirmBtn.style.cursor = 'pointer';
+    } else {
+        confirmBtn.disabled = true;
+        confirmBtn.style.opacity = '0.3';
+        confirmBtn.style.cursor = 'not-allowed';
+    }
+}
+
+function confirmRulesAndSubmit() {
+    closeRulesModal();
+    executeFormSubmission();
+}
+
+function executeFormSubmission() {
+    const form = document.querySelector('.prize-form');
+    if (!form) return;
+
+    const formData = new FormData(form);
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+    }).then(response => {
+        if (response.ok) {
+            showSubmitModal("Entry submitted successfully!");
+            form.reset();
+        } else {
+            showSubmitModal("Submission failed. Please try again.");
+        }
+    }).catch(() => {
+        showSubmitModal("Network error. Please try again.");
+    });
+}
+
+/* ================= INITIALIZATION ================= */
+window.addEventListener('DOMContentLoaded', () => {
+    // Start countdown clock
+    updateCountdown();
+
+    const savedRoom = localStorage.getItem('currentRoom');
+    if (savedRoom && document.getElementById(savedRoom)) {
+        goToRoom(savedRoom);
+    } else {
+        goToRoom('landing');
+    }
+
+    // Unlock Welcome Progress Button after 5 seconds of audio playback
+    const welcomeAudio = document.getElementById('welcome-audio');
+    const progressBtn = document.getElementById('welcome-progress-btn');
+
+    if (welcomeAudio && progressBtn) {
+        welcomeAudio.addEventListener('timeupdate', () => {
+            if (welcomeAudio.currentTime >= 5) {
+                progressBtn.disabled = false;
+                progressBtn.style.opacity = '1';
+                progressBtn.style.cursor = 'pointer';
+                progressBtn.style.pointerEvents = 'auto';
+            }
+        });
+    }
+
+    // Intercept prize form submit to trigger rules modal
+    const prizeForm = document.querySelector('.prize-form');
+    if (prizeForm) {
+        prizeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            openRulesModal();
+        });
     }
 });
 </script>
