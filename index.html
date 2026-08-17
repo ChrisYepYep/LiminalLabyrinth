@@ -36,9 +36,8 @@
             box-sizing: border-box;
         }
 
-        /* Room Transition Logic */
         .room {
-            display: none; /* Hide all rooms by default */
+            display: none;
         }
 
         /* ================= LANDING SCREEN ================= */
@@ -76,7 +75,7 @@
         .countdown-label {
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.75rem;
-            color: #00ff66; /* CRT Phosphor Green */
+            color: #00ff66;
             letter-spacing: 2px;
             margin-bottom: 10px;
             text-shadow: 
@@ -105,7 +104,7 @@
             font-size: 0.75rem;
             font-weight: bold;
             letter-spacing: 4px;
-            color: #00ff66; /* CRT Phosphor Green */
+            color: #00ff66;
             text-shadow: 
                 0 0 4px rgba(0, 255, 102, 0.9),
                 0 0 12px rgba(0, 255, 102, 0.5),
@@ -138,7 +137,6 @@
             animation: textPulseFlash 6s ease-out forwards;
         }
 
-        /* Image flash: pure brightness pulse without green drop-shadow glow */
         @keyframes imagePulseFlash {
             0% { 
                 filter: brightness(1); 
@@ -154,7 +152,6 @@
             }
         }
 
-        /* Title text flash: retains CRT green phosphor drop-shadow glow */
         @keyframes textPulseFlash {
             0% { 
                 filter: brightness(1); 
@@ -190,7 +187,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Fixed Image Frame Layering System */
         .room-image-frame {
             width: 100%;
             height: 400px;
@@ -199,7 +195,6 @@
             margin-bottom: 20px;
         }
 
-        /* Absolute positioning forces identical layout calculations */
         .room-image-frame img {
             position: absolute;
             top: 0;
@@ -217,7 +212,6 @@
             z-index: 4;
         }
 
-        /* Title Overlap Configurations */
         .landing-title {
             font-size: 2.5rem;
             letter-spacing: 3px;
@@ -232,7 +226,6 @@
             width: 100%;
             pointer-events: none;
             
-            /* Enhanced styling to host independent letter nodes cleanly */
             display: block;
             justify-content: center;
             text-align: center;
@@ -308,7 +301,6 @@
         h4 { font-size: 1.8rem; letter-spacing: 1px; }
         h5 { font-size: 3.2rem; letter-spacing: 1px; margin-top: -23px; z-index: 11; }
 
-        /* ================= DYNAMIC NATURAL LAYOUT SYSTEM ================= */
         .overlay-content-wrapper {
             position: relative;
             width: 85%;
@@ -631,7 +623,6 @@
             cursor: pointer;
         }
 
-        /* ==================== CONTROLS SYSTEM ==================== */
         .audio-player-container {
             margin: 0;
             width: 100%;
@@ -696,13 +687,12 @@
         }
 
         .button-group button {
-            /* Gives side buttons equal width so the play button stays centered */
             flex: 1; 
             max-width: 80px;
         }
 
         .play-btn {
-            flex: 0 0 auto;   /* Keeps play button at its explicit size */
+            flex: 0 0 auto;
         }
 
         .btn-sub {
@@ -909,7 +899,6 @@
             </button>
         </div>
 
-        <!-- HIDDEN BUTTONS (Revealed on Opening) -->
         <div id="landing-action-group" class="landing-action-group">
             <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
                 <span>It is time to wake up.<br>Enter.</span>
@@ -928,7 +917,6 @@
 const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
 const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
-// Set your target launch date/time here (e.g., UTC stream date)
 const TARGET_DATE = new Date("2026-08-22T17:10:00Z").getTime();
 
 function fadeAudioOut(audio, duration = 1500) {
@@ -1124,7 +1112,7 @@ const UTC_MILESTONES = [
 ];
 
 function updateCountdown() {
-    const now = new Date().getTime(); // Always UTC timestamp in milliseconds
+    const now = new Date().getTime();
     const distance = TARGET_DATE - now;
 
     const timerElem = document.getElementById('countdown-timer');
@@ -1146,7 +1134,6 @@ function updateCountdown() {
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    // Update label based on current UTC time
     if (labelElem) {
         let currentLabel = "[TRANSMISSION LOCKED - AWAITING SIGNAL]"; // Default before first milestone
 
@@ -1181,7 +1168,6 @@ function triggerGrandUnveiling() {
         landingFrame.classList.add('signal-flash');
     }
 
-    // 2. Lock text in unlocked CRT terminal state (does not hide text)
     if (labelElem) {
         labelElem.textContent = "[TRANSMISSION LIVE - ACCESS GRANTED]";
         labelElem.style.animation = "none";
@@ -1301,7 +1287,6 @@ window.addEventListener('DOMContentLoaded', () => {
         goToRoom('landing');
     }
 
-    // Unlock Welcome Progress Button after 5 seconds of audio playback
     const welcomeAudio = document.getElementById('welcome-audio');
     const progressBtn = document.getElementById('welcome-progress-btn');
 
@@ -1316,7 +1301,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Intercept prize form submit to trigger rules modal
     const prizeForm = document.querySelector('.prize-form');
     if (prizeForm) {
         prizeForm.addEventListener('submit', (e) => {
