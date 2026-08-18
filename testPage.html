@@ -2188,6 +2188,20 @@ function triggerLandingCollapse(buttonElement) {
     }, 3000); 
 }
 
+const welcomeAudio = document.getElementById('welcome-audio');
+const welcomeProgressBtn = document.getElementById('welcome-progress-btn');
+
+if (welcomeAudio && welcomeProgressBtn) {
+    welcomeAudio.addEventListener('timeupdate', () => {
+        if (welcomeAudio.currentTime >= 53 && welcomeProgressBtn.disabled) {
+            welcomeProgressBtn.disabled = false;
+            welcomeProgressBtn.style.opacity = '1';
+            welcomeProgressBtn.style.cursor = 'pointer';
+            welcomeProgressBtn.style.pointerEvents = 'auto';
+        }
+    });
+}
+
 /* ================= COUNTDOWN & TIMER LOGIC ================= */
 function updateCountdown() {
     const now = Date.now();
