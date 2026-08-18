@@ -1,14 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4Q8KGXSMSS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-4Q8KGXSMSS');
-</script>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="66e0e01a-7683-45ec-9b62-fac0563f60d4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
@@ -82,29 +75,14 @@
 
         .countdown-label {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #00ff66; /* CRT Phosphor Green */
             letter-spacing: 2px;
             margin-bottom: 10px;
             text-shadow: 
                 0 0 3px rgba(0, 255, 102, 0.9),
                 0 0 8px rgba(0, 255, 102, 0.5);
-            animation: slowBlink 4s ease-in-out infinite;
-        }
-
-        @keyframes slowBlink {
-            0%, 100% {
-                opacity: 1;
-                text-shadow: 
-                    0 0 3px rgba(0, 255, 102, 0.9),
-                    0 0 8px rgba(0, 255, 102, 0.5);
-            }
-            50% {
-                opacity: 0.4;
-                text-shadow: 
-                    0 0 1px rgba(0, 255, 102, 0.2),
-                    0 0 2px rgba(0, 255, 102, 0.1);
-            }
+            min-height: 1.4em;
         }
 
         .countdown-digits {
@@ -145,35 +123,18 @@
             animation: textPulseFlash 6s ease-out forwards;
         }
 
-        /* Image flash: pure brightness pulse without green drop-shadow glow */
         @keyframes imagePulseFlash {
-            0% { 
-                filter: brightness(1); 
-            }
-            25% { 
-                filter: brightness(3.5); 
-            }
-            50% { 
-                filter: brightness(1.02); 
-            }
-            100% { 
-                filter: brightness(1.25); 
-            }
+            0% { filter: brightness(1); }
+            25% { filter: brightness(3.5); }
+            50% { filter: brightness(1.02); }
+            100% { filter: brightness(1.25); }
         }
 
         @keyframes textPulseFlash {
-            0% { 
-                filter: brightness(1); 
-            }
-            25% { 
-                filter: brightness(3.5) drop-shadow(0 0 50px #00ff66) drop-shadow(0 0 100px rgba(0, 255, 102, 0.8)); 
-            }
-            50% { 
-                filter: brightness(1.02) drop-shadow(0 0 0px transparent); 
-            }
-            100% { 
-                filter: brightness(1.25) drop-shadow(0 0 25px #00ff66) drop-shadow(0 0 50px rgba(0, 255, 102, 0.6)); 
-            }
+            0% { filter: brightness(1); }
+            25% { filter: brightness(3.5) drop-shadow(0 0 50px #00ff66) drop-shadow(0 0 100px rgba(0, 255, 102, 0.8)); }
+            50% { filter: brightness(1.02) drop-shadow(0 0 0px transparent); }
+            100% { filter: brightness(1.25) drop-shadow(0 0 25px #00ff66) drop-shadow(0 0 50px rgba(0, 255, 102, 0.6)); }
         }
 
         /* ================= PLAYABLE ROOMS ================= */
@@ -213,13 +174,8 @@
             object-fit: contain;
         }
 
-        .room-image-bg {
-            z-index: 2;
-        }
-
-        .room-image-mask {
-            z-index: 4;
-        }
+        .room-image-bg { z-index: 2; }
+        .room-image-mask { z-index: 4; }
 
         .landing-title {
             font-size: 2.5rem;
@@ -251,17 +207,9 @@
         }
 
         @keyframes randomTumble {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.7;
-            }
-            100% {
-                transform: translateY(120vh) rotate(var(--rot));
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { transform: translateY(120vh) rotate(var(--rot)); opacity: 0; }
         }
 
         .room-image-crt {
@@ -271,9 +219,7 @@
             pointer-events: none;
         }
 
-        .room-image-crt.fade-out {
-            opacity: 0;
-        }
+        .room-image-crt.fade-out { opacity: 0; }
 
         .room-header-group {
             position: absolute;
@@ -309,7 +255,6 @@
         h4 { font-size: 1.8rem; letter-spacing: 1px; }
         h5 { font-size: 3.2rem; letter-spacing: 1px; margin-top: -23px; z-index: 11; }
 
-        /* ================= DYNAMIC NATURAL LAYOUT SYSTEM ================= */
         .overlay-content-wrapper {
             position: relative;
             width: 85%;
@@ -337,9 +282,7 @@
             margin-bottom: 15px;
         }
 
-        .subm-rules p {
-            margin: 0;
-        }
+        .subm-rules p { margin: 0; }
 
         .room-title-text {
             font-size: 1.6rem;
@@ -385,40 +328,21 @@
             line-height: 1.4;
             color: #fff8fa;
             opacity: 0.8;
-            width: 300px;
+            width: max-content;
+            max-width: 100%;
             min-height: 2.8em;
             text-align: center;
         }
 
-        div[id^="exp"] .expanse-blurb-text {
-            font-family: 'Courier New', Courier, monospace;
-            color: #00ff66;
-            opacity: 1;
-            position: relative;
-            text-shadow: 
-                0 0 2px rgba(127, 255, 0, 0.9),
-                0 0 4px rgba(0, 255, 100, 0.8),
-                0 0 6px rgba(0, 255, 100, 0.6),
-                0 0 8px rgba(0, 255, 100, 0.4);
-        }
-
-        #youwontext {
-            font-family: 'Courier New', Courier, monospace;
-            color: #00ff66;
-            opacity: 1;
-            position: relative;
-            text-shadow: 
-                0 0 2px rgba(127, 255, 0, 0.9),
-                0 0 4px rgba(0, 255, 100, 0.8),
-                0 0 6px rgba(0, 255, 100, 0.6),
-                0 0 8px rgba(0, 255, 100, 0.4);
-        }
-
+        div[id^="exp"] .expanse-blurb-text,
+        .countdown-label,
+        #youwontext,
         p[id="youwontext"] .expanse-blurb-text {
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
             opacity: 1;
             position: relative;
+            white-space: nowrap;
             text-shadow: 
                 0 0 2px rgba(127, 255, 0, 0.9),
                 0 0 4px rgba(0, 255, 100, 0.8),
@@ -426,11 +350,12 @@
                 0 0 8px rgba(0, 255, 100, 0.4);
         }
 
-        .expanse-blurb-text.typing::after {
+        .expanse-blurb-text.typing::after,
+        .countdown-label.typing::after {
             content: '█';
             display: inline-block;
             vertical-align: text-bottom;
-            font-size: 0.9em;
+            font-size: 0.7em;
             opacity: 1;
             animation: blink 0.8s infinite;
             margin-left: 3px;
@@ -441,14 +366,8 @@
             50% { opacity: 0; }
         }
 
-        #welcome .room-blurb-text {
-            width: 350px;
-            margin: 0 auto;
-        }
-
-        #room8 .room-blurb-text {
-            width: 300px;
-        }
+        #welcome .room-blurb-text { width: 350px; margin: 0 auto; }
+        #room8 .room-blurb-text { width: 300px; }
 
         .room-navi-text {
             font-size: 0.8rem;
@@ -486,28 +405,11 @@
             margin-top: 5px;
         }
 
-        .youwon-layout {
-            position: relative; 
-            padding-bottom: 20px;
-        }
-
-        .youwon-layout .room-image-frame {
-            margin-top: 0px;
-            margin-bottom: 0px;
-        }
-
-        .youwon-layout .overlay-content-wrapper {
-            margin-top: 10px;
-        }
-
-        .youwon-layout .room-title-text {
-            margin-top: 0; 
-        }
-        
-        .youwon-layout .button-group {
-            margin-top: -150px;
-            margin-bottom: 10px;
-        }
+        .youwon-layout { position: relative; padding-bottom: 20px; }
+        .youwon-layout .room-image-frame { margin-top: 0px; margin-bottom: 0px; }
+        .youwon-layout .overlay-content-wrapper { margin-top: 10px; }
+        .youwon-layout .room-title-text { margin-top: 0; }
+        .youwon-layout .button-group { margin-top: -150px; margin-bottom: 10px; }
 
         .youwon-layout .btn-end {
             position: relative;
@@ -528,18 +430,8 @@
             z-index: 10;
         }
 
-        .form-row {
-            display: flex;
-            gap: 14px;
-            width: 100%;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1; 
-        }
+        .form-row { display: flex; gap: 14px; width: 100%; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; }
 
         .form-group label {
             font-family: 'Roboto', sans-serif;
@@ -561,10 +453,7 @@
             transition: all 0.3s ease-in-out;
         }
 
-        .form-input[type="file"] {
-            padding: 6px 12px;
-            cursor: pointer;
-        }
+        .form-input[type="file"] { padding: 6px 12px; cursor: pointer; }
 
         .form-input[type="file"]::file-selector-button {
             background: rgba(255, 255, 255, 0.1);
@@ -579,15 +468,8 @@
             transition: background 0.3s ease;
         }
 
-        .form-input[type="file"]::file-selector-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: rgba(255, 248, 250, 0.6);
-            background: rgba(255, 255, 255, 0.08);
-        }
+        .form-input[type="file"]::file-selector-button:hover { background: rgba(255, 255, 255, 0.2); }
+        .form-input:focus { outline: none; border-color: rgba(255, 248, 250, 0.6); background: rgba(255, 255, 255, 0.08); }
 
         .form-submit-btn {
             background-color: rgba(255, 255, 255, 0.05);
@@ -627,16 +509,8 @@
             color: #fff8fa;
         }
 
-        .rules-checkbox-group input[type="checkbox"] {
-            accent-color: #fff8fa;
-            cursor: pointer;
-        }
-
-        .audio-player-container {
-            margin: 0;
-            width: 100%;
-            z-index: 10;
-        }
+        .rules-checkbox-group input[type="checkbox"] { accent-color: #fff8fa; cursor: pointer; }
+        .audio-player-container { margin: 0; width: 100%; z-index: 10; }
 
         .nav-btn {
             background-color: transparent;
@@ -656,13 +530,8 @@
             text-align: center;
         }
 
-        .button-group .nav-btn:first-child {
-            text-align: right;
-        }
-
-        .button-group .nav-btn:last-child {
-            text-align: left;
-        }
+        .button-group .nav-btn:first-child { text-align: right; }
+        .button-group .nav-btn:last-child { text-align: left; }
 
         .nav-btn-landing {
             background-color: transparent;
@@ -680,9 +549,7 @@
             z-index: 5;
         }
 
-        #landing .nav-btn-landing {
-            margin-top: 0px;
-        }
+        #landing .nav-btn-landing { margin-top: 0px; }
 
         .button-group {
             display: flex;
@@ -693,21 +560,9 @@
             margin: 0 auto;
         }
 
-        .button-group button {
-            flex: 1; 
-            max-width: 80px;
-        }
-
-        .play-btn {
-            flex: 0 0 auto;
-        }
-
-        .btn-sub {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin-top: 2px;
-        }
+        .button-group button { flex: 1; max-width: 80px; }
+        .play-btn { flex: 0 0 auto; }
+        .btn-sub { width: 100%; display: flex; justify-content: center; margin-top: 2px; }
 
         .btn-end {
             display: flex;
@@ -764,12 +619,8 @@
             height: 36px;
         }
 
-        .audio-toggle-btn:hover {
-            transform: scale(1.1);
-        }
-
+        .audio-toggle-btn:hover { transform: scale(1.1); }
         audio { display: none; }
-
 
         .modal-overlay {
             display: none;
@@ -798,11 +649,7 @@
             box-sizing: border-box;
         }
 
-        .modal-title {
-            margin: 0 0 8px 0;
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-        }
+        .modal-title { margin: 0 0 8px 0; font-size: 1.2rem; letter-spacing: 1px; }
 
         .modal-subtext {
             font-family: 'Roboto', sans-serif;
@@ -813,16 +660,8 @@
             letter-spacing: 0.5px;
         }
 
-        .modal-actions {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .modal-action-btn {
-            padding: 6px 22px;
-            font-size: 0.95rem;
-        }
+        .modal-actions { display: flex; gap: 20px; justify-content: center; }
+        .modal-action-btn { padding: 6px 22px; font-size: 0.95rem; }
 
         .site-footer {
             width: 90%;
@@ -833,9 +672,7 @@
             margin-top: auto;
         }
 
-        .site-footer p a[onclick] {
-            cursor: pointer;
-        }
+        .site-footer p a[onclick] { cursor: pointer; }
 
         .site-footer p {
             font-family: 'Roboto', sans-serif;
@@ -872,18 +709,14 @@
             transition: all 0.3s ease-in-out;
         }
 
-        .policy-text a:hover {
-            opacity: 1;
-            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
-        }
-
+        .policy-text a:hover { opacity: 1; text-shadow: 0 0 10px rgba(255, 248, 250, 0.8); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <!-- LANDING SCREEN -->
-    <div id="landing" class="room">
+    <div id="landing" class="room active">
         <div class="room-image-frame" id="landing-frame">
             <h1 class="landing-title">Liminal Labyrinth</h1>
             <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
@@ -891,13 +724,20 @@
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
         </div>
 
-        <!-- COUNTDOWN CONTAINER -->
         <div id="countdown-container" class="countdown-wrapper">
-            <p id="countdown-label" class="countdown-label">[TRANSMISSION LOCKED - AWAITING SIGNAL]</p>
+            <p id="countdown-label" class="countdown-label expanse-blurb-text"></p>
             <div id="countdown-timer" class="countdown-digits">00d : 00h : 00m : 00s</div>
         </div>
 
-        <!-- HIDDEN BUTTONS (Revealed on Opening) -->
+        <div class="button-group">
+            <audio loop preload="auto">
+                <source src="audio/teasertrack.mp3" type="audio/mpeg">
+            </audio>
+            <button class="audio-toggle-btn play-btn" onclick="toggleAudio(this)">
+                <img class="audio-icon" src="https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
+            </button>
+        </div>
+
         <div id="landing-action-group" class="landing-action-group">
             <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
                 <span>It is time to wake up.<br>Enter.</span>
@@ -965,7 +805,7 @@
         </div>
     </div>
 
-        <!-- EXPANSE 1 -->
+    <!-- EXPANSE 1 -->
     <div id="exp1" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1085,7 +925,7 @@
         </div>
     </div>
 
-     <!-- EXPANSE 3 -->
+    <!-- EXPANSE 3 -->
     <div id="exp3" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1145,7 +985,7 @@
         </div>
     </div>
 
-     <!-- EXPANSE 4 -->
+    <!-- EXPANSE 4 -->
     <div id="exp4" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1205,7 +1045,7 @@
         </div>
     </div>
 
-     <!-- EXPANSE 5 -->
+    <!-- EXPANSE 5 -->
     <div id="exp5" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1265,7 +1105,7 @@
         </div>
     </div>
 
-     <!-- EXPANSE 6 -->
+    <!-- EXPANSE 6 -->
     <div id="exp6" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1325,7 +1165,7 @@
         </div>
     </div>
 
-     <!-- EXPANSE 7 -->
+    <!-- EXPANSE 7 -->
     <div id="exp7" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1387,7 +1227,7 @@
         </div>
     </div>
 
-     <!-- EXPANSE 8 -->
+    <!-- EXPANSE 8 -->
     <div id="exp8" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1448,7 +1288,7 @@
         </div>
     </div>
 
-     <!-- EXPANSE 9 -->
+    <!-- EXPANSE 9 -->
     <div id="exp9" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1494,7 +1334,7 @@
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
-         <div class="audio-player-container">
+        <div class="audio-player-container">
             <audio loop preload="auto">
                 <source src="audio/roomtrack10.mp3" type="audio/mpeg">
             </audio>
@@ -1508,7 +1348,7 @@
         </div>
     </div>
 
-     <!-- EXPANSE 10 -->
+    <!-- EXPANSE 10 -->
     <div id="exp10" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1569,7 +1409,7 @@
         </div>
     </div>
 
-         <!-- EXPANSE 11 -->
+    <!-- EXPANSE 11 -->
     <div id="exp11" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1629,7 +1469,7 @@
         </div>
     </div>
 
-         <!-- EXPANSE 12 -->
+    <!-- EXPANSE 12 -->
     <div id="exp12" class="room">
         <div class="room-image-frame">
             <div class="room-header-group">
@@ -1735,7 +1575,7 @@
             <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
         </div>
 
-         <div class="audio-player-container">
+        <div class="audio-player-container">
             <audio loop preload="auto">
                 <source src="audio/roomtrack14.mp3" type="audio/mpeg">
             </audio>
@@ -1961,6 +1801,7 @@
         </div>
     </div>
 
+    <!-- YOU WON SCREEN -->
     <div id="youwon" class="room youwon-layout">
         <div class="room-image-frame">
             <div class="youwon-header-overlay">
@@ -2074,7 +1915,47 @@
 const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
 const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
-const TARGET_DATE = new Date("2026-08-18T10:40:00Z").getTime();
+const TARGET_DATE = new Date("2026-08-18T11:20:00Z").getTime();
+
+/* ================= UTC PHRASE SCHEDULE CONFIGURATION ================= */
+const LANDING_PHRASE_SCHEDULE = [
+    {
+        // Default Phase (Initial state before any specific milestone date)
+        startTime: 0,
+        phrases: [
+            "[TRANSMISSION LOCKED] - AWAITING SIGNAL",
+            "[CARRIER WAVE DORMANT] - MONITORING FREQUENCY",
+            "[SIGNAL UNRESOLVED] - PATIENCE IS REQUIRED",
+            "[STATIC DETECTED] - AWAITING BEACON TRANSMISSION"
+        ]
+    },
+    {
+        startTime: new Date("2026-08-22T16:59:00Z").getTime(),
+        phrases: [
+            "[FREQUENCY ALIGNED] - ESTABLISHING CONNECTION",
+            "[SUBSPACE RELAY ACTIVE] - SYNCHRONIZING CLOCKS",
+            "[ENCRYPTION KEY ACCEPTED] - PREPARING STREAM",
+            "[SIGNAL STRENGTH 84%] - NOISE FLOOR REDUCED"
+        ]
+    },
+    {
+        startTime: new Date("2026-08-22T17:02:00Z").getTime(),
+        phrases: [
+            "[CARRIER WAVE LOCATED] - CONFIRMING STREAM ACTIVE",
+            "[BROADCAST INITIATED] - STAND BY FOR DECRYPTION",
+            "[GATEWAY OPENING] - TRANSMISSION IN PROGRESS",
+            "[STREAM CONFIRMATION] - THE LEET SHOW LIVE"
+        ]
+    },
+    {
+        startTime: new Date("2026-08-22T17:05:00Z").getTime(),
+        phrases: [
+            "[TRANSMISSION LIVE] - SIGNAL UNLOCKED",
+            "[LABYRINTH PROTOCOL ENGAGED] - ENTER WHEN READY",
+            "[SIGNAL STABLE] - PROCEED TO THE LABYRINTH"
+        ]
+    }
+];
 
 function fadeAudioOut(audio, duration = 1500) {
     return new Promise((resolve) => {
@@ -2136,6 +2017,60 @@ function toggleAudio(btn) {
 }
 
 let typingIntervals = {}; 
+let landingTypingInterval = null;
+let landingTypingTimeout = null;
+let lastLandingPhraseIndex = -1;
+
+/* ================= LANDING TERMINAL TYPEWRITER ================= */
+function startLandingTypewriter() {
+    const label = document.getElementById('countdown-label');
+    if (!label) return;
+
+    clearInterval(landingTypingInterval);
+    clearTimeout(landingTypingTimeout);
+
+    const typingSpeed = 85;  // Speed per character (ms)
+    const loopPause   = 8000; // Pause after completing phrase before typing next (ms)
+
+    function typeNextPhrase() {
+        const now = Date.now();
+        // Identify active schedule group based on current UTC time
+        const activeBlock = LANDING_PHRASE_SCHEDULE
+            .slice()
+            .reverse()
+            .find(block => now >= block.startTime) || LANDING_PHRASE_SCHEDULE[0];
+
+        // Randomly pick a new phrase from the active set without repeating the last index
+        let phraseIndex = 0;
+        if (activeBlock.phrases.length > 1) {
+            do {
+                phraseIndex = Math.floor(Math.random() * activeBlock.phrases.length);
+            } while (phraseIndex === lastLandingPhraseIndex);
+        }
+        lastLandingPhraseIndex = phraseIndex;
+        const fullText = activeBlock.phrases[phraseIndex];
+
+        label.textContent = '';
+        label.classList.remove('typing');
+
+        let charIndex = 0;
+        landingTypingInterval = setInterval(() => {
+            if (charIndex < fullText.length) {
+                label.textContent += fullText.charAt(charIndex);
+                charIndex++;
+            } else {
+                clearInterval(landingTypingInterval);
+                label.classList.add('typing'); // Enables terminal cursor blink
+
+                landingTypingTimeout = setTimeout(() => {
+                    typeNextPhrase();
+                }, loopPause);
+            }
+        }, typingSpeed);
+    }
+
+    typeNextPhrase();
+}
 
 function goToRoom(roomId) {
     const rooms = document.querySelectorAll('.room');
@@ -2148,7 +2083,9 @@ function goToRoom(roomId) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
 
-        if (roomId.startsWith('exp') || roomId === 'youwon') {
+        if (roomId === 'landing') {
+            startLandingTypewriter();
+        } else if (roomId.startsWith('exp') || roomId === 'youwon') {
             const blurb = activeRoom.querySelector('.expanse-blurb-text');
             if (blurb) {
                 if (!blurb.getAttribute('data-full-text')) {
@@ -2251,218 +2188,52 @@ function triggerLandingCollapse(buttonElement) {
     }, 3000); 
 }
 
-/* ================= COUNTDOWN & GRAND UNVEILING LOGIC ================= */
-let hasUnveiled = false;
-
-const UTC_MILESTONES = [
-    { time: new Date("2026-08-16T00:00:00Z").getTime(), label: "[TRANSMISSION LOCKED - FREQUENCY ENCRYPTED]" },
-    { time: new Date("2026-08-21T12:00:00Z").getTime(), label: "[FREQUENCY ALIGNED - ESTABLISHING CONNECTION]" },
-    { time: new Date("2026-08-22T16:50:00Z").getTime(), label: "[CARRIER WAVE LOCATED - CONFIRMING STREAM ACTIVE]" },
-    { time: new Date("2026-08-22T17:00:00Z").getTime(), label: "[SIGNAL IMMINENT - FINALIZING TRANSMISSION]" },
-    { time: new Date("2026-08-22T17:01:00Z").getTime(), label: "[STREAM DETECTION ENABLED - THE LEET SHOW]" },
-    { time: new Date("2026-08-22T17:10:00Z").getTime(), label: "[TRANSMISSION LIVE - ACCESS GRANTED]" }
-];
-
+/* ================= COUNTDOWN & TIMER LOGIC ================= */
 function updateCountdown() {
-    const now = new Date().getTime();
-    const distance = TARGET_DATE - now;
+    const now = Date.now();
+    const diff = TARGET_DATE - now;
 
-    const timerElem = document.getElementById('countdown-timer');
-    const labelElem = document.getElementById('countdown-label');
+    const timerElement = document.getElementById('countdown-timer');
+    const actionGroup = document.getElementById('landing-action-group');
 
-    if (distance <= 0) {
-        if (timerElem) timerElem.textContent = "00d : 00h : 00m : 00s";
-
-        const overlay = document.getElementById('landing-overlay');
-        if (overlay) {
-            overlay.classList.add('fade-out');
-        }
-        triggerGrandUnveiling();
+    if (diff <= 0) {
+        if (timerElement) timerElement.textContent = "00d : 00h : 00m : 00s";
+        if (actionGroup) actionGroup.classList.add('revealed');
         return;
     }
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-    if (labelElem) {
-        let currentLabel = "[TRANSMISSION LOCKED - AWAITING SIGNAL]"; // Default before first milestone
-
-        for (const milestone of UTC_MILESTONES) {
-            if (now >= milestone.time) {
-                currentLabel = milestone.label;
-            }
-        }
-
-        labelElem.textContent = currentLabel;
-    }
-
-    const pad = num => String(num).padStart(2, '0');
-    if (timerElem) {
-        timerElem.textContent = `${pad(days)}d : ${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`;
-    }
-
-    setTimeout(updateCountdown, 1000);
-}
-
-function triggerGrandUnveiling() {
-    if (hasUnveiled) return;
-    hasUnveiled = true;
-
-    const labelElem = document.getElementById('countdown-label');
-    const timerElem = document.getElementById('countdown-timer');
-    const landingActionGroup = document.getElementById('landing-action-group');
-    const landingFrame = document.getElementById('landing-frame');
-
-    if (landingFrame) {
-        landingFrame.classList.add('signal-flash');
-    }
-
-    if (labelElem) {
-        labelElem.textContent = "[TRANSMISSION LIVE - ACCESS GRANTED]";
-        labelElem.style.animation = "none";
-        labelElem.style.opacity = "1";
-    }
-
-    if (timerElem) {
-        timerElem.style.textShadow = "0 0 8px rgba(0, 255, 102, 1), 0 0 18px rgba(0, 255, 102, 0.8)";
-    }
-
-    const crtImage = document.getElementById('landing-crt');
-    if (crtImage) {
-        crtImage.classList.add('fade-out');
-    }
-    if (landingActionGroup) {
-        setTimeout(() => {
-            landingActionGroup.classList.add('revealed');
-        }, 50);
+    const pad = (n) => String(n).padStart(2, '0');
+    if (timerElement) {
+        timerElement.textContent = `${pad(days)}d : ${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`;
     }
 }
 
-/* ================= MODALS & PROGRESS RESET ================= */
 function resetProgress() {
-    document.getElementById('reset-modal').style.display = 'flex';
+    const modal = document.getElementById('reset-modal');
+    if (modal) modal.style.display = 'flex';
 }
 
-function confirmReset(isConfirmed) {
-    document.getElementById('reset-modal').style.display = 'none';
-    if (isConfirmed) {
+function confirmReset(confirmed) {
+    const modal = document.getElementById('reset-modal');
+    if (modal) modal.style.display = 'none';
+
+    if (confirmed) {
         localStorage.removeItem('currentRoom');
         goToRoom('landing');
     }
 }
 
-function showSubmitModal(message) {
-    const modal = document.getElementById('submit-modal');
-    const title = document.getElementById('submit-modal-title');
-    if (modal && title) {
-        title.textContent = message;
-        modal.style.display = 'flex';
-    }
-}
-
-function closeSubmitModal() {
-    document.getElementById('submit-modal').style.display = 'none';
-}
-
-function openRulesModal() {
-    const rulesModal = document.getElementById('rules-modal');
-    const checkbox = document.getElementById('rules-checkbox');
-    const confirmBtn = document.getElementById('modal-confirm-btn');
-    if (rulesModal) {
-        checkbox.checked = false;
-        confirmBtn.disabled = true;
-        confirmBtn.style.opacity = '0.3';
-        confirmBtn.style.cursor = 'not-allowed';
-        rulesModal.style.display = 'flex';
-    }
-}
-
-function closeRulesModal() {
-    const rulesModal = document.getElementById('rules-modal');
-    if (rulesModal) {
-        rulesModal.style.display = 'none';
-    }
-}
-
-function toggleModalSubmitBtn() {
-    const checkbox = document.getElementById('rules-checkbox');
-    const confirmBtn = document.getElementById('modal-confirm-btn');
-    if (checkbox.checked) {
-        confirmBtn.disabled = false;
-        confirmBtn.style.opacity = '1';
-        confirmBtn.style.cursor = 'pointer';
-    } else {
-        confirmBtn.disabled = true;
-        confirmBtn.style.opacity = '0.3';
-        confirmBtn.style.cursor = 'not-allowed';
-    }
-}
-
-function confirmRulesAndSubmit() {
-    closeRulesModal();
-    executeFormSubmission();
-}
-
-function executeFormSubmission() {
-    const form = document.querySelector('.prize-form');
-    if (!form) return;
-
-    const formData = new FormData(form);
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-    }).then(response => {
-        if (response.ok) {
-            showSubmitModal("Entry submitted successfully!");
-            form.reset();
-        } else {
-            showSubmitModal("Submission failed. Please try again.");
-        }
-    }).catch(() => {
-        showSubmitModal("Network error. Please try again.");
-    });
-}
-
-/* ================= INITIALIZATION ================= */
-window.addEventListener('DOMContentLoaded', () => {
-    // Start countdown clock
+document.addEventListener('DOMContentLoaded', () => {
+    const savedRoom = localStorage.getItem('currentRoom') || 'landing';
+    goToRoom(savedRoom);
     updateCountdown();
-
-    const savedRoom = localStorage.getItem('currentRoom');
-    if (savedRoom && document.getElementById(savedRoom)) {
-        goToRoom(savedRoom);
-    } else {
-        goToRoom('landing');
-    }
-
-    // Unlock Welcome Progress Button
-    const welcomeAudio = document.getElementById('welcome-audio');
-    const progressBtn = document.getElementById('welcome-progress-btn');
-
-    if (welcomeAudio && progressBtn) {
-        welcomeAudio.addEventListener('timeupdate', () => {
-            if (welcomeAudio.currentTime >= 53) {
-                progressBtn.disabled = false;
-                progressBtn.style.opacity = '1';
-                progressBtn.style.cursor = 'pointer';
-                progressBtn.style.pointerEvents = 'auto';
-            }
-        });
-    }
-
-    // Intercept prize form submit to trigger rules modal
-    const prizeForm = document.querySelector('.prize-form');
-    if (prizeForm) {
-        prizeForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            openRulesModal();
-        });
-    }
+    setInterval(updateCountdown, 1000);
 });
 </script>
-
 </body>
 </html>
