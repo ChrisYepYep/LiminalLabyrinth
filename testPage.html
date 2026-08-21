@@ -1968,7 +1968,6 @@ const TARGET_DATE = new Date("2026-08-21T17:05:00Z").getTime();
 /* ================= UTC PHRASE SCHEDULE CONFIGURATION ================= */
 const LANDING_PHRASE_SCHEDULE = [
     {
-        // Default Phase (Initial state before any specific milestone date)
         startTime: 0,
         phrases: [
             "[TRANSMISSION LOCKED] - AWAITING SIGNAL",
@@ -2064,12 +2063,10 @@ function toggleAudio(btn) {
     }
 }
 
-let typingIntervals = {}; 
 let landingTypingInterval = null;
 let landingTypingTimeout = null;
 let lastLandingPhraseIndex = -1;
 
-/* ================= LANDING TERMINAL TYPEWRITER ================= */
 function startLandingTypewriter() {
     const label = document.getElementById('countdown-label');
     if (!label) return;
@@ -2077,8 +2074,8 @@ function startLandingTypewriter() {
     clearInterval(landingTypingInterval);
     clearTimeout(landingTypingTimeout);
 
-    const typingSpeed = 85;  // Speed per character (ms)
-    const loopPause   = 8000; // Pause after completing phrase before typing next (ms)
+    const typingSpeed = 85; 
+    const loopPause   = 8000;
 
     function typeNextPhrase() {
         const now = Date.now();
@@ -2118,7 +2115,6 @@ function startLandingTypewriter() {
     typeNextPhrase();
 }
 
-/* ================= COUNTDOWN TIMER LOGIC ================= */
 let hasRevealedLandingAction = false;
 
 function updateCountdown() {
@@ -2129,38 +2125,29 @@ function updateCountdown() {
     const timeRemaining = TARGET_DATE - now;
 
     if (timeRemaining <= 0) {
-        // Lock timer at zero
         timerElement.textContent = "00d : 00h : 00m : 00s";
 
         if (!hasRevealedLandingAction) {
             hasRevealedLandingAction = true;
             
-            // Fade out the CRT overlay image to reveal Figment.png
             const crtImage = document.getElementById('landing-crt');
             if (crtImage) {
                 crtImage.classList.add('fade-out');
             }
 
-            // Reveal the action group button
             const actionGroup = document.getElementById('landing-action-group');
             if (actionGroup) {
                 actionGroup.classList.add('revealed');
             }
 
-            // Trigger header green glow burst effect
             const landingTitle = document.querySelector('.landing-title');
             if (landingTitle) {
                 landingTitle.classList.add('pulse-active');
-                setTimeout(() => {
-                    landingTitle.classList.remove('pulse-active');
-                    landingTitle.classList.add('pulse-subtle-loop');
-                }, 8000);
             }
         }
         return;
     }
 
-    // Standard countdown calculation
     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
@@ -2190,78 +2177,27 @@ function goToRoom(roomId) {
     if (activeRoom) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
-
-        if (roomId === 'landing') {
-            startLandingTypewriter();
-        } else if (roomId.startsWith('exp') || roomId === 'youwon') {
-            const blurb = activeRoom.querySelector('.expanse-blurb-text');
-            if (blurb) {
-                if (!blurb.getAttribute('data-full-text')) {
-                    blurb.setAttribute('data-full-text', blurb.textContent);
-                }
-                
-                const fullText = blurb.getAttribute('data-full-text');
-                
-                clearInterval(typingIntervals[roomId]);
-                clearTimeout(typingIntervals[roomId + '_loop']);
-                
-                blurb.classList.remove('typing');
-                blurb.textContent = '';
-
-                const initialDelay = 2000; 
-                const typingSpeed  = 85;   
-                const loopPause    = 12000; 
-
-                function startTypewriter() {
-                    blurb.textContent = '';
-                    blurb.classList.remove('typing');
-
-                    typingIntervals[roomId + '_loop'] = setTimeout(() => {
-                        let charIndex = 0;
-
-                        typingIntervals[roomId] = setInterval(() => {
-                            if (charIndex < fullText.length) {
-                                blurb.textContent += fullText.charAt(charIndex);
-                                charIndex++;
-                            } else {
-                                clearInterval(typingIntervals[roomId]);
-                                blurb.classList.add('typing');
-                                typingIntervals[roomId + '_loop'] = setTimeout(startTypewriter, loopPause);
-                            }
-                        }, typingSpeed);
-                    }, initialDelay);
-                }
-
-                startTypewriter();
-            }
-        }
     }
 }
 
-function resetProgress() {
-    const modal = document.getElementById('reset-modal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function confirmReset(confirmed) {
-    const modal = document.getElementById('reset-modal');
-    if (modal) modal.style.display = 'none';
-
-    if (confirmed) {
-        localStorage.removeItem('currentRoom');
-        goToRoom('landing');
-    }
-}
-
-/* ================= INITIALIZATION ================= */
+// Enable Welcome Progress button at 53 seconds
 document.addEventListener('DOMContentLoaded', () => {
-    // Start countdown timer tick
-    updateCountdown();
     setInterval(updateCountdown, 1000);
+    startLandingTypewriter();
 
-    // Initialize room state
-    const savedRoom = localStorage.getItem('currentRoom') || 'landing';
-    goToRoom(savedRoom);
+    const welcomeAudio = document.getElementById('welcome-audio');
+    const welcomeProgressBtn = document.getElementById('welcome-progress-btn');
+
+    if (welcomeAudio && welcomeProgressBtn) {
+        welcomeAudio.addEventListener('timeupdate', () => {
+            if (welcomeAudio.currentTime >= 53) {
+                welcomeProgressBtn.disabled = false;
+                welcomeProgressBtn.style.opacity = '1';
+                welcomeProgressBtn.style.cursor = 'pointer';
+                welcomeProgressBtn.style.pointerEvents = 'auto';
+            }
+        });
+    }
 });
 </script>
 </body>
