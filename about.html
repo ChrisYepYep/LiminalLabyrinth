@@ -209,7 +209,6 @@
             box-sizing: border-box;
             position: relative;
             box-shadow: 0 0 10px rgba(240, 226, 230, 0.25);
-
         }
 
         .about-section-title {
@@ -219,6 +218,20 @@
             letter-spacing: 1.5px;
             color: #fff8fa;
             text-transform: uppercase;
+        }
+
+        .reference-link {
+            color: inherit;
+            opacity: 1;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .reference-link:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(255, 248, 250, 0.8);
+            text-decoration: underline;
+            text-underline-offset: 3px;
         }
 
         .about-text {
@@ -349,29 +362,32 @@
                 Dive into the mind behind Liminal Labyrinth<br>Selected insights and inspirations behind the maze are detailed below
             </p>
 
-            <!-- Clickable Image Tabs -->
-            <div class="tabs-grid">
-                <div class="tab-card" onclick="openModal('modal-inspiration')">
-                    <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/superlim1.jpg?raw=true" alt="Inspiration" class="tab-image">
-                    <span class="tab-title">SUPERLIMINAL</span>
-                </div>
-
-                <div class="tab-card" onclick="openModal('modal-soundtrack')">
-                    <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/mirrors.jpg?raw=true" alt="Soundtrack" class="tab-image">
-                    <span class="tab-title">MIRROR'S EDGE</span>
-                </div>
-
-                <div class="tab-card" onclick="openModal('modal-cache')">
-                    <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/swthome.png?raw=true" alt="Spatial Cache" class="tab-image">
-                    <span class="tab-title">ILLUSION MAZES</span>
-                </div>
-
-                <div class="tab-card" onclick="openModal('modal-logs')">
-                    <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/backrooms.jpg?raw=true" alt="Environmental Logs" class="tab-image">
-                    <span class="tab-title">BACKROOMS</span>
-                </div>
-
+        <div class="tabs-grid">
+            <div class="tab-card" data-tab-id="1" onclick="openModal('modal-inspiration')">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/superlim1.jpg?raw=true" alt="Inspiration" class="tab-image">
+                <span class="tab-title">SUPERLIMINAL</span>
             </div>
+
+            <div class="tab-card" data-tab-id="2" onclick="openModal('modal-soundtrack')">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/mirrors.jpg?raw=true" alt="Soundtrack" class="tab-image">
+                <span class="tab-title">MIRROR'S EDGE</span>
+            </div>
+
+            <div class="tab-card" data-tab-id="3" onclick="openModal('modal-mazes')">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/swthome.png?raw=true" alt="Spatial Cache" class="tab-image">
+                <span class="tab-title">ILLUSION MAZES</span>
+            </div>
+
+            <div class="tab-card" data-tab-id="4" onclick="openModal('modal-backrooms')">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/backrooms.jpg?raw=true" alt="Environmental Logs" class="tab-image">
+                <span class="tab-title">BACKROOMS</span>
+            </div>
+
+            <div class="tab-card" data-tab-id="5" onclick="openModal('modal-references')">
+                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/credits.png?raw=true" alt="References" class="tab-image">
+                <span class="tab-title">CREDITS</span>
+            </div>
+        </div>
 
         </div>
 
@@ -411,7 +427,7 @@
     </div>
 </div>
 
-<div id="modal-cache" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-cache')">
+<div id="modal-mazes" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-cache')">
     <div class="modal-box">
         <div class="about-section-title">ILLUSION MAZES</div>
         <p class="about-text">
@@ -424,7 +440,7 @@
     </div>
 </div>
 
-<div id="modal-logs" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-logs')">
+<div id="modal-backrooms" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-logs')">
     <div class="modal-box">
         <div class="about-section-title">BACKROOMS</div>
         <p class="about-text">
@@ -433,6 +449,46 @@
         </p>
         <div class="modal-btn-group">
             <button class="nav-btn" onclick="closeModal('modal-logs')">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-references" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-references')">
+    <div class="modal-box">
+        <div class="about-section-title">CREDITS</div>
+        <!-- Changed <p> to <div> to prevent the browser from breaking the layout -->
+        <div class="about-text">
+            The following audio resources were instrumental in the creation of Liminal Labyrinth:
+            <br>
+            <ul>
+                <li><a class="reference-link" href="https://www.youtube.com/watch?v=0Odln_9IUNw&t" target="_blank" rel="noopener noreferrer">YouTube - Lost Ocean Temple</a></li>
+                <li><a class="reference-link" href="https://www.youtube.com/watch?v=lNuTYaIpWYs&t" target="_blank" rel="noopener noreferrer">Youtube - Lost Crystal Sanctuary</a></li>
+                <li><a class="reference-link" href="https://www.youtube.com/watch?v=fW8mq2Sa2Uc" target="_blank" rel="noopener noreferrer">Youtube - 'VHS Videogame Village'</a></li>
+                <li><a class="reference-link" href="https://www.youtube.com/watch?v=kYxJLhituSM&t" target="_blank" rel="noopener noreferrer">Youtube - 'Platonic Worlds'</a></li>
+                <li><a class="reference-link" href="https://www.youtube.com/watch?v=zD9OPGBKZFw&t" target="_blank" rel="noopener noreferrer">Youtube - 'Backrooms Ambience'</a></li>
+            </ul>
+            Script written by <b>ChrisYepYep</b>.<br>
+            Voiceover created using Artificial Intelligence.<br>
+            Website created by <b>ChrisYepYep</b>.<br><br>
+            Voiceover script for room 'Approximation' takes direct quotes from the game Superliminal, written by <b>Will O'Neill</b>. The original full quote comes from the games closing script, and reads as follows:<br><br>
+            Hello! My name is Dr. Glenn Pierce, and by now you may have realized that all of this has happened exactly the way it was supposed to. You see, everyone who comes to the Institute does so because they feel that they are no longer in control of something important to them. But, more often than not, the problem is not that the problems we face can't be solved. The problem is that we become so afraid of failure that we refuse to see our problems from a new perspective. And so we do the same things again and again and again. And therein, of course, we find exactly the failure we were looking for. Your life will always be a struggle and you will always have problems. But today, you had the chance to see things differently. Even though it meant facing obstacles that seemed impossible at first, you thought outside the box - and you overcame them. Because you saw things from every angle, you understood them for what they really were. Because you kept moving forward, no matter how far off the path you were told you were headed, or how unexpected it became... you found your way. In a few minutes, you'll be back in the real world, and some part of you will say that none of this was real; so how could it have really meant anything? But, just like the power of perspective itself - it will have been as real as you believed it to be. All you've got to do is wake up.
+            
+            </div>
+        <div class="modal-btn-group">
+            <button class="nav-btn" onclick="closeModal('modal-references')">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-secret" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-secret')">
+    <div class="modal-box">
+        <div class="about-section-title">SECRET UNLOCKED</div>
+        <p class="about-text" style="text-align: center;">
+            You've stumbled upon something here...<br><br>
+            <code style="font-size: 1.2rem; padding: 5px 10px;">YEPX2</code>
+        </p>
+        <div class="modal-btn-group">
+            <button class="nav-btn" onclick="closeModal('modal-secret')">Close</button>
         </div>
     </div>
 </div>
@@ -456,6 +512,46 @@
             closeModal(id);
         }
     }
+
+    const secretSequence = ['2', '1', '5', '4'];
+let currentSequence = [];
+
+// Attach mouseenter listeners to all tabs
+document.querySelectorAll('.tab-card').forEach(tab => {
+    tab.addEventListener('mouseenter', () => {
+        const id = tab.getAttribute('data-tab-id');
+        
+        // Prevent logging the same tab repeatedly if the user lingers over it
+        if (currentSequence[currentSequence.length - 1] !== id) {
+            currentSequence.push(id);
+            
+            // Limit sequence array length to match target length
+            if (currentSequence.length > secretSequence.length) {
+                currentSequence.shift();
+            }
+
+            // Check if sequence matches secret sequence
+            if (JSON.stringify(currentSequence) === JSON.stringify(secretSequence)) {
+                openModal('modal-secret');
+                currentSequence = []; // Reset after trigger
+            }
+        }
+    });
+});
+
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+function closeModalOnOutsideClick(event, id) {
+    if (event.target === document.getElementById(id)) {
+        closeModal(id);
+    }
+}
 </script>
 
 </body>
