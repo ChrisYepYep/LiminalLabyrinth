@@ -710,6 +710,63 @@
         }
 
         .policy-text a:hover { opacity: 1; text-shadow: 0 0 10px rgba(255, 248, 250, 0.8); }
+
+        /* ================= COUNTDOWN COMPLETION PULSE ================= */
+        .landing-title.pulse-active {
+            animation: greenGlowBurst 8s ease-in-out forwards;
+        }
+
+        .pulse-element {
+            position: relative;
+            display: inline-block;
+            color: #ffffff;
+            /* Hardware acceleration trigger */
+            will-change: transform;
+            animation: textPulse 4s ease-out infinite;
+        }
+
+        .pulse-element::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: radial-gradient(circle, rgba(0, 255, 102, 0.8) 0%, rgba(0, 255, 102, 0.4) 40%, rgba(0, 255, 102, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0;
+            will-change: transform, opacity;
+            animation: auraBurst 4s ease-out infinite;
+        }
+
+        .landing-title.pulse-active {
+            animation: greenGlowBurst 5s ease-in-out forwards;
+        }
+
+        @keyframes greenGlowBurst {
+            0% {
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
+                filter: brightness(1);
+            }
+            15% {
+                /* Peak bright burst */
+                text-shadow: 
+                    0 0 20px #00ff66,
+                    0 0 40px #00ff66,
+                    0 0 80px rgba(0, 255, 102, 0.8),
+                    0 0 120px rgba(0, 255, 102, 0.6);
+                filter: brightness(1.5);
+            }
+            100% {
+                text-shadow: 
+                    0 0 8px #00ff66,
+                    0 0 16px rgba(0, 255, 102, 0.5);
+                filter: brightness(1.15);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1906,7 +1963,7 @@
 const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
 const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
-const TARGET_DATE = new Date("2026-08-18T13:20:00Z").getTime();
+const TARGET_DATE = new Date("2026-08-22T17:00:00Z").getTime();
 
 /* ================= UTC PHRASE SCHEDULE CONFIGURATION ================= */
 const LANDING_PHRASE_SCHEDULE = [
@@ -2025,13 +2082,11 @@ function startLandingTypewriter() {
 
     function typeNextPhrase() {
         const now = Date.now();
-        // Identify active schedule group based on current UTC time
         const activeBlock = LANDING_PHRASE_SCHEDULE
             .slice()
             .reverse()
             .find(block => now >= block.startTime) || LANDING_PHRASE_SCHEDULE[0];
 
-        // Randomly pick a new phrase from the active set without repeating the last index
         let phraseIndex = 0;
         if (activeBlock.phrases.length > 1) {
             do {
@@ -2051,7 +2106,7 @@ function startLandingTypewriter() {
                 charIndex++;
             } else {
                 clearInterval(landingTypingInterval);
-                label.classList.add('typing'); // Enables terminal cursor blink
+                label.classList.add('typing');
 
                 landingTypingTimeout = setTimeout(() => {
                     typeNextPhrase();
@@ -2061,6 +2116,62 @@ function startLandingTypewriter() {
     }
 
     typeNextPhrase();
+}
+
+/* ================= COUNTDOWN TIMER LOGIC ================= */
+let hasRevealedLandingAction = false;
+
+function updateCountdown() {
+    const timerElement = document.getElementById('countdown-timer');
+    if (!timerElement) return;
+
+    const now = Date.now();
+    const timeRemaining = TARGET_DATE - now;
+
+    if (timeRemaining <= 0) {
+        // Lock timer at zero
+        timerElement.textContent = "00d : 00h : 00m : 00s";
+
+        if (!hasRevealedLandingAction) {
+            hasRevealedLandingAction = true;
+            
+            // Reveal the action group button
+            const actionGroup = document.getElementById('landing-action-group');
+            if (actionGroup) {
+                actionGroup.classList.add('revealed');
+            }
+
+            // Trigger header green glow burst effect
+            const landingTitle = document.querySelector('.landing-title');
+            if (landingTitle) {
+                landingTitle.classList.add('pulse-active');
+                setTimeout(() => {
+                    landingTitle.classList.remove('pulse-active');
+                    landingTitle.classList.add('pulse-subtle-loop');
+                }, 8000);
+            }
+        }
+        return;
+    }
+
+    // Standard countdown calculation
+    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+    const pad = (n) => String(n).padStart(2, '0');
+    timerElement.textContent = `${pad(days)}d : ${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`;
+}
+
+function triggerLandingCollapse(btn) {
+    const landing = document.getElementById('landing');
+    if (!landing) return;
+
+    landing.classList.add('fade-out');
+    setTimeout(() => {
+        goToRoom('welcome');
+    }, 1500);
 }
 
 function goToRoom(roomId) {
@@ -2109,112 +2220,15 @@ function goToRoom(roomId) {
                             } else {
                                 clearInterval(typingIntervals[roomId]);
                                 blurb.classList.add('typing');
-
-                                typingIntervals[roomId + '_loop'] = setTimeout(() => {
-                                    startTypewriter();
-                                }, loopPause);
+                                typingIntervals[roomId + '_loop'] = setTimeout(startTypewriter, loopPause);
                             }
                         }, typingSpeed);
-
                     }, initialDelay);
                 }
 
                 startTypewriter();
             }
-        } 
-    }
-
-    const allAudioBtns = document.querySelectorAll('.audio-toggle-btn');
-    allAudioBtns.forEach(btn => {
-        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
-        btn.classList.remove('playing');
-    });
-
-    document.querySelectorAll('audio').forEach(audio => {
-        if (!audio.paused) {
-            fadeAudioOut(audio, 500); 
-        } else {
-            audio.currentTime = 0;
         }
-    });
-}
-
-function triggerLandingCollapse(buttonElement) {
-    const landingElement = document.getElementById('landing');
-    const titleElement = document.querySelector('.landing-title');
-    
-    if (!titleElement.querySelector('.landing-letter')) {
-        const textContent = titleElement.textContent;
-        titleElement.innerHTML = '';
-        [...textContent].forEach(char => {
-            const span = document.createElement('span');
-            span.innerHTML = char === ' ' ? '&nbsp;' : char;
-            span.classList.add('landing-letter');
-            titleElement.appendChild(span);
-        });
-    }
-
-    buttonElement.style.opacity = '0';
-    buttonElement.style.pointerEvents = 'none';
-
-    const letters = titleElement.querySelectorAll('.landing-letter');
-    letters.forEach(letter => {
-        const randomRotation = Math.floor(Math.random() * 360) - 180 + 'deg';
-        letter.style.setProperty('--rot', randomRotation);
-        setTimeout(() => { letter.classList.add('fall'); }, Math.random() * 1000); 
-    });
-
-    landingElement.classList.add('fade-out');
-
-    setTimeout(() => {
-        goToRoom('welcome');
-
-        setTimeout(() => {
-            landingElement.classList.remove('fade-out');
-            landingElement.style.opacity = '1';
-            titleElement.innerHTML = 'Liminal Labyrinth';
-            buttonElement.style.opacity = '';
-            buttonElement.style.pointerEvents = '';
-        }, 500);
-    }, 3000); 
-}
-
-const welcomeAudio = document.getElementById('welcome-audio');
-const welcomeProgressBtn = document.getElementById('welcome-progress-btn');
-
-if (welcomeAudio && welcomeProgressBtn) {
-    welcomeAudio.addEventListener('timeupdate', () => {
-        if (welcomeAudio.currentTime >= 53 && welcomeProgressBtn.disabled) {
-            welcomeProgressBtn.disabled = false;
-            welcomeProgressBtn.style.opacity = '1';
-            welcomeProgressBtn.style.cursor = 'pointer';
-            welcomeProgressBtn.style.pointerEvents = 'auto';
-        }
-    });
-}
-
-/* ================= COUNTDOWN & TIMER LOGIC ================= */
-function updateCountdown() {
-    const now = Date.now();
-    const diff = TARGET_DATE - now;
-
-    const timerElement = document.getElementById('countdown-timer');
-    const actionGroup = document.getElementById('landing-action-group');
-
-    if (diff <= 0) {
-        if (timerElement) timerElement.textContent = "00d : 00h : 00m : 00s";
-        if (actionGroup) actionGroup.classList.add('revealed');
-        return;
-    }
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    const pad = (n) => String(n).padStart(2, '0');
-    if (timerElement) {
-        timerElement.textContent = `${pad(days)}d : ${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`;
     }
 }
 
@@ -2233,11 +2247,15 @@ function confirmReset(confirmed) {
     }
 }
 
+/* ================= INITIALIZATION ================= */
 document.addEventListener('DOMContentLoaded', () => {
-    const savedRoom = localStorage.getItem('currentRoom') || 'landing';
-    goToRoom(savedRoom);
+    // Start countdown timer tick
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    // Initialize room state
+    const savedRoom = localStorage.getItem('currentRoom') || 'landing';
+    goToRoom(savedRoom);
 });
 </script>
 </body>
