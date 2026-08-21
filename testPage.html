@@ -1963,7 +1963,7 @@
 const PLAY_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/playicon.png";
 const PAUSE_ICON_URL = "https://raw.githubusercontent.com/ChrisYepYep/LiminalLabyrinth/main/images/pauseicon.png";
 
-const TARGET_DATE = new Date("2026-08-22T17:00:00Z").getTime();
+const TARGET_DATE = new Date("2026-08-21T17:05:00Z").getTime();
 
 /* ================= UTC PHRASE SCHEDULE CONFIGURATION ================= */
 const LANDING_PHRASE_SCHEDULE = [
@@ -2135,6 +2135,12 @@ function updateCountdown() {
         if (!hasRevealedLandingAction) {
             hasRevealedLandingAction = true;
             
+            // Fade out the CRT overlay image to reveal Figment.png
+            const crtImage = document.getElementById('landing-crt');
+            if (crtImage) {
+                crtImage.classList.add('fade-out');
+            }
+
             // Reveal the action group button
             const actionGroup = document.getElementById('landing-action-group');
             if (actionGroup) {
