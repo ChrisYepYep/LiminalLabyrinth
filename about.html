@@ -40,6 +40,12 @@
             justify-content: flex-start;
             padding: 40px 0;
             box-sizing: border-box;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .container.secret-fade-out {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .about-layout {
@@ -351,6 +357,138 @@
             text-decoration: underline;
             text-underline-offset: 3px;
         }
+
+        /* ================= SECRET CRT SCREEN ================= */
+        .secret-split-panel {
+            position: fixed;
+            top: 0;
+            width: 50vw;
+            height: 100vh;
+            background: #000;
+            z-index: 1500;
+            display: none;
+            pointer-events: none;
+            transition: transform 2s cubic-bezier(0.83, 0, 0.17, 1);
+        }
+
+        .secret-split-left { left: 0; transform: translateX(0); }
+        .secret-split-right { right: 0; transform: translateX(0); }
+
+        .secret-split-panel.visible { display: block; }
+        .secret-split-panel.open.secret-split-left { transform: translateX(-100%); }
+        .secret-split-panel.open.secret-split-right { transform: translateX(100%); }
+
+        .secret-crt-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #051b0d 0%, #000000 78%);
+            z-index: 1400;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .secret-crt-screen.active {
+            display: flex;
+            animation: crtFlicker 6s infinite;
+        }
+
+        @keyframes crtFlicker {
+            0%, 91%, 100% { opacity: 1; }
+            92% { opacity: 0.91; }
+            93% { opacity: 1; }
+            96% { opacity: 0.95; }
+            97% { opacity: 1; }
+        }
+
+        .crt-scanlines {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .crt-vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.65) 100%);
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .crt-terminal-log {
+            position: absolute;
+            top: 8%;
+            left: 7%;
+            right: 7%;
+            bottom: 8%;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.7rem;
+            line-height: 2;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-word;
+            filter: blur(0.3px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .crt-log-line {
+            color: #00ff66;
+            text-shadow: 0 0 3px rgba(0, 255, 102, 0.7), 0 0 6px rgba(0, 255, 102, 0.4);
+            opacity: 0;
+            transform: translateX(-6px);
+            animation: crtLineReveal 0.4s ease-out forwards;
+        }
+
+        @keyframes crtLineReveal {
+            0%   { opacity: 0; transform: translateX(-6px); }
+            100% { opacity: 0.6; transform: translateX(0); }
+        }
+
+        .crt-center-content {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .crt-access-label {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+            color: #00ff66;
+            text-shadow: 0 0 3px rgba(0, 255, 102, 0.9), 0 0 8px rgba(0, 255, 102, 0.5);
+            margin: 0 0 14px 0;
+        }
+
+        .crt-code-display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.6rem;
+            font-weight: bold;
+            letter-spacing: 8px;
+            color: #00ff66;
+            text-shadow:
+                0 0 4px rgba(0, 255, 102, 0.9),
+                0 0 12px rgba(0, 255, 102, 0.6),
+                0 0 26px rgba(0, 255, 102, 0.4);
+            margin-bottom: 28px;
+        }
+
+        .crt-return-btn {
+            color: #00ff66;
+            text-shadow: 0 0 4px rgba(0, 255, 102, 0.6);
+        }
+
+        .crt-return-btn:hover {
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.9);
+        }
     </style>
 </head>
 <body>
@@ -488,16 +626,17 @@
     </div>
 </div>
 
-<div id="modal-secret" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-secret')">
-    <div class="modal-box">
-        <div class="about-section-title">SECRET UNLOCKED</div>
-        <p class="about-text" style="text-align: center;">
-            You've stumbled upon something here...<br><br>
-            <code style="font-size: 1.2rem; padding: 5px 10px;">YEPX2</code>
-        </p>
-        <div class="modal-btn-group">
-            <button class="nav-btn" onclick="closeModal('modal-secret')">Close</button>
-        </div>
+<div id="secret-split-left" class="secret-split-panel secret-split-left"></div>
+<div id="secret-split-right" class="secret-split-panel secret-split-right"></div>
+
+<div id="secret-crt-screen" class="secret-crt-screen">
+    <div class="crt-terminal-log" id="crt-terminal-log"></div>
+    <div class="crt-vignette"></div>
+    <div class="crt-scanlines"></div>
+    <div class="crt-center-content">
+        <p class="crt-access-label">ACCESS GRANTED</p>
+        <div class="crt-code-display">YEPX2</div>
+        <button class="nav-btn crt-return-btn" onclick="closeSecretScreen()">Return</button>
     </div>
 </div>
 
@@ -540,12 +679,88 @@ document.querySelectorAll('.tab-card').forEach(tab => {
 
             // Check if sequence matches secret sequence
             if (JSON.stringify(currentSequence) === JSON.stringify(secretSequence)) {
-                openModal('modal-secret');
+                openSecretScreen();
                 currentSequence = []; // Reset after trigger
             }
         }
     });
 });
+
+function randomHex() {
+    return Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+}
+
+const CRT_LOG_TEMPLATES = [
+    '[SYS_INIT] LIMINAL LABYRINTH TERMINAL v2.6',
+    '[BOOT] Loading kernel...................... OK',
+    '[MEM] Allocating spatial matrix (4096KB).... OK',
+    '[NODE_{hex}] Sector integrity check......... PASS',
+    '[SIGNAL] Carrier wave detected.............. LOCKED',
+    '[TRACE_{hex}] Unauthorized access pattern... FLAGGED',
+    '[CACHE] Clearing residual echo.............. DONE',
+    '[DECODE] Applying cipher key................ YEPX2',
+    '[AUTH_{hex}] Verifying credentials.......... OK',
+    '[STATIC] Signal noise floor................. -{hex}dB',
+    '[LOG] Hidden partition mounted.............. /secret',
+    '[ACCESS] Clearance level.................... GRANTED'
+];
+
+function populateCrtCode() {
+    const container = document.getElementById('crt-terminal-log');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    CRT_LOG_TEMPLATES.forEach((template, i) => {
+        const line = document.createElement('div');
+        line.className = 'crt-log-line';
+        line.textContent = template.replace(/\{hex\}/g, randomHex);
+        line.style.animationDelay = `${i * 0.12}s`;
+        container.appendChild(line);
+    });
+}
+
+function openSecretScreen() {
+    const container = document.querySelector('.container');
+    const left = document.getElementById('secret-split-left');
+    const right = document.getElementById('secret-split-right');
+    const screen = document.getElementById('secret-crt-screen');
+    if (!left || !right || !screen) return;
+
+    if (container) container.classList.add('secret-fade-out');
+
+    setTimeout(() => {
+        populateCrtCode();
+        screen.classList.add('active');
+        left.classList.add('visible');
+        right.classList.add('visible');
+
+        void left.offsetWidth; // force reflow so the closed state renders before opening
+
+        requestAnimationFrame(() => {
+            left.classList.add('open');
+            right.classList.add('open');
+        });
+    }, 2000);
+}
+
+function closeSecretScreen() {
+    const container = document.querySelector('.container');
+    const left = document.getElementById('secret-split-left');
+    const right = document.getElementById('secret-split-right');
+    const screen = document.getElementById('secret-crt-screen');
+    if (!left || !right || !screen) return;
+
+    left.classList.remove('open');
+    right.classList.remove('open');
+
+    setTimeout(() => {
+        left.classList.remove('visible');
+        right.classList.remove('visible');
+        screen.classList.remove('active');
+        if (container) container.classList.remove('secret-fade-out');
+    }, 2050);
+}
 </script>
 
 </body>
