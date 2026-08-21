@@ -2174,10 +2174,8 @@ function typeExpanseText(roomElement) {
     const textEl = roomElement.querySelector('.expanse-blurb-text');
     if (!textEl) return;
 
-    // Reset previous typing intervals
     if (expanseTypingInterval) clearInterval(expanseTypingInterval);
 
-    // Store full text from attribute or innerText
     if (!textEl.dataset.fullText) {
         textEl.dataset.fullText = textEl.textContent.trim();
     }
@@ -2187,7 +2185,7 @@ function typeExpanseText(roomElement) {
     textEl.classList.add('typing');
 
     let index = 0;
-    const typingSpeed = 50; // Speed in milliseconds per character
+    const typingSpeed = 50;
 
     expanseTypingInterval = setInterval(() => {
         if (index < fullText.length) {
