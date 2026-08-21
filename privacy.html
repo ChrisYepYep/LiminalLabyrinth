@@ -3,10 +3,18 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liminal Labyrinth - Privacy Policy</title>
+    <meta name="description" content="Privacy Policy & Event Rules for the Liminal Labyrinth prize draw.">
+    <meta property="og:title" content="Liminal Labyrinth - Privacy Policy">
+    <meta property="og:description" content="Privacy Policy & Event Rules for the Liminal Labyrinth prize draw.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://liminallabyrinth.quest/privacy.html">
+    <meta property="og:image" content="https://liminallabyrinth.quest/roomassets/Figment.png?raw=true">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='44' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23fff8fa' text-anchor='middle'%3ELL%3C/text%3E%3C/svg%3E">
     <style>
         body {
             margin: 0;
@@ -204,6 +212,47 @@
             text-decoration: underline;
             text-underline-offset: 3px;
         }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: rgba(0,0,0,0.6);
+            border: 0px rgba(255, 248, 250, 0.2);
+            padding: 15px 15px;
+            text-align: center;
+            border-radius: 20px;
+            width: 85%;
+            max-width: 360px;
+            box-shadow: 0 0 20px rgba(185, 179, 181, 0.15);
+            box-sizing: border-box;
+        }
+
+        .modal-title { margin: 0 0 8px 0; font-size: 1.2rem; letter-spacing: 1px; }
+
+        .modal-subtext {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.75rem;
+            color: rgba(255, 248, 250, 0.7);
+            margin: 0 0 20px 0;
+            line-height: 1.4;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-actions { display: flex; gap: 20px; justify-content: center; }
+        .modal-action-btn { padding: 6px 22px; font-size: 0.95rem; }
     </style>
 </head>
 <body>
@@ -256,17 +305,45 @@
 
         </div>
         <div class="button-group">
-            <button onclick="window.open('', '_self'); window.close();" class="nav-btn">Return</button>
+            <a href="https://liminallabyrinth.quest/" class="nav-btn">Return</a>
         </div>
-        
+
+    </div>
+</div>
+
+<div id="reset-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 class="modal-title">Are you sure?</h3>
+        <p class="modal-subtext">This will clear your saved progress and return you to the entrance.</p>
+        <div class="modal-actions">
+            <button class="nav-btn modal-action-btn" onclick="confirmReset(true)">Yes</button>
+            <button class="nav-btn modal-action-btn" onclick="confirmReset(false)">No</button>
+        </div>
     </div>
 </div>
 
 <footer class="site-footer">
-    <p><a class="resetlink" onclick="resetProgress()">Reset Progress</a></p>
+    <p><a class="resetlink" role="button" tabindex="0" onclick="resetProgress()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();resetProgress();}">Reset Progress</a></p>
     <p>Liminal Labyrinth: An Audio Experience, is produced by ChrisYepYep; Liminal Labyrinth is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
     <p>© 2026 Liminal Labyrinth. All rights reserved. | <a class="privacylink" href="https://liminallabyrinth.quest/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy & Event Rules</a></p>
 </footer>
+
+<script>
+function resetProgress() {
+    const modal = document.getElementById('reset-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function confirmReset(shouldReset) {
+    const modal = document.getElementById('reset-modal');
+    if (modal) modal.style.display = 'none';
+
+    if (shouldReset) {
+        localStorage.clear();
+        window.location.href = 'https://liminallabyrinth.quest/';
+    }
+}
+</script>
 
 </body>
 </html>
