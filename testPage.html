@@ -579,6 +579,39 @@
         .play-btn { flex: 0 0 auto; }
         .btn-sub { width: 100%; display: flex; justify-content: center; margin-top: 2px; }
 
+        .progress-breadcrumb {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+            margin-top: 14px;
+        }
+
+        .progress-breadcrumb-track {
+            width: 160px;
+            max-width: 55%;
+            height: 3px;
+            background: rgba(255, 248, 250, 0.12);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-breadcrumb-fill {
+            height: 100%;
+            background: #00ff66;
+            box-shadow: 0 0 6px rgba(0, 255, 102, 0.6);
+            border-radius: 2px;
+        }
+
+        .progress-breadcrumb-label {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.55rem;
+            letter-spacing: 1.5px;
+            color: rgba(0, 255, 102, 0.55);
+            text-transform: uppercase;
+        }
+
         .btn-end {
             display: flex;
             flex-direction: row;
@@ -2163,6 +2196,36 @@ function positionHeaderGlow() {
 
 window.addEventListener('resize', positionHeaderGlow);
 
+const MAZE_SEQUENCE = [
+    'room1', 'exp1', 'room2', 'exp2', 'room3', 'exp3', 'room4', 'exp4', 'room5', 'exp5',
+    'room6', 'exp6', 'room7', 'exp7', 'room8', 'exp8', 'room9', 'exp9', 'room10', 'exp10',
+    'room11', 'exp11', 'room12', 'exp12', 'room13', 'fig1', 'room14', 'fig2', 'room15', 'fig3',
+    'room16', 'spareoom', 'room17', 'room18'
+];
+
+function initProgressBreadcrumbs() {
+    const total = MAZE_SEQUENCE.length;
+
+    MAZE_SEQUENCE.forEach((roomId, index) => {
+        const room = document.getElementById(roomId);
+        const buttonGroup = room ? room.querySelector('.button-group') : null;
+        if (!buttonGroup) return;
+
+        const step = index + 1;
+        const percent = Math.round((step / total) * 100);
+
+        const breadcrumb = document.createElement('div');
+        breadcrumb.className = 'progress-breadcrumb';
+        breadcrumb.innerHTML = `
+            <div class="progress-breadcrumb-track">
+                <div class="progress-breadcrumb-fill" style="width: ${percent}%;"></div>
+            </div>
+            <div class="progress-breadcrumb-label">SECTOR ${String(step).padStart(2, '0')} / ${total}</div>
+        `;
+        buttonGroup.insertAdjacentElement('afterend', breadcrumb);
+    });
+}
+
 function triggerLandingCollapse(btn) {
     const landing = document.getElementById('landing');
     if (!landing) return;
@@ -2387,6 +2450,7 @@ function goToRoom(roomId) {
 document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateCountdown, 1000);
     startLandingTypewriter();
+    initProgressBreadcrumbs();
 
     const savedRoom = localStorage.getItem('currentRoom');
     if (savedRoom) {
