@@ -2212,10 +2212,18 @@ function goToRoom(roomId) {
     }
 }
 
+
 // Enable Welcome Progress button at 53 seconds
 document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateCountdown, 1000);
     startLandingTypewriter();
+
+    const savedRoom = localStorage.getItem('currentRoom');
+    if (savedRoom) {
+        goToRoom(savedRoom);
+    } else {
+        goToRoom('landing');
+    }
 
     const welcomeAudio = document.getElementById('welcome-audio');
     const welcomeProgressBtn = document.getElementById('welcome-progress-btn');
