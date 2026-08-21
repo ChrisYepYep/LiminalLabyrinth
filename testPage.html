@@ -114,7 +114,7 @@
             opacity: 0;
             visibility: hidden;
             transform: translateY(15px);
-            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out, visibility 1.5s ease-in-out;
+            transition: opacity 2.4s ease-in-out, transform 2.4s ease-in-out, visibility 2.4s ease-in-out;
             pointer-events: none;
             z-index: 20;
         }
@@ -211,13 +211,13 @@
         }
 
         .landing-letter.fall {
-            animation: randomTumble 5.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation: randomTumble 4.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
         @keyframes randomTumble {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { transform: translateY(120vh) rotate(var(--rot)); opacity: 0; }
+            0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            50%  { opacity: 0.7; }
+            100% { transform: translate(var(--drift, 0px), 120vh) rotate(var(--rot)); opacity: 0; }
         }
 
         .room-image-crt {
@@ -726,61 +726,32 @@
 
         .policy-text a:hover { opacity: 1; text-shadow: 0 0 10px rgba(255, 248, 250, 0.8); }
 
-        /* ================= COUNTDOWN COMPLETION PULSE ================= */
-        .landing-title.pulse-active {
-            animation: greenGlowBurst 8s ease-in-out forwards;
-        }
-
-        .pulse-element {
-            position: relative;
-            display: inline-block;
-            color: #ffffff;
-            /* Hardware acceleration trigger */
-            will-change: transform;
-            animation: textPulse 4s ease-out infinite;
-        }
-
-        .pulse-element::after {
-            content: '';
+        /* ================= COUNTDOWN COMPLETION GLOW ================= */
+        #landing-header-glow {
             position: absolute;
-            top: 50%;
+            top: 45px;
             left: 50%;
-            width: 100%;
-            height: 100%;
-            transform: translate(-50%, -50%) scale(0.8);
-            background: radial-gradient(circle, rgba(0, 255, 102, 0.8) 0%, rgba(0, 255, 102, 0.4) 40%, rgba(0, 255, 102, 0) 70%);
+            transform: translate(-50%, -50%);
+            width: min(90%, 460px);
+            height: 150px;
             border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
+            background: radial-gradient(circle,
+                rgba(0, 255, 102, 0.4) 0%,
+                rgba(0, 255, 102, 0.18) 45%,
+                rgba(0, 255, 102, 0) 75%);
+            filter: blur(18px);
             opacity: 0;
-            will-change: transform, opacity;
-            animation: auraBurst 4s ease-out infinite;
+            pointer-events: none;
+            z-index: 6;
         }
 
-        .landing-title.pulse-active {
-            animation: greenGlowBurst 5s ease-in-out forwards;
+        #landing-header-glow.glow-active {
+            animation: headerGlowFadeUp 5s ease-out forwards;
         }
 
-        @keyframes greenGlowBurst {
-            0% {
-                text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
-                filter: brightness(1);
-            }
-            15% {
-                /* Peak bright burst */
-                text-shadow: 
-                    0 0 20px #00ff66,
-                    0 0 40px #00ff66,
-                    0 0 80px rgba(0, 255, 102, 0.8),
-                    0 0 120px rgba(0, 255, 102, 0.6);
-                filter: brightness(1.5);
-            }
-            100% {
-                text-shadow: 
-                    0 0 8px #00ff66,
-                    0 0 16px rgba(0, 255, 102, 0.5);
-                filter: brightness(1.15);
-            }
+        @keyframes headerGlowFadeUp {
+            0%   { opacity: 0; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
@@ -790,6 +761,7 @@
     <!-- LANDING SCREEN -->
     <div id="landing" class="room active">
         <div class="room-image-frame" id="landing-frame">
+            <div id="landing-header-glow"></div>
             <h1 class="landing-title">Liminal Labyrinth</h1>
             <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
             <img id="landing-crt" class="room-image-crt" src="roomassets/figmentCRT.png?raw=true" alt="CRT Room Display">
@@ -803,7 +775,7 @@
 
         <div id="landing-action-group" class="landing-action-group">
             <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
-                <span>It is time to wake up.<br>Enter.</span>
+                <span>It is time to wake up<br>Enter</span>
             </button>
         </div>
     </div>
@@ -2150,15 +2122,17 @@ function updateCountdown() {
                 crtImage.classList.add('fade-out');
             }
 
-            const actionGroup = document.getElementById('landing-action-group');
-            if (actionGroup) {
-                actionGroup.classList.add('revealed');
+            const headerGlow = document.getElementById('landing-header-glow');
+            if (headerGlow) {
+                headerGlow.classList.add('glow-active');
             }
 
-            const landingTitle = document.querySelector('.landing-title');
-            if (landingTitle) {
-                landingTitle.classList.add('pulse-active');
-            }
+            setTimeout(() => {
+                const actionGroup = document.getElementById('landing-action-group');
+                if (actionGroup) {
+                    actionGroup.classList.add('revealed');
+                }
+            }, 3000);
         }
         return;
     }
@@ -2176,10 +2150,46 @@ function triggerLandingCollapse(btn) {
     const landing = document.getElementById('landing');
     if (!landing) return;
 
-    landing.classList.add('fade-out');
+    const title = document.querySelector('.landing-title');
+    if (title && !title.dataset.split) {
+        title.dataset.split = 'true';
+        const characters = [...title.textContent];
+        title.textContent = '';
+
+        characters.forEach((char, i) => {
+            const span = document.createElement('span');
+            span.className = 'landing-letter';
+            span.textContent = char === ' ' ? ' ' : char;
+            span.style.setProperty('--rot', `${Math.round(Math.random() * 720 - 360)}deg`);
+            span.style.setProperty('--drift', `${Math.round(Math.random() * 160 - 80)}px`);
+            span.style.animationDelay = `${(i * 0.04 + Math.random() * 0.3).toFixed(2)}s`;
+            title.appendChild(span);
+        });
+
+        requestAnimationFrame(() => {
+            title.querySelectorAll('.landing-letter').forEach(span => {
+                span.classList.add('fall');
+            });
+        });
+    }
+
+    const headerGlow = document.getElementById('landing-header-glow');
+    if (headerGlow) {
+        const currentOpacity = getComputedStyle(headerGlow).opacity;
+        headerGlow.style.animation = 'none';
+        headerGlow.style.opacity = currentOpacity;
+        void headerGlow.offsetWidth;
+        headerGlow.style.transition = 'opacity 2.5s ease-in';
+        headerGlow.style.opacity = '0';
+    }
+
+    setTimeout(() => {
+        landing.classList.add('fade-out');
+    }, 2500);
+
     setTimeout(() => {
         goToRoom('welcome');
-    }, 1500);
+    }, 5500);
 }
 
 let expanseTypingInterval = null;
@@ -2217,12 +2227,40 @@ function resetProgress() {
     if (modal) modal.style.display = 'flex';
 }
 
+function resetLandingScreen() {
+    const landing = document.getElementById('landing');
+    if (landing) landing.classList.remove('fade-out');
+
+    const crtImage = document.getElementById('landing-crt');
+    if (crtImage) crtImage.classList.remove('fade-out');
+
+    const headerGlow = document.getElementById('landing-header-glow');
+    if (headerGlow) {
+        headerGlow.classList.remove('glow-active');
+        headerGlow.style.animation = '';
+        headerGlow.style.transition = '';
+        headerGlow.style.opacity = '';
+    }
+
+    const actionGroup = document.getElementById('landing-action-group');
+    if (actionGroup) actionGroup.classList.remove('revealed');
+
+    const title = document.querySelector('.landing-title');
+    if (title) {
+        title.textContent = 'Liminal Labyrinth';
+        delete title.dataset.split;
+    }
+
+    hasRevealedLandingAction = false;
+}
+
 function confirmReset(shouldReset) {
     const modal = document.getElementById('reset-modal');
     if (modal) modal.style.display = 'none';
 
     if (shouldReset) {
         localStorage.clear();
+        resetLandingScreen();
         goToRoom('landing');
     }
 }
@@ -2299,6 +2337,18 @@ function closeSubmitModal() {
 }
 
 function goToRoom(roomId) {
+    document.querySelectorAll('audio').forEach(audio => {
+        if (!audio.paused) {
+            const room = audio.closest('.room');
+            const btn = room ? room.querySelector('.audio-toggle-btn.playing') : null;
+            if (btn) {
+                btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
+                btn.classList.remove('playing');
+            }
+            fadeAudioOut(audio);
+        }
+    });
+
     const rooms = document.querySelectorAll('.room');
     rooms.forEach(room => {
         room.classList.remove('active');
