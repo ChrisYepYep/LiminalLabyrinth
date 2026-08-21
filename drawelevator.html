@@ -6,7 +6,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Liminal Elevator - Centered Panel</title>
+  <title>Liminal Labyrinth - Prize Draw</title>
   <style>
     :root {
       --bg-color: #0b0805;
@@ -169,6 +169,25 @@
       text-align: center;
       padding: 20px;
       font-family: 'Oswald', sans-serif;
+      position: relative;
+    }
+
+    .reveal-particle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-glow);
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(0, 255, 102, 0.9), 0 0 12px rgba(0, 255, 102, 0.5);
+      pointer-events: none;
+      animation: particleBurst 1.4s ease-out forwards;
+    }
+
+    @keyframes particleBurst {
+      0% { transform: translate(-50%, -50%) translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) translate(var(--px), var(--py)) scale(0); opacity: 0; }
     }
 
     .winner-label {
@@ -183,11 +202,10 @@
     .winner-name-display {
       font-size: 2.5rem;
       font-weight: 700;
-      color: var(--accent-glow);
+      color: #fff8fa;
       text-shadow: 0 0 20px #dfd8da;
       letter-spacing: 2px;
       word-break: break-word;
-      color: #fff8fa;
     }
 
     /* Elevator Sliding Doors */
@@ -266,13 +284,36 @@
     .admin-section {
       width: 100%;
       transition: opacity 0.5s ease, visibility 0.5s ease;
-      height: 60px;
+      height: auto;
     }
 
     .admin-section.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
+    }
+
+    .admin-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      gap: 8px;
+    }
+
+    .entry-count {
+      font-size: 0.55rem;
+      letter-spacing: 0.5px;
+      color: #666;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .validation-message {
+      font-size: 0.55rem;
+      letter-spacing: 0.5px;
+      color: #ff5c5c;
+      text-align: right;
     }
 
     label {
@@ -556,6 +597,10 @@
           <div class="admin-section" id="adminSection">
             <label for="usernameInput">Submissions</label>
             <textarea id="usernameInput" placeholder="ChrisYepYep&#10;Macklebee&#10;Wowin&#10;"></textarea>
+            <div class="admin-meta-row">
+              <span id="entryCount" class="entry-count">0 entries</span>
+              <span id="validationMessage" class="validation-message"></span>
+            </div>
           </div>
 
           <button class="btn" id="drawBtn" onclick="startElevatorDraw()">Transit</button>
@@ -586,9 +631,34 @@
   const dirLight = document.getElementById('dirLight');
   const drawBtn = document.getElementById('drawBtn');
   const resetBtn = document.getElementById('resetBtn');
+  const entryCountEl = document.getElementById('entryCount');
+  const validationMessageEl = document.getElementById('validationMessage');
 
   const ITEM_HEIGHT = 45;
   let animationFrameId = null;
+
+  const NAMES_STORAGE_KEY = 'elevatorDrawNames';
+
+  function parseUsers(rawText) {
+    return rawText.split('\n').map(u => u.trim()).filter(u => u.length > 0);
+  }
+
+  function updateEntryCount() {
+    const count = parseUsers(usernameInput.value).length;
+    entryCountEl.textContent = `${count} ${count === 1 ? 'entry' : 'entries'}`;
+  }
+
+  const savedNames = localStorage.getItem(NAMES_STORAGE_KEY);
+  if (savedNames) {
+    usernameInput.value = savedNames;
+  }
+  updateEntryCount();
+
+  usernameInput.addEventListener('input', () => {
+    updateEntryCount();
+    localStorage.setItem(NAMES_STORAGE_KEY, usernameInput.value);
+    validationMessageEl.textContent = '';
+  });
 
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   let audioCtx = null;
@@ -621,22 +691,35 @@
     });
   }
 
+  function spawnRevealParticles() {
+    const box = document.querySelector('.winner-reveal-box');
+    if (!box) return;
+
+    const particleCount = 70;
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'reveal-particle';
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 80 + Math.random() * 320;
+      particle.style.setProperty('--px', `${Math.cos(angle) * distance}px`);
+      particle.style.setProperty('--py', `${Math.sin(angle) * distance}px`);
+      particle.style.animationDelay = `${Math.random() * 0.3}s`;
+      particle.addEventListener('animationend', () => particle.remove());
+      box.appendChild(particle);
+    }
+  }
+
   function startElevatorDraw() {
     if (!audioCtx) {
       audioCtx = new AudioContext();
     }
 
-    const rawText = usernameInput.value.trim();
-    if (!rawText) {
-      alert("Enter usernames...");
-      return;
-    }
-
-    const users = rawText.split('\n').map(u => u.trim()).filter(u => u.length > 0);
+    const users = parseUsers(usernameInput.value);
     if (users.length === 0) {
-      alert("No valid usernames found.");
+      validationMessageEl.textContent = 'Enter at least one username.';
       return;
     }
+    validationMessageEl.textContent = '';
 
     const winnerIndex = Math.floor(Math.random() * users.length);
     const winner = users[winnerIndex];
@@ -695,6 +778,7 @@
         elevatorFrame.classList.add('open');
         elevatorInterior.classList.add('revealed');
 
+        setTimeout(spawnRevealParticles, 900);
         playElevatorChime();
       }
     }
@@ -715,9 +799,13 @@
     
     scrollTrack.style.transform = 'translateY(0px)';
     scrollTrack.innerHTML = '<div class="name-item">G</div>';
-    
+
     statusLabel.textContent = 'Idle';
     dirLight.classList.remove('active');
+
+    winnerDisplay.textContent = '---';
+    validationMessageEl.textContent = '';
+    document.querySelectorAll('.reveal-particle').forEach(p => p.remove());
   }
 </script>
 </body>
