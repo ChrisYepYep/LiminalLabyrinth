@@ -2167,6 +2167,38 @@ function triggerLandingCollapse(btn) {
     }, 1500);
 }
 
+let expanseTypingInterval = null;
+
+function typeExpanseText(roomElement) {
+    // Find the green text element inside the newly active room
+    const textEl = roomElement.querySelector('.expanse-blurb-text');
+    if (!textEl) return;
+
+    // Reset previous typing intervals
+    if (expanseTypingInterval) clearInterval(expanseTypingInterval);
+
+    // Store full text from attribute or innerText
+    if (!textEl.dataset.fullText) {
+        textEl.dataset.fullText = textEl.textContent.trim();
+    }
+    
+    const fullText = textEl.dataset.fullText;
+    textEl.textContent = '';
+    textEl.classList.add('typing');
+
+    let index = 0;
+    const typingSpeed = 50; // Speed in milliseconds per character
+
+    expanseTypingInterval = setInterval(() => {
+        if (index < fullText.length) {
+            textEl.textContent += fullText.charAt(index);
+            index++;
+        } else {
+            clearInterval(expanseTypingInterval);
+        }
+    }, typingSpeed);
+}
+
 function goToRoom(roomId) {
     const rooms = document.querySelectorAll('.room');
     rooms.forEach(room => {
