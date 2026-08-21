@@ -7,6 +7,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Behind the Labyrinth</title>
+    <meta name="description" content="Behind the Labyrinth: the inspirations, soundtrack picks, and credits behind Liminal Labyrinth's Habbo Origins audio maze.">
+    <meta property="og:title" content="Behind the Labyrinth">
+    <meta property="og:description" content="The inspirations, soundtrack picks, and credits behind Liminal Labyrinth's Habbo Origins audio maze.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://liminallabyrinth.quest/about">
+    <meta property="og:image" content="https://liminallabyrinth.quest/roomassets/Figment.png?raw=true">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='44' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23fff8fa' text-anchor='middle'%3ELL%3C/text%3E%3C/svg%3E">
     <style>
         body {
             margin: 0;
@@ -363,28 +371,28 @@
             </p>
 
         <div class="tabs-grid">
-            <div class="tab-card" data-tab-id="1" onclick="openModal('modal-inspiration')">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/superlim1.jpg?raw=true" alt="Inspiration" class="tab-image">
+            <div class="tab-card" data-tab-id="1" role="button" tabindex="0" onclick="openModal('modal-inspiration')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-inspiration');}">
+                <img src="images/superlim1.jpg?raw=true" alt="Inspiration" class="tab-image">
                 <span class="tab-title">SUPERLIMINAL</span>
             </div>
 
-            <div class="tab-card" data-tab-id="2" onclick="openModal('modal-soundtrack')">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/mirrors.jpg?raw=true" alt="Soundtrack" class="tab-image">
+            <div class="tab-card" data-tab-id="2" role="button" tabindex="0" onclick="openModal('modal-soundtrack')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-soundtrack');}">
+                <img src="images/mirrors.jpg?raw=true" alt="Soundtrack" class="tab-image">
                 <span class="tab-title">MIRROR'S EDGE</span>
             </div>
 
-            <div class="tab-card" data-tab-id="3" onclick="openModal('modal-mazes')">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/swthome.png?raw=true" alt="Spatial Cache" class="tab-image">
+            <div class="tab-card" data-tab-id="3" role="button" tabindex="0" onclick="openModal('modal-mazes')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-mazes');}">
+                <img src="images/swthome.png?raw=true" alt="Spatial Cache" class="tab-image">
                 <span class="tab-title">ILLUSION MAZES</span>
             </div>
 
-            <div class="tab-card" data-tab-id="4" onclick="openModal('modal-backrooms')">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/backrooms.jpg?raw=true" alt="Environmental Logs" class="tab-image">
+            <div class="tab-card" data-tab-id="4" role="button" tabindex="0" onclick="openModal('modal-backrooms')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-backrooms');}">
+                <img src="images/backrooms.jpg?raw=true" alt="Environmental Logs" class="tab-image">
                 <span class="tab-title">BACKROOMS</span>
             </div>
 
-            <div class="tab-card" data-tab-id="5" onclick="openModal('modal-references')">
-                <img src="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/credits.png?raw=true" alt="References" class="tab-image">
+            <div class="tab-card" data-tab-id="5" role="button" tabindex="0" onclick="openModal('modal-references')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openModal('modal-references');}">
+                <img src="images/credits.png?raw=true" alt="References" class="tab-image">
                 <span class="tab-title">CREDITS</span>
             </div>
         </div>
@@ -427,7 +435,7 @@
     </div>
 </div>
 
-<div id="modal-mazes" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-cache')">
+<div id="modal-mazes" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-mazes')">
     <div class="modal-box">
         <div class="about-section-title">ILLUSION MAZES</div>
         <p class="about-text">
@@ -435,12 +443,12 @@
             <br><br>Alongside these spatial illusions, the Labyrinth often operates as a paradoxical puzzle. Your brain instinctively overcomplicates the rules, assuming invisible walls and complex barriers stand between you and the exit. In reality, once you abandon those initial assumptions, the path forward becomes delightfully trivial. If you’ve ever braved <b>markeh</b>’s <i>A Horrible Maze</i>, this spatial trickery might feel strangely familiar! His deception maze was a major spark of inspiration when Liminal Labyrinth was first conceived.
         </p>
         <div class="modal-btn-group">
-            <button class="nav-btn" onclick="closeModal('modal-cache')">Close</button>
+            <button class="nav-btn" onclick="closeModal('modal-mazes')">Close</button>
         </div>
     </div>
 </div>
 
-<div id="modal-backrooms" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-logs')">
+<div id="modal-backrooms" class="modal-overlay" onclick="closeModalOnOutsideClick(event, 'modal-backrooms')">
     <div class="modal-box">
         <div class="about-section-title">BACKROOMS</div>
         <p class="about-text">
@@ -448,7 +456,7 @@
             <br><br>That distinct feeling of uncanny familiarity and subtle dread naturally bled into the DNA of Liminal Labyrinth. The Labyrinth wasn't just built as a set of rules to solve, but as an eerie, transitional space to inhabit; a place where every turn feels like a wrong turn, and the environment itself seems to react to your presence.
         </p>
         <div class="modal-btn-group">
-            <button class="nav-btn" onclick="closeModal('modal-logs')">Close</button>
+            <button class="nav-btn" onclick="closeModal('modal-backrooms')">Close</button>
         </div>
     </div>
 </div>
@@ -538,20 +546,6 @@ document.querySelectorAll('.tab-card').forEach(tab => {
         }
     });
 });
-
-function openModal(id) {
-    document.getElementById(id).classList.add('active');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('active');
-}
-
-function closeModalOnOutsideClick(event, id) {
-    if (event.target === document.getElementById(id)) {
-        closeModal(id);
-    }
-}
 </script>
 
 </body>
