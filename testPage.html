@@ -729,8 +729,8 @@
         /* ================= COUNTDOWN COMPLETION GLOW ================= */
         #landing-header-glow {
             position: absolute;
-            top: 45px;
-            left: 50%;
+            top: var(--glow-top, 55px);
+            left: var(--glow-left, 50%);
             transform: translate(-50%, -50%);
             width: min(90%, 460px);
             height: 150px;
@@ -2124,6 +2124,7 @@ function updateCountdown() {
 
             const headerGlow = document.getElementById('landing-header-glow');
             if (headerGlow) {
+                positionHeaderGlow();
                 headerGlow.classList.add('glow-active');
             }
 
@@ -2145,6 +2146,22 @@ function updateCountdown() {
     const pad = (n) => String(n).padStart(2, '0');
     timerElement.textContent = `${pad(days)}d : ${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`;
 }
+
+function positionHeaderGlow() {
+    const headerGlow = document.getElementById('landing-header-glow');
+    const title = document.querySelector('.landing-title');
+    const frame = document.getElementById('landing-frame');
+    if (!headerGlow || !title || !frame) return;
+
+    const titleRect = title.getBoundingClientRect();
+    const frameRect = frame.getBoundingClientRect();
+    if (titleRect.width === 0 && titleRect.height === 0) return;
+
+    headerGlow.style.setProperty('--glow-top', `${titleRect.top - frameRect.top + titleRect.height / 2}px`);
+    headerGlow.style.setProperty('--glow-left', `${titleRect.left - frameRect.left + titleRect.width / 2}px`);
+}
+
+window.addEventListener('resize', positionHeaderGlow);
 
 function triggerLandingCollapse(btn) {
     const landing = document.getElementById('landing');
