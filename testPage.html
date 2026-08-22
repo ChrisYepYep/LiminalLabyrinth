@@ -185,6 +185,65 @@
         .room-image-bg { z-index: 2; }
         .room-image-mask { z-index: 4; }
 
+        #welcome { position: relative; }
+        .secret-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 14px;
+            height: 14px;
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            border-radius: 50%;
+            border: none;
+            box-shadow: none;
+            opacity: 0;
+            z-index: 20;
+            cursor: pointer;
+        }
+
+        /* ================= BREAK ROOMS ================= */
+        .rest-text-wrap {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .rest-text {
+            margin: 0;
+            margin-right: -32px;
+            transform: translateY(-30px);
+            font-size: 9rem;
+            font-weight: 700;
+            letter-spacing: 32px;
+            text-transform: uppercase;
+            background: linear-gradient(100deg,
+                rgba(255, 248, 250, 0.08) 0%,
+                rgba(255, 248, 250, 0.08) 38%,
+                rgba(255, 248, 250, 0.6) 50%,
+                rgba(255, 248, 250, 0.08) 62%,
+                rgba(255, 248, 250, 0.08) 100%);
+            background-size: 400% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: restGlowSweep 60s ease-in-out infinite alternate;
+        }
+
+        @keyframes restGlowSweep {
+            0%   { background-position: 260% 0; }
+            100% { background-position: -160% 0; }
+        }
+
+        @media (max-width: 400px) {
+            .rest-text { font-size: 6rem; letter-spacing: 20px; margin-right: -20px; }
+        }
+
         .landing-title {
             font-size: 2.5rem;
             letter-spacing: 3px;
@@ -612,6 +671,15 @@
             text-transform: uppercase;
         }
 
+        .progress-breadcrumb-paused {
+            opacity: 0.3;
+        }
+
+        .progress-breadcrumb-paused .progress-breadcrumb-fill {
+            background: rgba(0, 255, 102, 0.5);
+            box-shadow: none;
+        }
+
         .btn-end {
             display: flex;
             flex-direction: row;
@@ -796,9 +864,9 @@
         <div class="room-image-frame" id="landing-frame">
             <div id="landing-header-glow"></div>
             <h1 class="landing-title">Liminal Labyrinth</h1>
-            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
-            <img id="landing-crt" class="room-image-crt" src="roomassets/figmentCRT.png?raw=true" alt="CRT Room Display">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
+            <img id="landing-crt" class="room-image-crt" src="roomassets/figmentCRT.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div id="countdown-container" class="countdown-wrapper">
@@ -815,13 +883,14 @@
 
     <!-- WELCOME SCREEN -->
     <div id="welcome" class="room">
+        <button class="secret-btn" onclick="goToRoom('room1')" aria-hidden="true" tabindex="-1"></button>
         <div class="room-image-frame">
             <div class="room-header-group">
                 <h2>Liminal Labyrinth</h2>
                 <h3>An Audio Experience</h3>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -849,8 +918,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/room1staticvoid1.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/room1staticvoid1.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -879,8 +948,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -909,8 +978,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/apprehensive.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/apprehensive.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -939,8 +1008,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -969,8 +1038,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/visional.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/visional.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -999,8 +1068,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1029,8 +1098,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/neglected.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/neglected.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1059,8 +1128,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1089,8 +1158,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/optical.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/optical.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1119,8 +1188,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1139,6 +1208,30 @@
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
+            <button class="nav-btn" onclick="goToRoom('break1')">Progress</button>
+        </div>
+    </div>
+
+    <!-- BREAK ROOM 1 -->
+    <div id="break1" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <div class="rest-text-wrap">
+                <p class="rest-text">Rest</p>
+            </div>
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Break Room</p>
+            <p class="room-blurb-text">The hallway pauses here, just long enough to make you think it's mercy. There's nothing to look at, nothing to find. Sit with the quiet while it lasts. Oh, don't forget to take note of the password on the Stickie if you wish to come back later.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('exp5')">Return</button>
+            <button class="audio-toggle-btn" aria-hidden="true" tabindex="-1" style="visibility: hidden; pointer-events: none;"></button>
             <button class="nav-btn" onclick="goToRoom('room6')">Progress</button>
         </div>
     </div>
@@ -1149,8 +1242,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/dream.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/dream.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1165,7 +1258,7 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('exp5')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('break1')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -1179,8 +1272,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1209,8 +1302,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/umbra.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/umbra.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1239,8 +1332,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1269,8 +1362,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/appointed.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/appointed.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1301,8 +1394,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1331,8 +1424,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/amber.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/amber.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1362,8 +1455,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1392,8 +1485,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/lostconnection.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/lostconnection.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1422,8 +1515,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1442,6 +1535,30 @@
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
+            <button class="nav-btn" onclick="goToRoom('break2')">Progress</button>
+        </div>
+    </div>
+
+    <!-- BREAK ROOM 2 -->
+    <div id="break2" class="room">
+        <div class="room-image-frame">
+            <div class="room-header-group">
+                <h4>Liminal Labyrinth</h4>
+            </div>
+            <div class="rest-text-wrap">
+                <p class="rest-text">Rest</p>
+            </div>
+        </div>
+
+        <div class="overlay-content-wrapper">
+            <p class="room-title-text">Break Room</p>
+            <p class="room-blurb-text">The hallway pauses here, just long enough to make you think it's mercy. There's nothing to look at, nothing to find. Sit with the quiet while it lasts. Oh, don't forget to take note of the password on the Stickie if you wish to come back later.</p>
+            <p class="room-navi-text">Once you have begun teleporting to the next room, press Progress.</p>
+        </div>
+
+        <div class="button-group">
+            <button class="nav-btn" onclick="goToRoom('exp10')">Return</button>
+            <button class="audio-toggle-btn" aria-hidden="true" tabindex="-1" style="visibility: hidden; pointer-events: none;"></button>
             <button class="nav-btn" onclick="goToRoom('room11')">Progress</button>
         </div>
     </div>
@@ -1452,8 +1569,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/celestial.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/celestial.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1469,7 +1586,7 @@
             </audio>
         </div>
         <div class="button-group">
-            <button class="nav-btn" onclick="goToRoom('exp10')">Return</button>
+            <button class="nav-btn" onclick="goToRoom('break2')">Return</button>
             <button class="audio-toggle-btn" onclick="toggleAudio(this)">
                 <img class="audio-icon" src="images/playicon.png?raw=true" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">
             </button>
@@ -1483,8 +1600,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1513,8 +1630,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/neweden.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/neweden.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1543,8 +1660,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1573,8 +1690,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/approximation.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/approximation.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1603,8 +1720,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1633,8 +1750,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/utopia.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/utopia.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1663,8 +1780,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1693,8 +1810,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/monotonous.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/monotonous.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1725,8 +1842,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1755,8 +1872,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/postponement.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/postponement.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1785,8 +1902,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/spareoom.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/spareoom.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1815,8 +1932,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanseproject.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanseproject.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1845,8 +1962,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanded.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanded.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1876,8 +1993,8 @@
                 <h4>Liminal Labyrinth</h4>
                 <p id="youwontext" class="expanse-blurb-text">Process Complete</p>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="Room Art">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="Room Mask">
+            <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="">
+            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
         
         <div class="button-group">
@@ -1976,14 +2093,14 @@
 <footer class="site-footer">
     <p><a class="resetlink" role="button" tabindex="0" onclick="resetProgress()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();resetProgress();}">Reset Progress</a></p>
     <p>Liminal Labyrinth: An Audio Experience, is produced by ChrisYepYep; Liminal Labyrinth is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
-    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a class="privacylink" href="https://liminallabyrinth.quest/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy & Event Rules</a></p>
+    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a class="privacylink" href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy & Event Rules</a></p>
 </footer>
 
 <script>
 const PLAY_ICON_URL = "images/playicon.png?raw=true";
 const PAUSE_ICON_URL = "images/pauseicon.png?raw=true";
 
-const TARGET_DATE = new Date("2026-08-21T17:05:00Z").getTime();
+const TARGET_DATE = new Date("2026-08-22T08:05:00Z").getTime();
 
 /* ================= UTC PHRASE SCHEDULE CONFIGURATION ================= */
 const LANDING_PHRASE_SCHEDULE = [
@@ -2203,8 +2320,13 @@ const MAZE_SEQUENCE = [
     'room16', 'spareoom', 'room17', 'room18'
 ];
 
+// Break rooms sit off the main sequence — they don't advance the sector
+// counter, they just echo the previous sector's progress, faded and paused.
+const BREAK_ROOMS = { break1: 'exp5', break2: 'exp10' };
+
 function initProgressBreadcrumbs() {
     const total = MAZE_SEQUENCE.length;
+    const stepByRoomId = {};
 
     MAZE_SEQUENCE.forEach((roomId, index) => {
         const room = document.getElementById(roomId);
@@ -2212,10 +2334,30 @@ function initProgressBreadcrumbs() {
         if (!buttonGroup) return;
 
         const step = index + 1;
+        stepByRoomId[roomId] = step;
         const percent = Math.round((step / total) * 100);
 
         const breadcrumb = document.createElement('div');
         breadcrumb.className = 'progress-breadcrumb';
+        breadcrumb.innerHTML = `
+            <div class="progress-breadcrumb-track">
+                <div class="progress-breadcrumb-fill" style="width: ${percent}%;"></div>
+            </div>
+            <div class="progress-breadcrumb-label">SECTOR ${String(step).padStart(2, '0')} / ${total}</div>
+        `;
+        buttonGroup.insertAdjacentElement('afterend', breadcrumb);
+    });
+
+    Object.entries(BREAK_ROOMS).forEach(([breakRoomId, afterRoomId]) => {
+        const room = document.getElementById(breakRoomId);
+        const buttonGroup = room ? room.querySelector('.button-group') : null;
+        const step = stepByRoomId[afterRoomId];
+        if (!buttonGroup || !step) return;
+
+        const percent = Math.round((step / total) * 100);
+
+        const breadcrumb = document.createElement('div');
+        breadcrumb.className = 'progress-breadcrumb progress-breadcrumb-paused';
         breadcrumb.innerHTML = `
             <div class="progress-breadcrumb-track">
                 <div class="progress-breadcrumb-fill" style="width: ${percent}%;"></div>
@@ -2434,7 +2576,13 @@ function goToRoom(roomId) {
         room.classList.remove('active');
     });
 
-    const activeRoom = document.getElementById(roomId);
+    let activeRoom = document.getElementById(roomId);
+    if (!activeRoom) {
+        // Guards against a stale/invalid room id left over in localStorage
+        // (e.g. from a removed or renamed room) stranding the visitor on a blank page.
+        roomId = 'landing';
+        activeRoom = document.getElementById('landing');
+    }
     if (activeRoom) {
         activeRoom.classList.add('active');
         localStorage.setItem('currentRoom', roomId);
