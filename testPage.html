@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
     <title>Liminal Labyrinth</title>
     <meta name="description" content="An immersive Habbo Origins audio maze. Navigate the Liminal Labyrinth and enter to win a £50 Steam gift card.">
     <meta property="og:title" content="Liminal Labyrinth">
@@ -146,12 +147,12 @@
         }
 
         /* ================= PLAYABLE ROOMS ================= */
-        .room:not(#landing).active {
+        .room:not(#landing).active,
+        .room:not(#landing).leaving {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.6s ease-in-out;
             padding: 20px;
             border-radius: 0;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
@@ -160,9 +161,23 @@
             width: 100%;
         }
 
+        .room:not(#landing).active {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .room:not(#landing).leaving {
+            animation: fadeOutRoom 0.25s ease-in-out forwards;
+            pointer-events: none;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOutRoom {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
         }
 
         .room-image-frame {
@@ -2100,7 +2115,7 @@
 const PLAY_ICON_URL = "images/playicon.png?raw=true";
 const PAUSE_ICON_URL = "images/pauseicon.png?raw=true";
 
-const TARGET_DATE = new Date("2026-08-22T11:30:00Z").getTime();
+const TARGET_DATE = new Date("2026-08-22T17:05:00Z").getTime();
 
 /* ================= UTC PHRASE SCHEDULE CONFIGURATION ================= */
 const LANDING_PHRASE_SCHEDULE = [
@@ -2572,33 +2587,72 @@ function goToRoom(roomId) {
     });
 
     const rooms = document.querySelectorAll('.room');
-    rooms.forEach(room => {
-        room.classList.remove('active');
-    });
+    const currentActive = document.querySelector('.room.active');
 
-    let activeRoom = document.getElementById(roomId);
-    if (!activeRoom) {
-        // Guards against a stale/invalid room id left over in localStorage
-        // (e.g. from a removed or renamed room) stranding the visitor on a blank page.
-        roomId = 'landing';
-        activeRoom = document.getElementById('landing');
-    }
-    if (activeRoom) {
-        activeRoom.classList.add('active');
-        localStorage.setItem('currentRoom', roomId);
+    const activateRoom = () => {
+        rooms.forEach(room => {
+            room.classList.remove('active', 'leaving');
+        });
 
-        if (activeRoom.querySelector('.expanse-blurb-text')) {
-            typeExpanseText(activeRoom);
+        let activeRoom = document.getElementById(roomId);
+        if (!activeRoom) {
+            // Guards against a stale/invalid room id left over in localStorage
+            // (e.g. from a removed or renamed room) stranding the visitor on a blank page.
+            roomId = 'landing';
+            activeRoom = document.getElementById('landing');
         }
+        if (activeRoom) {
+            activeRoom.classList.add('active');
+            localStorage.setItem('currentRoom', roomId);
+
+            if (activeRoom.querySelector('.expanse-blurb-text')) {
+                typeExpanseText(activeRoom);
+            }
+        }
+    };
+
+    // Landing has its own bespoke fade choreography (see triggerLandingCollapse),
+    // so only cross-fade between the regular maze rooms.
+    if (currentActive && currentActive.id !== 'landing' && currentActive.id !== roomId) {
+        currentActive.classList.add('leaving');
+        setTimeout(activateRoom, 250);
+    } else {
+        activateRoom();
     }
 }
 
 
 // Enable Welcome Progress button at 53 seconds
+function preloadRoomAudio(roomId) {
+    const room = document.getElementById(roomId);
+    const audio = room ? room.querySelector('audio') : null;
+    if (!audio || audio.preload === 'auto') return;
+
+    // Rooms default to preload="none" to avoid fetching every track up front;
+    // start fetching the *next* room's track as soon as its nav button is
+    // reachable, so Progress/Return don't leave a beat of dead air.
+    audio.preload = 'auto';
+    audio.load();
+}
+
+function initAudioPreloading() {
+    document.querySelectorAll('.nav-btn[onclick*="goToRoom("]').forEach(btn => {
+        const match = btn.getAttribute('onclick').match(/goToRoom\('([^']+)'\)/);
+        if (!match) return;
+
+        const targetId = match[1];
+        const trigger = () => preloadRoomAudio(targetId);
+        btn.addEventListener('mouseenter', trigger);
+        btn.addEventListener('focus', trigger);
+        btn.addEventListener('touchstart', trigger, { passive: true });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateCountdown, 1000);
     startLandingTypewriter();
     initProgressBreadcrumbs();
+    initAudioPreloading();
 
     const savedRoom = localStorage.getItem('currentRoom');
     if (savedRoom) {
