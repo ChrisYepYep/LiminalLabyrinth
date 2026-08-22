@@ -538,9 +538,7 @@
         </div>
 
         <div class="button-group">
-        <a href="https://liminallabyrinth.quest" style="text-decoration: none;">
-                <button class="nav-btn" style="opacity: 0.6; font-size: 0.85rem;">Return</button>
-            </a>
+            <a href="index.html" class="nav-btn" style="opacity: 0.6; font-size: 0.85rem;">Return</a>
         </div>
                 
     </div>
@@ -646,12 +644,26 @@
 </footer>
 
 <script>
+    // Maps each modal back to the tab-card that opens it, so closing a modal
+    // (the mobile-friendly "open + close" gesture) can feed the same secret sequence.
+    const MODAL_TO_TAB = {
+        'modal-inspiration': '1',
+        'modal-soundtrack': '2',
+        'modal-mazes': '3',
+        'modal-backrooms': '4',
+        'modal-references': '5'
+    };
+
     function openModal(id) {
         document.getElementById(id).classList.add('active');
     }
 
     function closeModal(id) {
         document.getElementById(id).classList.remove('active');
+        const tabId = MODAL_TO_TAB[id];
+        if (tabId) {
+            registerSequenceStep(touchSequence, tabId);
+        }
     }
 
     function closeModalOnOutsideClick(event, id) {
@@ -662,29 +674,33 @@
 
     const secretSequence = ['2', '1', '5', '4'];
 let currentSequence = [];
+let touchSequence = [];
 
-// Attach mouseenter listeners to all tabs
+// Pushes id onto sequence (deduping immediate repeats), trims it to the
+// secret length, and triggers the secret screen on a match.
+function registerSequenceStep(sequence, id) {
+    if (sequence[sequence.length - 1] === id) return;
+
+    sequence.push(id);
+    if (sequence.length > secretSequence.length) {
+        sequence.shift();
+    }
+
+    if (JSON.stringify(sequence) === JSON.stringify(secretSequence)) {
+        openSecretScreen();
+        sequence.length = 0;
+    }
+}
+
+// Desktop: hovering the tabs in sequence unlocks the code.
 document.querySelectorAll('.tab-card').forEach(tab => {
     tab.addEventListener('mouseenter', () => {
-        const id = tab.getAttribute('data-tab-id');
-        
-        // Prevent logging the same tab repeatedly if the user lingers over it
-        if (currentSequence[currentSequence.length - 1] !== id) {
-            currentSequence.push(id);
-            
-            // Limit sequence array length to match target length
-            if (currentSequence.length > secretSequence.length) {
-                currentSequence.shift();
-            }
-
-            // Check if sequence matches secret sequence
-            if (JSON.stringify(currentSequence) === JSON.stringify(secretSequence)) {
-                openSecretScreen();
-                currentSequence = []; // Reset after trigger
-            }
-        }
+        registerSequenceStep(currentSequence, tab.getAttribute('data-tab-id'));
     });
 });
+
+// Mobile/touch: opening and closing the tabs in sequence unlocks the code too
+// (handled in closeModal, since mouseenter doesn't fire reliably on touch devices).
 
 function randomHex() {
     return Math.floor(Math.random() * 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
