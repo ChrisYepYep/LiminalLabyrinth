@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0706">
+  <title>Liminal Labyrinth - Side Quest Draw</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='44' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23fff8fa' text-anchor='middle'%3ELL%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --bg-color: #0a0706;
+      --wall-color: #1b1917;
+      --wood: #33220f;
+      --wood-light: #4a3218;
+      --brass: #c9a663;
+      --brass-dim: #7a5c2a;
+      --accent-warm: #ffcf94;
+      --paper: #fff8fa;
+      --font-mono: 'Courier New', Courier, monospace;
+      --font-display: 'Oswald', 'Segoe UI', sans-serif;
+      --item-height: 44px;
+      --door-max-h: 560px;
+      --floor-h: 110px;
+      --panel-w: 268px;
+      --glow: 0;              /* light building behind the door, 0 -> 1 */
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      background: radial-gradient(circle at 50% 15%, #2a2018 0%, #0a0706 85%) var(--bg-color);
+      color: #cbc2b4;
+      font-family: var(--font-mono);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .scene {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ================= CORRIDOR ================= */
+    .corridor {
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 5;
+      background:
+        radial-gradient(circle at 50% 4%, rgba(255, 196, 110, 0.10) 0%, transparent 46%),
+        radial-gradient(circle at 50% 58%, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.88) 100%),
+        repeating-linear-gradient(91deg, rgba(255, 255, 255, 0.010) 0 1px, transparent 1px 6px),
+        var(--wall-color);
+    }
+
+    /* Wood wainscoting along the lower wall */
+    .wainscot {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 148px;
+      z-index: 1;
+      background:
+        repeating-linear-gradient(90deg,
+          rgba(0, 0, 0, 0.6) 0 3px,
+          rgba(226, 214, 194, 0.022) 3px 5px,
+          transparent 5px 86px),
+        linear-gradient(180deg, #1a1816 0%, #100f0d 58%, #080706 100%);
+      border-top: 2px solid #2b2823;
+      box-shadow: inset 0 2px 0 rgba(226, 214, 194, 0.05), inset 0 -22px 34px rgba(0, 0, 0, 0.75);
+    }
+
+    /* Hanging bulb, deliberately off-centre */
+    .lamp-cord {
+      position: absolute;
+      top: 0; left: 50%;
+      width: 1px;
+      height: 44px;
+      background: linear-gradient(180deg, #564b41, #2a231c);
+      z-index: 9;
+    }
+
+    .lamp-bulb {
+      position: absolute;
+      top: 42px; left: 50%;
+      transform: translateX(-50%);
+      width: 18px; height: 24px;
+      border-radius: 50% 50% 45% 45%;
+      background: radial-gradient(circle at 45% 34%, #ffeec8 0%, #e8c078 50%, #9a6c24 100%);
+      z-index: 10;
+      box-shadow:
+        0 0 14px rgba(255, 210, 140, 0.55),
+        0 0 40px rgba(255, 180, 80, 0.28),
+        0 24px 110px rgba(255, 165, 55, 0.12);
+    }
+
+    .light-pool {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: min(900px, 96vw);
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+      background: linear-gradient(180deg, rgba(255, 205, 130, 0.045) 0%, rgba(255, 170, 60, 0.012) 55%, transparent 100%);
+    }
+
+    .corridor-container {
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: clamp(26px, 6vw, 88px);
+      padding: 30px 30px 0 30px;
+      position: relative;
+      z-index: 3;
+    }
+
+    /* ================= DOOR ================= */
+    .door-column {
+      flex: 0 1 344px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      position: relative;
+    }
+
+    .door-plaque {
+      flex: 0 0 auto;
+      margin-bottom: 16px;
+      padding: 5px 20px;
+      border-radius: 3px;
+      font-family: var(--font-display);
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #8e8477;
+      background: linear-gradient(160deg, #262421 0%, #1a1917 55%, #131211 100%);
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.9);
+      box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(214, 203, 183, 0.14),
+        0 0 0 1px rgba(214, 203, 183, 0.10);
+    }
+
+    .door-frame {
+      flex: 1 1 auto;
+      width: 100%;
+      max-height: var(--door-max-h);
+      min-height: 150px;
+      position: relative;
+      perspective: 1500px;
+      /* The slab swings inward past the doorway plane, so the casing clips it. */
+      overflow: hidden;
+      border: 11px solid #1e1d1b;
+      border-left-color: #2f2c28;
+      border-bottom: none;
+      background: #080806;
+      box-shadow:
+        inset 0 0 40px rgba(0, 0, 0, 0.95),
+        0 0 26px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(214, 203, 183, 0.07);
+    }
+
+    /* --- The room behind the door --- */
+    .doorway {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse at 50% 24%, rgba(255, 214, 155, 0.40) 0%, transparent 66%),
+        linear-gradient(180deg, #55401f 0%, #35240f 55%, #1a1006 100%);
+      transition: filter 1.6s ease, padding-left 2.6s cubic-bezier(0.42, 0.02, 0.22, 1);
+      filter: brightness(0.32);
+    }
+
+    /* The open slab covers the left of the doorway, so centre the reveal
+       in the gap that is actually visible. */
+    .scene.open .doorway {
+      filter: brightness(1);
+      padding-left: 27%;
+    }
+
+    .doorway-lamp {
+      position: absolute;
+      top: 8%; left: 50%;
+      transform: translateX(-50%);
+      width: 42%; height: 5px;
+      border-radius: 4px;
+      background: #ffe7bb;
+      box-shadow: 0 0 22px rgba(255, 220, 155, 0.9), 0 0 60px rgba(255, 180, 80, 0.55);
+    }
+
+    .doorway-floor {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 22%;
+      background:
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0 2px, transparent 2px 54px),
+        linear-gradient(180deg, #6b4f27 0%, #2c1d0d 100%);
+    }
+
+    .winner-reveal-box {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+      max-width: 100%;
+      padding: 20px 14px;
+      font-family: var(--font-display);
+      opacity: 0;
+      transform: scale(0.86);
+      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.2, 1.3, 0.4, 1);
+    }
+
+    .winner-reveal-box.show { opacity: 1; transform: scale(1); }
+
+    .winner-label {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(255, 248, 250, 0.72);
+      margin-bottom: 10px;
+    }
+
+    .winner-name-display {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--paper);
+      letter-spacing: 2px;
+      line-height: 1.12;
+      overflow-wrap: anywhere;
+      text-shadow: 0 0 22px rgba(255, 232, 190, 0.8), 0 0 60px rgba(255, 170, 70, 0.4);
+    }
+
+    .reveal-particle {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--brass);
+      box-shadow: 0 0 6px rgba(255, 200, 120, 0.95), 0 0 14px rgba(255, 170, 70, 0.6);
+      pointer-events: none;
+      animation: particleBurst 1.5s ease-out forwards;
+    }
+
+    @keyframes particleBurst {
+      0%   { transform: translate(-50%, -50%) translate(0, 0) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) translate(var(--px), var(--py)) scale(0); opacity: 0; }
+    }
+
+    /* --- The door slab --- */
+    .door-slab {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 2.6s cubic-bezier(0.42, 0.02, 0.22, 1), filter 2.6s ease;
+      background: linear-gradient(172deg, #232120 0%, #1a1917 52%, #111010 100%);
+      box-shadow:
+        inset 0 -40px 50px rgba(0, 0, 0, 0.55),
+        0 0 30px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Swung inward toward a lit room, so its face catches the spill. */
+    .scene.open .door-slab {
+      transform: rotateY(-74deg);
+      filter: brightness(1.9);
+    }
+
+    /* Door edge, gives the slab real thickness as it swings */
+    .door-edge {
+      position: absolute;
+      top: 0; right: 0;
+      width: 13px;
+      height: 100%;
+      transform-origin: right center;
+      transform: rotateY(-90deg);
+      background: linear-gradient(90deg, #14130f 0%, #2b2823 60%, #3c3831 100%);
+      /* Edge-on when shut: browsers still paint a sliver, so hide it. */
+      opacity: 0;
+      transition: opacity 0.3s ease 0.2s;
+    }
+
+    .scene.open .door-edge { opacity: 1; }
+
+    /* Hairline stile-and-rail outline */
+    .door-outline {
+      position: absolute;
+      inset: 4% 7%;
+      border: 1px solid rgba(214, 203, 183, 0.19);
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    .door-panels {
+      position: absolute;
+      inset: 8.5% 13%;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1.04fr;
+      gap: 6%;
+    }
+
+    .door-inset {
+      border: 1px solid rgba(214, 203, 183, 0.26);
+      background: #0c0c0b;
+      box-shadow: inset 0 0 34px rgba(0, 0, 0, 0.9);
+    }
+
+    /* A single small brass knob on the middle rail */
+    .door-knob {
+      position: absolute;
+      right: 14%;
+      top: 51%;
+      width: 9px; height: 9px;
+      margin-top: -4px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 30%, #ffd18f 0%, #c8801f 55%, #6b3f0d 100%);
+      box-shadow: 0 0 6px rgba(255, 176, 74, 0.55), 0 1px 2px rgba(0, 0, 0, 0.9);
+      transform-origin: center;
+    }
+
+    .door-knob.jiggle { animation: knobJiggle 0.42s ease-in-out; }
+
+    @keyframes knobJiggle {
+      0%, 100% { transform: translateX(0); }
+      25%      { transform: translateX(-2px); }
+      60%      { transform: translateX(2px); }
+      85%      { transform: translateX(-1px); }
+    }
+
+    /* Light seeping under the door as the locks release */
+    .door-underglow {
+      position: absolute;
+      left: 2%; right: 2%;
+      bottom: -1px;
+      height: 5px;
+      z-index: 4;
+      pointer-events: none;
+      opacity: var(--glow);
+      background: linear-gradient(180deg, #fff4d8 0%, #ffcf7c 60%, #f5a63c 100%);
+      box-shadow:
+        0 0 12px 2px rgba(255, 208, 128, 0.85),
+        0 0 34px 8px rgba(255, 172, 62, 0.45),
+        0 0 70px 18px rgba(255, 150, 40, 0.22);
+    }
+
+    .scene.open .door-underglow { opacity: 0; transition: opacity 0.8s ease; }
+
+    /* Light thrown across the floorboards */
+    .floor-spill {
+      position: absolute;
+      top: 100%; left: 2%;
+      width: 96%;
+      height: var(--floor-h);
+      pointer-events: none;
+      z-index: 0;
+      opacity: calc(var(--glow) * 0.4);
+      transition: opacity 1.2s ease-out 0.7s;
+    }
+
+    .scene.open .floor-spill { opacity: 1; }
+
+    /* Soft elliptical pool rather than a hard beam */
+    .floor-spill::before {
+      content: '';
+      position: absolute;
+      left: -12%; right: -12%;
+      top: 0; bottom: 0;
+      background: radial-gradient(ellipse 58% 108% at 50% -4%,
+        rgba(255, 226, 172, 0.62) 0%,
+        rgba(255, 196, 110, 0.34) 30%,
+        rgba(255, 158, 56, 0.12) 58%,
+        rgba(255, 140, 40, 0.03) 76%,
+        transparent 88%);
+      filter: blur(2px);
+    }
+
+    /* ================= CONTROL BOARD ================= */
+    .quest-panel {
+      flex: 0 0 var(--panel-w);
+      width: var(--panel-w);
+      align-self: flex-end;
+      margin-bottom: clamp(70px, 16vh, 160px);
+      padding: 14px 13px 13px;
+      border-radius: 4px;
+      border: 3px solid #6d5227;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      z-index: 4;
+      background:
+        repeating-linear-gradient(87deg, rgba(0, 0, 0, 0.14) 0 2px, transparent 2px 11px),
+        linear-gradient(155deg, #26241f 0%, #1b1a17 45%, #121110 100%);
+      box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.9),
+        0 0 30px rgba(255, 170, 70, 0.06),
+        inset 0 1px 0 rgba(226, 214, 194, 0.12),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.75);
+    }
+
+    .panel-rivet {
+      position: absolute;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 28%, #f0d79b 0%, #a8853f 50%, #4f3a15 100%);
+      box-shadow: inset 0 1px 1px rgba(255, 245, 215, 0.45), 0 1px 2px rgba(0, 0, 0, 0.85);
+      z-index: 5;
+    }
+
+    .rivet-tl { top: 5px; left: 5px; }
+    .rivet-tr { top: 5px; right: 5px; }
+    .rivet-bl { bottom: 5px; left: 5px; }
+    .rivet-br { bottom: 5px; right: 5px; }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-family: var(--font-display);
+      font-size: 0.56rem;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: #b39562;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.9);
+    }
+
+    .mute-toggle {
+      position: absolute;
+      right: 6px; top: 50%;
+      transform: translateY(-50%);
+      width: 20px; height: 20px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid #6d5227;
+      background: linear-gradient(180deg, #3d2915, #251708);
+      color: #8f7541;
+      font-size: 0.6rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .mute-toggle:hover { color: var(--brass); border-color: var(--brass); }
+    .mute-toggle[aria-pressed="true"] { color: #5c4c30; }
+    .mute-toggle:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+    /* --- Brass-framed nameplate slot --- */
+    .readout {
+      background: #0a0705;
+      border: 2px solid #6d5227;
+      border-radius: 3px;
+      padding: 6px 8px 8px;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset 0 0 18px rgba(0, 0, 0, 0.95),
+        inset 0 1px 0 rgba(255, 220, 165, 0.12),
+        0 0 10px rgba(255, 170, 70, 0.12);
+    }
+
+    /* Aged glass glare */
+    .readout::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(172deg,
+        rgba(255, 240, 210, 0.13) 0%,
+        rgba(255, 240, 210, 0.04) 30%,
+        transparent 62%);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .readout-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-bottom: 5px;
+    }
+
+    .lock-light {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      background: #3a1414;
+      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.9);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .lock-light.working {
+      background: #ffa53b;
+      box-shadow: 0 0 9px #ff9a2e, 0 0 18px rgba(255, 150, 40, 0.6);
+    }
+
+    .lock-light.open {
+      background: #7ee08a;
+      box-shadow: 0 0 9px #6fd47c, 0 0 18px rgba(110, 210, 120, 0.55);
+    }
+
+    .status-label {
+      font-size: 0.55rem;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #8f7d5f;
+    }
+
+    .scroll-viewport {
+      height: calc(var(--item-height) * 3);
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+    }
+
+    .scroll-viewport::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: var(--item-height);
+      height: var(--item-height);
+      border-top: 1px solid rgba(226, 189, 116, 0.7);
+      border-bottom: 1px solid rgba(226, 189, 116, 0.7);
+      background: linear-gradient(90deg, rgba(255, 190, 110, 0.04), rgba(255, 190, 110, 0.13), rgba(255, 190, 110, 0.04));
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .scroll-track {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      padding-top: var(--item-height);
+      will-change: transform;
+    }
+
+    .name-item {
+      height: var(--item-height);
+      line-height: var(--item-height);
+      padding: 0 4px;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--accent-warm);
+      text-shadow: 0 0 9px rgba(255, 180, 90, 0.55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .name-item.arrived { animation: pulse-glow 1.6s infinite alternate; }
+
+    @keyframes pulse-glow {
+      0%   { text-shadow: 0 0 6px rgba(255, 180, 90, 0.4); }
+      100% { text-shadow: 0 0 20px rgba(255, 200, 120, 0.95); }
+    }
+
+    /* --- Submissions / bolt rack --- */
+    .panel-slot { position: relative; width: 100%; }
+
+    .admin-section {
+      width: 100%;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+    }
+
+    .admin-section.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .bolt-rack {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 4px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+    }
+
+    .bolt-rack.shown { opacity: 1; visibility: visible; }
+
+    .bolt {
+      height: 11px;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      background: #1a1108;
+      border: 1px solid #4a3a22;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+    }
+
+    .bolt::after {
+      content: '';
+      position: absolute;
+      top: 1px; bottom: 1px; left: 2px;
+      width: 45%;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #d9b972 0%, #a8853f 50%, #6d5227 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 245, 215, 0.4);
+      transition: transform 0.55s cubic-bezier(0.3, 1.5, 0.4, 1), box-shadow 0.4s ease;
+    }
+
+    .bolt.thrown::after {
+      transform: translateX(112%);
+      box-shadow: inset 0 1px 0 rgba(255, 245, 215, 0.4), 0 0 10px rgba(255, 190, 90, 0.7);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.55rem;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      text-align: center;
+      color: #9c8763;
+    }
+
+    textarea {
+      width: 100%;
+      height: 62px;
+      background: #0a0705;
+      border: 1px solid #3a2b17;
+      border-radius: 3px;
+      color: #d8cbb2;
+      padding: 6px 7px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.35;
+      resize: none;
+      outline: none;
+      display: block;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9);
+      scrollbar-width: thin;
+      scrollbar-color: #4a3218 #0a0705;
+    }
+
+    textarea::placeholder { color: #4d3f2b; }
+
+    textarea:focus-visible {
+      border-color: var(--brass-dim);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.9), 0 0 0 2px rgba(201, 166, 99, 0.28);
+    }
+
+    .admin-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 5px;
+      min-height: 12px;
+    }
+
+    .entry-count {
+      font-size: 0.54rem;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: #7d6c50;
+    }
+
+    .validation-message {
+      font-size: 0.54rem;
+      letter-spacing: 0.6px;
+      text-align: right;
+      color: #ff8c6b;
+    }
+
+    /* --- Buttons --- */
+    .btn {
+      width: 100%;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 9px 12px;
+      border-radius: 4px;
+      border: 1px solid #6d5227;
+      color: #e2cda0;
+      background: linear-gradient(180deg, #2c2a25, #191816);
+      cursor: pointer;
+      transition: color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.08s ease;
+      box-shadow:
+        0 3px 0 #170f06,
+        0 7px 14px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 225, 175, 0.18);
+    }
+
+    .btn[hidden] { display: none; }
+
+    .btn-primary {
+      border-color: var(--brass);
+      color: #ffe6b8;
+      background: linear-gradient(180deg, #4a3a1c, #26200f);
+    }
+
+    .btn:hover:not(:disabled) {
+      color: #fff2d5;
+      border-color: #e0bd77;
+      box-shadow:
+        0 3px 0 #170f06,
+        0 7px 18px rgba(0, 0, 0, 0.65),
+        0 0 16px rgba(255, 180, 80, 0.28),
+        inset 0 1px 0 rgba(255, 235, 195, 0.22);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 0 0 #170f06, inset 0 2px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    .btn:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+
+    .btn:disabled {
+      color: #6a5c42;
+      border-color: #3d2f18;
+      cursor: not-allowed;
+      box-shadow: 0 3px 0 #170f06, inset 0 1px 0 rgba(255, 225, 175, 0.06);
+    }
+
+    /* ================= FLOORBOARDS ================= */
+    .floorboards {
+      flex: 0 0 var(--floor-h);
+      height: var(--floor-h);
+      width: 100%;
+      position: relative;
+      z-index: 1;
+      border-top: 3px solid #180f07;
+      background:
+        repeating-linear-gradient(180deg,
+          rgba(0, 0, 0, 0.55) 0 2px,
+          rgba(255, 210, 150, 0.022) 2px 3px,
+          transparent 3px 27px),
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.4) 0 2px, transparent 2px 190px),
+        linear-gradient(180deg, #1b1208 0%, #0a0603 100%);
+      box-shadow: inset 0 14px 28px rgba(0, 0, 0, 0.95);
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 900px) {
+      body { overflow-y: auto; }
+
+      .scene { height: auto; min-height: 100dvh; }
+
+      .corridor-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 18px;
+        padding: 22px 16px 18px;
+      }
+
+      .door-column { flex: 1 1 auto; width: 100%; max-width: 300px; }
+
+      .quest-panel {
+        align-self: center;
+        margin-bottom: 0;
+        width: min(320px, 100%);
+        flex: 0 0 auto;
+      }
+
+      .floor-spill { display: none; }
+      .wainscot { height: 96px; }
+      .floorboards { --floor-h: 64px; flex-basis: 64px; height: 64px; }
+      .winner-name-display { font-size: 1.6rem; }
+      /* Not enough headroom above the door here; the underglow carries the scene. */
+      .lamp-cord, .lamp-bulb { display: none; }
+      .light-pool { left: 50%; }
+    }
+
+    @media (max-width: 420px) {
+      :root { --item-height: 38px; }
+      .door-knob { width: 7px; height: 7px; margin-top: -3px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .door-slab { transition-duration: 0.6s; }
+      .doorway { transition-duration: 0.4s; }
+      .door-knob.jiggle { animation: none; }
+      .name-item.arrived { animation: none; text-shadow: 0 0 18px rgba(255, 200, 120, 0.9); }
+      .winner-reveal-box { transition-duration: 0.25s; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scene" id="scene">
+
+    <div class="corridor">
+      <div class="lamp-cord"></div>
+      <div class="lamp-bulb"></div>
+      <div class="light-pool"></div>
+      <div class="wainscot"></div>
+
+      <div class="corridor-container">
+
+        <!-- Door -->
+        <div class="door-column">
+          <div class="door-plaque">Side Quest</div>
+
+          <div class="door-frame">
+            <div class="doorway">
+              <div class="doorway-lamp"></div>
+              <div class="doorway-floor"></div>
+              <div class="winner-reveal-box" id="winnerRevealBox">
+                <div class="winner-label">Winner</div>
+                <div class="winner-name-display" id="winnerDisplay" role="status" aria-live="polite">---</div>
+              </div>
+            </div>
+
+            <div class="door-slab" id="doorSlab">
+              <div class="door-outline"></div>
+              <div class="door-panels">
+                <div class="door-inset"></div>
+                <div class="door-inset"></div>
+              </div>
+              <div class="door-knob" id="doorKnob"></div>
+              <div class="door-edge"></div>
+            </div>
+
+            <div class="door-underglow"></div>
+          </div>
+
+          <div class="floor-spill"></div>
+        </div>
+
+        <!-- Control board -->
+        <div class="quest-panel">
+          <span class="panel-rivet rivet-tl"></span>
+          <span class="panel-rivet rivet-tr"></span>
+          <span class="panel-rivet rivet-bl"></span>
+          <span class="panel-rivet rivet-br"></span>
+
+          <div class="panel-header">
+            Side Quest
+            <button type="button" class="mute-toggle" id="muteToggle" aria-pressed="false" title="Mute sound" aria-label="Mute sound">&#9835;</button>
+          </div>
+
+          <div class="readout">
+            <div class="readout-top">
+              <span class="lock-light" id="lockLight"></span>
+              <span class="status-label" id="statusLabel" role="status" aria-live="polite">Locked</span>
+            </div>
+
+            <div class="scroll-viewport">
+              <div class="scroll-track" id="scrollTrack">
+                <div class="name-item">&mdash;</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-slot">
+            <div class="admin-section" id="adminSection">
+              <label for="usernameInput">Submissions</label>
+              <textarea id="usernameInput" spellcheck="false" autocomplete="off"
+                placeholder="ChrisYepYep&#10;Macklebee&#10;Wowin"></textarea>
+              <div class="admin-meta-row">
+                <span id="entryCount" class="entry-count">0 entries</span>
+                <span id="validationMessage" class="validation-message" role="alert"></span>
+              </div>
+            </div>
+            <div class="bolt-rack" id="boltRack" aria-hidden="true"></div>
+          </div>
+
+          <button type="button" class="btn btn-primary" id="drawBtn">Knock</button>
+          <button type="button" class="btn" id="resetBtn" hidden>Reset</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="floorboards"></div>
+
+  </div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Tuning ---------- */
+  var KNOCK_LEAD_MS = 1200;        // knocking before the locks start turning
+  var SCROLL_DURATION_MS = 15000;  // length of the unlocking animation
+  var TARGET_TRAVEL_ITEMS = 140;   // roughly how many names scroll past
+  var BOLT_COUNT = 5;
+  var NAMES_STORAGE_KEY = 'sideQuestDrawNames';
+  var MUTE_STORAGE_KEY = 'sideQuestDrawMuted';
+
+  /* ---------- Elements ---------- */
+  var scene           = document.getElementById('scene');
+  var doorSlab        = document.getElementById('doorSlab');
+  var doorKnob        = document.getElementById('doorKnob');
+  var winnerRevealBox = document.getElementById('winnerRevealBox');
+  var winnerDisplay   = document.getElementById('winnerDisplay');
+  var adminSection    = document.getElementById('adminSection');
+  var usernameInput   = document.getElementById('usernameInput');
+  var scrollTrack     = document.getElementById('scrollTrack');
+  var statusLabel     = document.getElementById('statusLabel');
+  var lockLight       = document.getElementById('lockLight');
+  var drawBtn         = document.getElementById('drawBtn');
+  var resetBtn        = document.getElementById('resetBtn');
+  var entryCountEl    = document.getElementById('entryCount');
+  var validationEl    = document.getElementById('validationMessage');
+  var muteToggle      = document.getElementById('muteToggle');
+  var boltRack        = document.getElementById('boltRack');
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // The track is offset in whole/fractional rows rather than pixels, so a
+  // breakpoint that changes --item-height can never desync the display.
+  function trackOffset(rows) {
+    return 'translateY(calc(var(--item-height) * ' + (-rows).toFixed(4) + '))';
+  }
+
+  var animationFrameId = null;
+  var pendingTimeouts = [];
+  var isDrawing = false;
+  var muted = false;
+
+  /* ---------- Storage (a blocked store must not break the page) ---------- */
+  function storeGet(key) {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function storeSet(key, value) {
+    try { window.localStorage.setItem(key, value); } catch (e) { /* ignore */ }
+  }
+
+  function after(ms, fn) { pendingTimeouts.push(window.setTimeout(fn, ms)); }
+  function clearPending() {
+    pendingTimeouts.forEach(clearTimeout);
+    pendingTimeouts = [];
+  }
+
+  function setGlow(v) { scene.style.setProperty('--glow', v.toFixed(3)); }
+
+  /* ---------- Bolts ---------- */
+  var bolts = [];
+  (function buildBolts() {
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < BOLT_COUNT; i++) {
+      var bolt = document.createElement('span');
+      bolt.className = 'bolt';
+      frag.appendChild(bolt);
+      bolts.push(bolt);
+    }
+    boltRack.appendChild(frag);
+  })();
+
+  function throwBolts(count) {
+    for (var i = 0; i < bolts.length; i++) {
+      bolts[i].classList.toggle('thrown', i < count);
+    }
+  }
+
+  /* ---------- Entries ---------- */
+  function parseUsers(rawText) {
+    return rawText
+      .split('\n')
+      .map(function (u) { return u.trim(); })
+      .filter(function (u) { return u.length > 0; });
+  }
+
+  function updateEntryCount() {
+    var users = parseUsers(usernameInput.value);
+    var unique = new Set(users.map(function (u) { return u.toLowerCase(); })).size;
+
+    if (users.length === 0) {
+      entryCountEl.textContent = '0 entries';
+    } else if (unique < users.length) {
+      entryCountEl.textContent = users.length + ' entries · ' + unique + ' unique';
+    } else {
+      entryCountEl.textContent = users.length + (users.length === 1 ? ' entry' : ' entries');
+    }
+  }
+
+  /* ---------- Audio ---------- */
+  var AudioCtx = window.AudioContext || window.webkitAudioContext;
+  var audioCtx = null;
+
+  function ensureAudio() {
+    if (muted || !AudioCtx) return null;
+    if (!audioCtx) {
+      try { audioCtx = new AudioCtx(); } catch (e) { return null; }
+    }
+    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+    return audioCtx;
+  }
+
+  function tone(ctx, freq, at, dur, peak, type) {
+    var t0 = ctx.currentTime + at;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(peak, t0 + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.05);
+  }
+
+  function noiseSource(ctx, dur) {
+    var len = Math.max(1, Math.floor(ctx.sampleRate * dur));
+    var buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    var data = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    var src = ctx.createBufferSource();
+    src.buffer = buf;
+    return src;
+  }
+
+  // Knuckles on wood: a low thud plus a short filtered noise transient.
+  function playKnock(at) {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    var t0 = ctx.currentTime + at;
+
+    tone(ctx, 96, at, 0.16, 0.34, 'sine');
+    tone(ctx, 61, at, 0.24, 0.22, 'sine');
+
+    var src = noiseSource(ctx, 0.09);
+    var flt = ctx.createBiquadFilter();
+    flt.type = 'lowpass';
+    flt.frequency.setValueAtTime(1500, t0);
+    flt.Q.value = 1.2;
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.20, t0);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.09);
+    src.connect(flt); flt.connect(gain); gain.connect(ctx.destination);
+    src.start(t0);
+  }
+
+  function playKnockSequence() {
+    playKnock(0);
+    playKnock(0.30);
+    playKnock(0.58);
+  }
+
+  // A soft wooden tick as each name passes the plate.
+  var lastTickAt = 0;
+  function playTick() {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    var now = performance.now();
+    if (now - lastTickAt < 70) return;
+    lastTickAt = now;
+    tone(ctx, 780, 0, 0.03, 0.03, 'triangle');
+  }
+
+  // A bolt sliding home.
+  function playBolt() {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    var t0 = ctx.currentTime;
+    var src = noiseSource(ctx, 0.13);
+    var flt = ctx.createBiquadFilter();
+    flt.type = 'bandpass';
+    flt.frequency.setValueAtTime(1800, t0);
+    flt.frequency.exponentialRampToValueAtTime(700, t0 + 0.13);
+    flt.Q.value = 5;
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.13, t0);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.13);
+    src.connect(flt); flt.connect(gain); gain.connect(ctx.destination);
+    src.start(t0);
+    tone(ctx, 210, 0.02, 0.11, 0.10, 'square');
+  }
+
+  // Latch releasing: a heavy clunk with a metallic ring on top.
+  function playLatch() {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    tone(ctx, 130, 0, 0.20, 0.26, 'sine');
+    tone(ctx, 68, 0, 0.30, 0.22, 'sine');
+    tone(ctx, 1720, 0.03, 0.42, 0.06, 'triangle');
+  }
+
+  // Old hinges: noise through a resonant bandpass that stutters upward.
+  function playCreak() {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    var t0 = ctx.currentTime;
+    var dur = 2.1;
+
+    var src = noiseSource(ctx, dur);
+    var flt = ctx.createBiquadFilter();
+    flt.type = 'bandpass';
+    flt.Q.value = 22;
+
+    var steps = [280, 340, 315, 420, 395, 520, 610, 570, 700, 780];
+    flt.frequency.setValueAtTime(steps[0], t0);
+    steps.forEach(function (f, i) {
+      flt.frequency.linearRampToValueAtTime(f, t0 + (dur * (i + 1)) / steps.length);
+    });
+
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(0.085, t0 + 0.25);
+    gain.gain.linearRampToValueAtTime(0.050, t0 + 0.9);
+    gain.gain.linearRampToValueAtTime(0.075, t0 + 1.4);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+    src.connect(flt); flt.connect(gain); gain.connect(ctx.destination);
+    src.start(t0);
+    src.stop(t0 + dur);
+  }
+
+  // Warm chord as the room opens up.
+  function playRevealChord() {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    [220, 277.18, 329.63, 440].forEach(function (f, i) {
+      tone(ctx, f, i * 0.07, 2.6, 0.10, 'sine');
+    });
+  }
+
+  /* ---------- Unbiased random ---------- */
+  function randomIndex(n) {
+    if (window.crypto && window.crypto.getRandomValues) {
+      var limit = Math.floor(4294967296 / n) * n;
+      var buf = new Uint32Array(1);
+      var v;
+      do { window.crypto.getRandomValues(buf); v = buf[0]; } while (v >= limit);
+      return v % n;
+    }
+    return Math.floor(Math.random() * n);
+  }
+
+  /* ---------- Reveal ---------- */
+  function setWinnerText(name) {
+    winnerDisplay.textContent = name;
+    var len = name.length;
+    // The doorway is narrow, so the ladder runs smaller than the elevator's.
+    var rem = len <= 10 ? 2.1 : len <= 16 ? 1.7 : len <= 24 ? 1.3 : 1.0;
+    winnerDisplay.style.fontSize = 'min(' + rem + 'rem, 8.5vw)';
+  }
+
+  function spawnRevealParticles() {
+    if (reduceMotion) return;
+    for (var i = 0; i < 70; i++) {
+      var particle = document.createElement('div');
+      particle.className = 'reveal-particle';
+      var angle = Math.random() * Math.PI * 2;
+      var distance = 80 + Math.random() * 300;
+      particle.style.setProperty('--px', (Math.cos(angle) * distance).toFixed(1) + 'px');
+      particle.style.setProperty('--py', (Math.sin(angle) * distance).toFixed(1) + 'px');
+      particle.style.animationDelay = (Math.random() * 0.3).toFixed(2) + 's';
+      particle.addEventListener('animationend', function () { this.remove(); });
+      winnerRevealBox.appendChild(particle);
+    }
+  }
+
+  /* ---------- Draw ---------- */
+  function buildSequence(users, winnerIndex) {
+    var len = users.length;
+    var repeats = Math.max(4, Math.min(14, Math.ceil(TARGET_TRAVEL_ITEMS / len) + 2));
+    if (len * repeats > 1200) {
+      repeats = Math.max(3, Math.floor(1200 / len));
+    }
+
+    var frag = document.createDocumentFragment();
+    var targetIndex = (repeats - 2) * len + winnerIndex;
+    var winningEl = null;
+    var idx = 0;
+
+    for (var r = 0; r < repeats; r++) {
+      for (var i = 0; i < len; i++) {
+        var div = document.createElement('div');
+        div.className = 'name-item';
+        div.textContent = users[i];
+        if (idx === targetIndex) { winningEl = div; }
+        frag.appendChild(div);
+        idx++;
+      }
+    }
+
+    scrollTrack.textContent = '';
+    scrollTrack.appendChild(frag);
+    return { targetIndex: targetIndex, winningEl: winningEl };
+  }
+
+  function startDraw() {
+    if (isDrawing) return;
+
+    var users = parseUsers(usernameInput.value);
+    if (users.length === 0) {
+      validationEl.textContent = 'Enter at least one name.';
+      usernameInput.focus();
+      return;
+    }
+    validationEl.textContent = '';
+
+    ensureAudio();   // unlock audio inside the click gesture
+
+    var winnerIndex = randomIndex(users.length);
+    var winner = users[winnerIndex];
+    var seq = buildSequence(users, winnerIndex);
+
+    isDrawing = true;
+    drawBtn.disabled = true;
+    adminSection.classList.add('hidden');
+    boltRack.classList.add('shown');
+    throwBolts(0);
+    statusLabel.textContent = 'Knocking';
+    lockLight.classList.add('working');
+    playKnockSequence();
+    if (!reduceMotion) {
+      doorKnob.classList.add('jiggle');
+      after(500, function () { doorKnob.classList.remove('jiggle'); });
+    }
+
+    var lead = reduceMotion ? 200 : KNOCK_LEAD_MS;
+    after(lead, function () { runUnlock(winner, seq); });
+  }
+
+  function runUnlock(winner, seq) {
+    statusLabel.textContent = 'Unlocking';
+
+    var totalRows = seq.targetIndex;
+    var duration = reduceMotion ? 1200 : SCROLL_DURATION_MS;
+    var startTime = performance.now();
+    var lastItem = -1;
+    var boltsThrown = 0;
+
+    function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+    function animateScroll() {
+      var progress = Math.min((performance.now() - startTime) / duration, 1);
+      var eased = easeOutQuart(progress);
+      var rows = eased * totalRows;
+
+      scrollTrack.style.transform = trackOffset(rows);
+
+      // Bolts and the light under the door track linear time, so they build
+      // steadily while the names decelerate.
+      setGlow(progress);
+      var due = Math.floor(progress * BOLT_COUNT);
+      while (boltsThrown < due) {
+        boltsThrown++;
+        throwBolts(boltsThrown);
+        playBolt();
+      }
+
+      var item = Math.round(rows);
+      if (item !== lastItem) { lastItem = item; playTick(); }
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animateScroll);
+      } else {
+        animationFrameId = null;
+        finishDraw(winner, seq.winningEl, totalRows);
+      }
+    }
+
+    animationFrameId = requestAnimationFrame(animateScroll);
+
+    // requestAnimationFrame is paused in a backgrounded tab, so guarantee the
+    // draw still lands with a timer, which keeps running (throttled) when hidden.
+    after(duration + 400, function () {
+      finishDraw(winner, seq.winningEl, totalRows);
+    });
+  }
+
+  function finishDraw(winner, winningEl, totalRows) {
+    if (!isDrawing) return;
+    isDrawing = false;
+    if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+    clearPending();
+
+    scrollTrack.style.transform = trackOffset(totalRows);
+    if (winningEl) winningEl.classList.add('arrived');
+
+    setGlow(1);
+    throwBolts(BOLT_COUNT);
+    statusLabel.textContent = 'Unlocked';
+    lockLight.classList.remove('working');
+    lockLight.classList.add('open');
+    playLatch();
+
+    drawBtn.hidden = true;
+    resetBtn.hidden = false;
+
+    setWinnerText(winner);
+
+    // Latch, then the door swings, then the name lands.
+    var t = reduceMotion ? 0.35 : 1;
+    after(700 * t, function () {
+      scene.classList.add('open');
+      statusLabel.textContent = 'Open';
+      playCreak();
+    });
+    after(2400 * t, function () {
+      winnerRevealBox.classList.add('show');
+      playRevealChord();
+    });
+    after(2700 * t, spawnRevealParticles);
+    after(2800 * t, function () { resetBtn.focus(); });
+  }
+
+  function resetDraw() {
+    if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+    clearPending();
+    isDrawing = false;
+
+    scene.classList.remove('open');
+    winnerRevealBox.classList.remove('show');
+    doorKnob.classList.remove('jiggle');
+    setGlow(0);
+    throwBolts(0);
+
+    adminSection.classList.remove('hidden');
+    boltRack.classList.remove('shown');
+    drawBtn.disabled = false;
+    drawBtn.hidden = false;
+    resetBtn.hidden = true;
+
+    scrollTrack.style.transform = trackOffset(0);
+    scrollTrack.textContent = '';
+    var placeholder = document.createElement('div');
+    placeholder.className = 'name-item';
+    placeholder.textContent = '—';
+    scrollTrack.appendChild(placeholder);
+
+    statusLabel.textContent = 'Locked';
+    lockLight.classList.remove('working', 'open');
+
+    winnerDisplay.textContent = '---';
+    winnerDisplay.style.fontSize = '';
+    validationEl.textContent = '';
+
+    Array.prototype.forEach.call(
+      winnerRevealBox.querySelectorAll('.reveal-particle'),
+      function (p) { p.remove(); }
+    );
+  }
+
+  /* ---------- Wiring ---------- */
+  var savedNames = storeGet(NAMES_STORAGE_KEY);
+  if (savedNames) usernameInput.value = savedNames;
+  updateEntryCount();
+
+  muted = storeGet(MUTE_STORAGE_KEY) === '1';
+  function renderMute() {
+    muteToggle.setAttribute('aria-pressed', muted ? 'true' : 'false');
+    muteToggle.textContent = muted ? '✕' : '♫';
+    muteToggle.title = muted ? 'Unmute sound' : 'Mute sound';
+    muteToggle.setAttribute('aria-label', muteToggle.title);
+  }
+  renderMute();
+
+  usernameInput.addEventListener('input', function () {
+    updateEntryCount();
+    storeSet(NAMES_STORAGE_KEY, usernameInput.value);
+    validationEl.textContent = '';
+  });
+
+  usernameInput.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      startDraw();
+    }
+  });
+
+  drawBtn.addEventListener('click', startDraw);
+  resetBtn.addEventListener('click', resetDraw);
+
+  muteToggle.addEventListener('click', function () {
+    muted = !muted;
+    storeSet(MUTE_STORAGE_KEY, muted ? '1' : '0');
+    renderMute();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !resetBtn.hidden) resetDraw();
+  });
+})();
+</script>
+</body>
+</html>
