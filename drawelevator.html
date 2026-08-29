@@ -1,44 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0805">
+  <title>Liminal Labyrinth - Prize Draw</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Liminal Labyrinth - Prize Draw</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='44' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23fff8fa' text-anchor='middle'%3ELL%3C/text%3E%3C/svg%3E">
   <style>
     :root {
       --bg-color: #0b0805;
       --wall-color: #2b1f13;
       --accent-glow: #00ff66;
+      --amber: #ffb703;
+      --brass: #5d3a10;
       --text-main: #d1d5db;
+      --paper: #fff8fa;
       --font-mono: 'Courier New', Courier, monospace;
-      --item-height: 45px;
+      --font-display: 'Oswald', 'Segoe UI', sans-serif;
+      --item-height: 44px;
+      --door-max-h: 620px;
+      --floor-h: 100px;
+      --panel-w: 268px;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
 
     body {
-      background-color: var(--bg-color);
+      background: radial-gradient(circle at 50% 18%, #3a2a1b 0%, #0d0a07 85%) var(--bg-color);
       color: var(--text-main);
       font-family: var(--font-mono);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
       overflow: hidden;
-      background: radial-gradient(circle at 50% 20%, #3a2a1b 0%, #0d0a07 85%);
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Outer Wrapper - Spans Full Width of Viewport */
     .elevator-frame {
-      width: 100vw;
+      width: 100%;
       height: 100vh;
       height: 100dvh;
       display: flex;
@@ -46,175 +47,266 @@
       position: relative;
     }
 
-    /* --- WALL SECTION (FULL WIDTH BG, CENTERED CONTENT) --- */
+    /* ================= WALL ================= */
     .wall-section {
-      flex: 1;
+      flex: 1 1 auto;
+      min-height: 0;
       width: 100%;
-      background: 
-        /* Subtle wall texture and vignette overlay */
-        radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.08) 0%, transparent 60%),
-        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.75) 100%),
-        var(--wall-color);
       display: flex;
       justify-content: center;
       position: relative;
+      z-index: 5;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 183, 3, 0.09) 0%, transparent 58%),
+        radial-gradient(circle at 50% 55%, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.78) 100%),
+        repeating-linear-gradient(94deg, rgba(255, 255, 255, 0.014) 0 1px, transparent 1px 7px),
+        var(--wall-color);
     }
 
-    /* Overhead Light Fixture */
+    /* Dado rail for depth */
+    .wall-section::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      bottom: 126px;
+      height: 3px;
+      background: linear-gradient(180deg, rgba(255, 220, 170, 0.05) 0%, rgba(0, 0, 0, 0.45) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
     .ceiling-light-fixture {
       position: absolute;
-      top: 0;
-      left: 50%;
+      top: 0; left: 50%;
       transform: translateX(-50%);
-      width: min(800px, 80vw);
+      width: min(820px, 82vw);
       height: 6px;
-      background: #ffea9f;
-      border-bottom-left-radius: 4px;
-      border-bottom-right-radius: 4px;
-      box-shadow: 
+      background: linear-gradient(90deg, #d9c07d 0%, #fff2c4 20%, #ffea9f 50%, #fff2c4 80%, #d9c07d 100%);
+      border-radius: 0 0 4px 4px;
+      box-shadow:
         0 0 15px rgba(255, 220, 130, 0.9),
         0 0 35px rgba(255, 183, 3, 0.6),
         0 20px 80px rgba(255, 183, 3, 0.25);
       z-index: 10;
     }
 
-    /* Downward Light Beam/Cone */
     .light-cone {
       position: absolute;
-      top: 0;
-      left: 50%;
+      top: 0; left: 50%;
       transform: translateX(-50%);
       width: 100%;
-      max-width: 900px;
+      max-width: 940px;
       height: 100%;
-      background: linear-gradient(180deg, rgba(255, 210, 120, 0.07) 0%, rgba(255, 183, 3, 0.02) 60%, transparent 100%);
+      background: linear-gradient(180deg, rgba(255, 210, 120, 0.075) 0%, rgba(255, 183, 3, 0.02) 58%, transparent 100%);
       pointer-events: none;
       z-index: 2;
     }
 
-    /* Centered Inner Container - Doors remain flex-end (bottom anchored) */
+    .skirting-board {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%;
+      height: 18px;
+      background: linear-gradient(180deg, #22170c 0%, #110b05 100%);
+      border-top: 1px solid #4e3a28;
+      z-index: 1;
+    }
+
     .wall-container {
       width: 100%;
-      max-width: 850px;
-      height: 100%;
+      max-width: 1000px;
       display: flex;
-      align-items: flex-end; /* Keeps doors anchored to the floor */
-      justify-content: space-between;
+      align-items: stretch;
+      justify-content: center;
+      gap: clamp(26px, 6vw, 88px);
       padding: 30px 30px 0 30px;
       position: relative;
       z-index: 3;
     }
 
-    /* Continuous Skirting Board along the full width of the wall */
-    .skirting-board {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 18px;
-      background: linear-gradient(180deg, #1f150b 0%, #110b05 100%);
-      border-top: 1px solid #4e3a28;
-      z-index: 1;
-    }
-
-    /* Elevator Door Frame (Left Side) */
-    .elevator-door-area {
-      position: relative;
-      width: 60%;
-      height: 100%;
-      max-height: 650px;
-      border: 10px solid #1a130b;
-      border-bottom: none;
-      box-shadow: 
-        inset 0 0 30px rgba(0,0,0,0.9),
-        0 0 20px rgba(0, 0, 0, 0.6);
-      overflow: hidden; /* Fixes doors sliding outside wall */
-      z-index: 2;
-    }
-
-    /* Metallic Door Sill / Threshold */
-    .door-sill {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 10px;
-      background: linear-gradient(180deg, #4a5054 0%, #1a1c1e 100%);
-      border-top: 1px solid #6b7278;
-      z-index: 5;
-    }
-
-    /* Interior revealed behind the opening doors */
-    .elevator-interior {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 50% 30%, #5a4836 0%, #0d0a07 85%);
+    /* ================= DOOR ================= */
+    .door-column {
+      flex: 0 1 480px;
+      min-width: 0;
       display: flex;
       flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Above-door floor indicator */
+    .lintel-plate {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: min(240px, 62%);
+      margin-bottom: 14px;
+      padding: 5px 16px;
+      background: #040404;
+      border: 2px solid #16100a;
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        inset 0 0 16px #000,
+        0 4px 12px rgba(0, 0, 0, 0.85),
+        0 0 22px rgba(255, 183, 3, 0.07);
+    }
+
+    .lintel-arrow {
+      font-size: 0.95rem;
+      line-height: 1;
+      color: #33240f;
+      transition: color 0.25s ease, text-shadow 0.25s ease;
+    }
+
+    .lintel-arrow.active {
+      color: #ff9526;
+      text-shadow: 0 0 10px rgba(255, 149, 38, 0.95), 0 0 20px rgba(255, 120, 20, 0.5);
+    }
+
+    .lintel-floor {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      min-width: 2.2ch;
+      text-align: center;
+      color: var(--accent-glow);
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 8px rgba(0, 255, 102, 0.55), 0 0 18px rgba(0, 255, 102, 0.25);
+    }
+
+    .scanlines::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0 1px, transparent 1px 3px);
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    .elevator-door-area {
+      flex: 1 1 auto;
+      width: 100%;
+      max-height: var(--door-max-h);
+      min-height: 140px;
+      position: relative;
+      border: 10px solid #1a130b;
+      border-bottom: none;
+      border-radius: 3px 3px 0 0;
+      overflow: hidden;
+      z-index: 2;
+      box-shadow:
+        inset 0 0 34px rgba(0, 0, 0, 0.92),
+        0 0 22px rgba(0, 0, 0, 0.65),
+        0 0 0 1px rgba(255, 200, 120, 0.06);
+    }
+
+    .door-sill {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(180deg, #565c60 0%, #2b2f31 45%, #141618 100%);
+      border-top: 1px solid #767d83;
+      z-index: 6;
+    }
+
+    /* Interior revealed behind the doors */
+    .elevator-interior {
+      position: absolute;
+      inset: 0;
+      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1;
       opacity: 0;
       transition: opacity 1s ease;
+      background:
+        radial-gradient(ellipse at 50% 20%, rgba(255, 214, 150, 0.30) 0%, transparent 62%),
+        linear-gradient(180deg, #3d2f1f 0%, #241a10 55%, #0f0a06 100%);
     }
 
-    .elevator-interior.revealed {
-      opacity: 1;
+    .elevator-interior.revealed { opacity: 1; }
+
+    .interior-lamp {
+      position: absolute;
+      top: 10px; left: 12%;
+      width: 76%;
+      height: 4px;
+      border-radius: 3px;
+      background: #ffeec2;
+      box-shadow: 0 0 18px rgba(255, 226, 160, 0.85), 0 0 44px rgba(255, 183, 3, 0.45);
+    }
+
+    .interior-rail {
+      position: absolute;
+      left: 9%; right: 9%;
+      top: 62%;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, #9aa1a8 0%, #545a5f 45%, #2f3437 100%);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
 
     .winner-reveal-box {
       text-align: center;
-      padding: 20px;
-      font-family: 'Oswald', sans-serif;
+      min-width: 0;
+      max-width: 100%;
+      padding: 20px 14px;
+      font-family: var(--font-display);
       position: relative;
+      z-index: 2;
+      opacity: 0;
+      transform: scale(0.86);
+      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.2, 1.3, 0.4, 1);
+    }
+
+    .winner-reveal-box.show { opacity: 1; transform: scale(1); }
+
+    .winner-label {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 5px;
+      color: rgba(255, 248, 250, 0.72);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .winner-name-display {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--paper);
+      text-shadow: 0 0 22px rgba(255, 240, 220, 0.75), 0 0 60px rgba(255, 183, 3, 0.35);
+      letter-spacing: 2px;
+      line-height: 1.12;
+      overflow-wrap: anywhere;
     }
 
     .reveal-particle {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 4px;
-      height: 4px;
-      background: var(--accent-glow);
+      top: 50%; left: 50%;
+      width: 4px; height: 4px;
       border-radius: 50%;
+      background: var(--accent-glow);
       box-shadow: 0 0 6px rgba(0, 255, 102, 0.9), 0 0 12px rgba(0, 255, 102, 0.5);
       pointer-events: none;
       animation: particleBurst 1.4s ease-out forwards;
     }
 
     @keyframes particleBurst {
-      0% { transform: translate(-50%, -50%) translate(0, 0) scale(1); opacity: 1; }
+      0%   { transform: translate(-50%, -50%) translate(0, 0) scale(1); opacity: 1; }
       100% { transform: translate(-50%, -50%) translate(var(--px), var(--py)) scale(0); opacity: 0; }
     }
 
-    .winner-label {
-      font-size: 0.9rem;
-      font-weight: 400;
-      letter-spacing: 3px;
-      color: #fff8fa;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .winner-name-display {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #fff8fa;
-      text-shadow: 0 0 20px #dfd8da;
-      letter-spacing: 2px;
-      word-break: break-word;
-    }
-
-    /* Elevator Sliding Doors */
+    /* Sliding doors */
     .elevator-doors-container {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       display: flex;
       z-index: 2;
       pointer-events: none;
@@ -223,193 +315,239 @@
     .door-panel {
       width: 50%;
       height: 100%;
-      background: linear-gradient(135deg, #2a3335 0%, #1a2021 100%);
-      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
-      transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1);
       position: relative;
+      transition: transform 2.4s cubic-bezier(0.3, 0.9, 0.25, 1);
+      background:
+        linear-gradient(180deg, rgba(255, 214, 150, 0.10) 0%, transparent 24%),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 4px),
+        linear-gradient(100deg, #2a3335 0%, #1d2425 42%, #141a19 100%);
+    }
+
+    /* Warm bounce light near the floor */
+    .door-panel::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 22%;
+      background: linear-gradient(180deg, transparent, rgba(255, 170, 70, 0.10));
+      pointer-events: none;
     }
 
     .door-panel.left {
-      border-right: 2px solid #0a0d0e;
+      border-right: 2px solid #080b0c;
+      box-shadow: inset -14px 0 26px rgba(0, 0, 0, 0.75), inset 0 0 50px rgba(0, 0, 0, 0.6);
     }
 
     .door-panel.right {
-      border-left: 2px solid #0a0d0e;
+      border-left: 2px solid #080b0c;
+      box-shadow: inset 14px 0 26px rgba(0, 0, 0, 0.75), inset 0 0 50px rgba(0, 0, 0, 0.6);
     }
 
-    /* Open doors animation classes */
-    .elevator-frame.open .door-panel.left {
-      transform: translateX(-88%);
+    .elevator-frame.open .door-panel.left  { transform: translateX(-88%); }
+    .elevator-frame.open .door-panel.right { transform: translateX(88%); }
+
+    /* Light spilling onto the hallway floor */
+    .floor-light-cast {
+      position: absolute;
+      top: 100%; left: 2%;
+      width: 96%;
+      height: var(--floor-h);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.9s ease-out 0.5s;
     }
 
-    .elevator-frame.open .door-panel.right {
-      transform: translateX(88%);
+    .floor-light-cast::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+        rgba(255, 206, 140, 0.50) 0%,
+        rgba(255, 178, 80, 0.26) 45%,
+        rgba(255, 140, 40, 0.07) 78%,
+        transparent 100%);
+      clip-path: polygon(0% 0%, 100% 0%, 118% 100%, -18% 100%);
+      filter: blur(3px);
     }
 
+    .elevator-frame.open .floor-light-cast { opacity: 1; }
+
+    /* ================= CONTROL PANEL ================= */
     .elevator-container {
-      width: 210px;
-      height: 210px;
-      margin-right: 70px;
-      /* Calculates exact middle height of door frame minus half panel height (105px) */
-      margin-bottom: calc(min(100%, 650px) / 2 - 105px);
-      background: linear-gradient(145deg, #2a3436, #1a2022);
-      border: 3px solid #5d3a10;
-      border-radius: 8px;
-      padding: 12px 10px;
-      box-shadow: 
-        0 10px 25px rgba(0, 0, 0, 0.85),
-        0 0 30px rgba(255, 183, 3, 0.08),
-        inset 0 1px 2px rgba(255, 255, 255, 0.15);
+      flex: 0 0 var(--panel-w);
+      width: var(--panel-w);
+      align-self: flex-end;
+      margin-bottom: clamp(70px, 16vh, 160px);
+      padding: 14px 13px 13px;
+      border-radius: 10px;
+      border: 3px solid var(--brass);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 4;
+      gap: 10px;
       position: relative;
+      z-index: 4;
+      background:
+        repeating-linear-gradient(92deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 3px),
+        linear-gradient(150deg, #333d3f 0%, #232b2d 45%, #171d1f 100%);
+      box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.85),
+        0 0 34px rgba(255, 183, 3, 0.09),
+        inset 0 1px 1px rgba(255, 255, 255, 0.18),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.6);
     }
 
     .panel-screw {
       position: absolute;
-      color: #110e0a;
-      font-size: 1.1rem;
-      line-height: 1;
-      pointer-events: none;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 28%, #767068 0%, #37312b 55%, #16120e 100%);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.85);
       z-index: 5;
     }
-    .screw-tl { top: 0px; left: 2px; }
-    .screw-tr { top: 0px; right: 2px; }
-    .screw-bl { bottom: -5px; left: 2px; }
-    .screw-br { bottom: -5px; right: 2px; }
 
-    .admin-section {
-      width: 100%;
-      transition: opacity 0.5s ease, visibility 0.5s ease;
-      height: auto;
+    .panel-screw::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 6px; height: 1.5px;
+      border-radius: 1px;
+      background: #0c0a07;
+      transform: rotate(-28deg);
     }
 
-    .admin-section.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    .screw-tl { top: 5px; left: 5px; }
+    .screw-tr { top: 5px; right: 5px; }
+    .screw-bl { bottom: 5px; left: 5px; }
+    .screw-br { bottom: 5px; right: 5px; }
 
-    .admin-meta-row {
+    .panel-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-top: 4px;
-      gap: 8px;
-    }
-
-    .entry-count {
-      font-size: 0.55rem;
-      letter-spacing: 0.5px;
-      color: #666;
+      justify-content: center;
+      position: relative;
+      font-family: var(--font-display);
+      font-size: 0.56rem;
+      font-weight: 600;
+      letter-spacing: 2.4px;
       text-transform: uppercase;
-      white-space: nowrap;
+      color: #8e8172;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.85);
     }
 
-    .validation-message {
-      font-size: 0.55rem;
-      letter-spacing: 0.5px;
-      color: #ff5c5c;
-      text-align: right;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 4px;
+    .mute-toggle {
+      position: absolute;
+      right: 6px; top: 50%;
+      transform: translateY(-50%);
+      width: 20px; height: 20px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid #3c443f;
+      background: linear-gradient(180deg, #262d2f, #151a1b);
+      color: #7d8a80;
       font-size: 0.6rem;
-      letter-spacing: 1px;
-      color: #8a8a9e;
-      text-transform: uppercase;
-      text-align: center;
+      line-height: 1;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
     }
 
-    textarea {
-      width: 100%;
-      height: 48px;
-      background: #060608;
-      border: 2px solid #111;
-      color: #e0e0e0;
-      padding: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      border-radius: 4px;
-      resize: none;
-      outline: none;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
-      display: block;
-    }
+    .mute-toggle:hover { color: var(--amber); border-color: #6a5320; }
+    .mute-toggle[aria-pressed="true"] { color: #4c4a45; }
+    .mute-toggle:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 
-    textarea:focus {
-      outline: none;
-      border-color: #111;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
-    }
-
-    /* Elevator Display Window */
+    /* Display window */
     .display-frame {
       background: #000;
-      border: 2px solid #111;
+      border: 2px solid #0e1112;
       border-radius: 6px;
-      padding: 6px 8px;
+      padding: 6px 8px 8px;
       text-align: center;
       width: 100%;
-      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.9), 0 0 8px rgba(255, 183, 3, 0.15);
       position: relative;
       overflow: hidden;
+      box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.95), 0 0 10px rgba(255, 183, 3, 0.14);
     }
 
-    /* Glass Reflection / Glare Effect on Display Window */
+    /* Glass glare */
     .display-frame::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.18) 0%,
-        rgba(255, 255, 255, 0.06) 30%,
-        rgba(255, 255, 255, 0) 70%,
-        transparent 100%
-      );
+      inset: 0;
+      background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.16) 0%,
+        rgba(255, 255, 255, 0.05) 28%,
+        rgba(255, 255, 255, 0) 66%,
+        transparent 100%);
       pointer-events: none;
       z-index: 10;
     }
 
+    .display-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-bottom: 5px;
+    }
+
+    .direction-light {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #1c1c1c;
+      box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.9);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      flex: 0 0 auto;
+    }
+
+    .direction-light.active {
+      background: #ff3b3b;
+      box-shadow: 0 0 9px #ff3333, 0 0 18px rgba(255, 51, 51, 0.6);
+    }
+
     .floor-label {
       font-size: 0.55rem;
-      letter-spacing: 1.2px;
-      color: #666;
+      letter-spacing: 1.6px;
+      color: #7a7264;
       text-transform: uppercase;
-      margin-bottom: 2px;
     }
 
     .scroll-viewport {
-      height: var(--item-height);
+      height: calc(var(--item-height) * 3);
       width: 100%;
       overflow: hidden;
       position: relative;
-      border-top: 1px solid rgba(255, 183, 3, 0.2);
-      border-bottom: 1px solid rgba(255, 183, 3, 0.2);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 26%, #000 74%, transparent 100%);
+    }
+
+    /* Centre selection band */
+    .scroll-viewport::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      top: var(--item-height);
+      height: var(--item-height);
+      border-top: 1px solid rgba(255, 183, 3, 0.30);
+      border-bottom: 1px solid rgba(255, 183, 3, 0.30);
+      background: linear-gradient(90deg, rgba(0, 255, 102, 0.04), rgba(0, 255, 102, 0.09), rgba(0, 255, 102, 0.04));
+      pointer-events: none;
+      z-index: 3;
     }
 
     .scroll-track {
       position: absolute;
+      top: 0; left: 0;
       width: 100%;
-      top: 0;
-      left: 0;
+      padding-top: var(--item-height);
       will-change: transform;
     }
 
     .name-item {
       height: var(--item-height);
       line-height: var(--item-height);
+      padding: 0 4px;
       font-size: 0.95rem;
       font-weight: bold;
       color: var(--accent-glow);
@@ -419,174 +557,297 @@
       text-overflow: ellipsis;
     }
 
-    .name-item.arrived {
-      animation: pulse-glow 1.5s infinite alternate;
+    .name-item.arrived { animation: pulse-glow 1.5s infinite alternate; }
+
+    @keyframes pulse-glow {
+      0%   { text-shadow: 0 0 6px rgba(0, 255, 102, 0.4); }
+      100% { text-shadow: 0 0 18px rgba(0, 255, 102, 0.95); }
     }
 
-    .direction-light {
-      width: 6px;
-      height: 6px;
+    /* Submissions / floor-button slot */
+    .panel-slot {
+      position: relative;
+      width: 100%;
+    }
+
+    .admin-section {
+      width: 100%;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+    }
+
+    .admin-section.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .floor-buttons {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      align-content: center;
+      gap: 6px 5px;
+      padding: 0 2px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
+    }
+
+    .floor-buttons.shown { opacity: 1; visibility: visible; }
+
+    .floor-btn {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
       border-radius: 50%;
-      background: #222;
-      margin: 0 auto 3px auto;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
+      font-family: var(--font-display);
+      font-size: 0.52rem;
+      font-weight: 600;
+      color: #5c564d;
+      border: 1px solid #2c3335;
+      background: radial-gradient(circle at 35% 30%, #262d2f, #121718);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.07);
+      transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .direction-light.active {
-      background: #ff3333;
-      box-shadow: 0 0 10px #ff3333, 0 0 18px rgba(255, 51, 51, 0.6);
+    .floor-btn.lit {
+      color: #fff0cc;
+      border-color: var(--amber);
+      box-shadow:
+        0 0 8px rgba(255, 183, 3, 0.65),
+        inset 0 0 8px rgba(255, 183, 3, 0.45);
     }
 
-    .btn {
-      background: linear-gradient(180deg, #1f2526, #121617);
-      border: 2px solid #53514f;
-      padding: 2px 2px;
-      font-size: 0.6rem;
-      letter-spacing: 1.2px;
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.55rem;
+      letter-spacing: 1.6px;
+      color: #8a8a9e;
       text-transform: uppercase;
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      height: 62px;
+      background: #060608;
+      border: 1px solid #14181a;
+      border-radius: 4px;
+      color: #cfd6d2;
+      padding: 6px 7px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      line-height: 1.35;
+      resize: none;
+      outline: none;
+      display: block;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.85);
+      scrollbar-width: thin;
+      scrollbar-color: #2c3335 #060608;
+    }
+
+    textarea::placeholder { color: #3f4644; }
+
+    textarea:focus-visible {
+      border-color: #6a5320;
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.85), 0 0 0 2px rgba(255, 183, 3, 0.22);
+    }
+
+    .admin-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 5px;
+      min-height: 12px;
+    }
+
+    .entry-count {
+      font-size: 0.54rem;
+      letter-spacing: 0.6px;
+      color: #6b6459;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .validation-message {
+      font-size: 0.54rem;
+      letter-spacing: 0.6px;
+      color: #ff6b6b;
+      text-align: right;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 9px 12px;
+      border-radius: 6px;
+      border: 1px solid #4a423a;
+      color: #d8ccb8;
+      background: linear-gradient(180deg, #2d3436, #171c1e);
       cursor: pointer;
-      border-radius: 20px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.6), 0 0 8px rgba(255, 183, 3, 0.1);
-      width: 50%;
-      color: #757472;
+      transition: color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.08s ease;
+      box-shadow:
+        0 3px 0 #0a0d0e,
+        0 7px 14px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .btn[hidden] { display: none; }
+
+    .btn-primary {
+      border-color: #7a5a22;
+      color: #ffdca0;
+      background: linear-gradient(180deg, #3b3020, #201810);
     }
 
     .btn:hover:not(:disabled) {
-      background: #0a0d0e;
-      color: #757472;
-      border: 2px solid #3a3939;
+      color: #fff0d2;
+      border-color: #a6791f;
+      box-shadow:
+        0 3px 0 #0a0d0e,
+        0 7px 18px rgba(0, 0, 0, 0.6),
+        0 0 16px rgba(255, 183, 3, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 0 0 #0a0d0e, inset 0 2px 6px rgba(0, 0, 0, 0.75);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 2px;
     }
 
     .btn:disabled {
-      border-color: #53514f;
-      color: #444;
+      color: #4f4b45;
+      border-color: #33302c;
       cursor: not-allowed;
-      box-shadow: none;
+      box-shadow: 0 3px 0 #0a0d0e, inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
-    .btn-reset {
-      border-color: #555;
-      color: #888;
-      font-size: 0.65rem;
-      padding: 5px 10px;
-      border-radius: 4px;
-    }
-
-    .btn-reset:hover {
-      border-color: #aaa;
-      color: #fff;
-    }
-
-    /* --- FULL-WIDTH FLAT HALLWAY FLOOR SECTION --- */
+    /* ================= FLOOR ================= */
     .hallway-floor {
-      height: 100px;
-      width: 100vw;
-      background: 
-        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0px, rgba(0, 0, 0, 0.5) 2px, transparent 2px, transparent 120px),
-        linear-gradient(180deg, #18110a 0%, #0a0704 100%);
-      border-top: 3px solid #0d0804;
-      position: relative;
-      z-index: 4;
-      box-shadow: inset 0 12px 25px rgba(0, 0, 0, 0.95);
-      display: flex;
-      justify-content: center; /* Center-align floor projection with wall container */
-    }
-
-    /* Centered floor projection wrapper matching width & position of door */
-    .floor-projection-area {
+      flex: 0 0 var(--floor-h);
+      height: var(--floor-h);
       width: 100%;
-      max-width: 850px;
-      height: 100%;
-      padding: 0 30px;
       position: relative;
-      pointer-events: none;
+      z-index: 1;
+      border-top: 3px solid #0d0804;
+      background:
+        repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0 2px, transparent 2px 120px),
+        linear-gradient(180deg, #18110a 0%, #0a0704 100%);
+      box-shadow: inset 0 12px 25px rgba(0, 0, 0, 0.95);
     }
 
-    /* Dynamic light beam cast directly on floor, perfectly aligned with doors */
-    .floor-light-cast {
-      position: absolute;
-      top: 0;
-      left: 30px;
-      width: calc(60% - 20px); /* Matches exact inner door width */
-      height: 100%;
-      pointer-events: none;
-      z-index: 5;
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 900px) {
+      body { overflow-y: auto; }
+
+      .elevator-frame { height: auto; min-height: 100dvh; }
+
+      .wall-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 18px;
+        padding: 22px 16px 18px;
+      }
+
+      .door-column { flex: 1 1 auto; width: 100%; max-width: 400px; }
+
+      .elevator-container {
+        align-self: center;
+        margin-bottom: 0;
+        width: min(320px, 100%);
+        flex: 0 0 auto;
+      }
+
+      .floor-light-cast { display: none; }
+      .wall-section::after { bottom: auto; top: 34%; }
+      .hallway-floor { --floor-h: 60px; flex-basis: 60px; height: 60px; }
+      .winner-name-display { font-size: 1.9rem; }
     }
 
-    .floor-light-cast::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 95%;
-      height: 100%;
-      /* Warm luminous incandescent spill onto floor */
-      background: linear-gradient(
-        180deg, 
-        rgba(228, 190, 141, 0.514) 0%, 
-        rgba(255, 190, 90, 0.28) 40%, 
-        rgba(255, 150, 40, 0.08) 75%, 
-        transparent 100%
-      );
-      clip-path: polygon(0% 0%, 100% 0%, 115% 100%, -15% 100%);
-      filter: blur(2px);
-      opacity: 0;
-      transition: opacity 0.6s ease-out;
+    @media (max-width: 420px) {
+      :root { --item-height: 38px; }
+      .ceiling-light-fixture { width: 92vw; }
     }
 
-    .elevator-frame.open .floor-light-cast::before {
-      opacity: 1;
-    }
-
-    @keyframes pulse-glow {
-      0% { text-shadow: 0 0 6px rgba(0, 255, 102, 0.4); }
-      100% { text-shadow: 0 0 18px rgba(0, 255, 102, 0.9); }
+    @media (prefers-reduced-motion: reduce) {
+      .door-panel { transition-duration: 0.5s; }
+      .name-item.arrived { animation: none; text-shadow: 0 0 16px rgba(0, 255, 102, 0.9); }
+      .winner-reveal-box { transition-duration: 0.25s; }
     }
   </style>
 </head>
 <body>
 
   <div class="elevator-frame" id="elevatorFrame">
-    
-    <!-- WALL SECTION -->
+
     <div class="wall-section">
       <div class="ceiling-light-fixture"></div>
       <div class="light-cone"></div>
       <div class="skirting-board"></div>
 
-      <!-- Inner Content Container -->
       <div class="wall-container">
-        <!-- Elevator Door Structure -->
-        <div class="elevator-door-area">
-          <div class="door-sill"></div>
 
-          <!-- Interior reveal screen -->
-          <div class="elevator-interior" id="elevatorInterior">
-            <div class="winner-reveal-box">
-              <div class="winner-label">Winner!</div>
-              <div class="winner-name-display" id="winnerDisplay">---</div>
+        <!-- Door + above-door indicator -->
+        <div class="door-column">
+          <div class="lintel-plate scanlines">
+            <span class="lintel-arrow" id="lintelArrow" aria-hidden="true">&#9650;</span>
+            <span class="lintel-floor" id="lintelFloor">G</span>
+          </div>
+
+          <div class="elevator-door-area">
+            <div class="elevator-interior" id="elevatorInterior">
+              <div class="interior-lamp"></div>
+              <div class="interior-rail"></div>
+              <div class="winner-reveal-box" id="winnerRevealBox">
+                <div class="winner-label">Winner</div>
+                <div class="winner-name-display" id="winnerDisplay" role="status" aria-live="polite">---</div>
+              </div>
             </div>
+
+            <div class="elevator-doors-container">
+              <div class="door-panel left"></div>
+              <div class="door-panel right"></div>
+            </div>
+
+            <div class="door-sill"></div>
           </div>
 
-          <!-- Sliding Metal Doors -->
-          <div class="elevator-doors-container">
-            <div class="door-panel left"></div>
-            <div class="door-panel right"></div>
-          </div>
+          <div class="floor-light-cast"></div>
         </div>
 
-        <!-- Control Panel Plate -->
+        <!-- Control panel -->
         <div class="elevator-container">
-          <div class="panel-screw screw-tl">•</div>
-          <div class="panel-screw screw-tr">•</div>
-          <div class="panel-screw screw-bl">•</div>
-          <div class="panel-screw screw-br">•</div>
-          
-          <div class="display-frame">
-            <div class="direction-light" id="dirLight"></div>
-            <div class="floor-label" id="statusLabel">Idle</div>
-            
+          <span class="panel-screw screw-tl"></span>
+          <span class="panel-screw screw-tr"></span>
+          <span class="panel-screw screw-bl"></span>
+          <span class="panel-screw screw-br"></span>
+
+          <div class="panel-header">
+            Prize Draw
+            <button type="button" class="mute-toggle" id="muteToggle" aria-pressed="false" title="Mute sound" aria-label="Mute sound">&#9835;</button>
+          </div>
+
+          <div class="display-frame scanlines">
+            <div class="display-top">
+              <span class="direction-light" id="dirLight"></span>
+              <span class="floor-label" id="statusLabel" role="status" aria-live="polite">Idle</span>
+            </div>
+
             <div class="scroll-viewport">
               <div class="scroll-track" id="scrollTrack">
                 <div class="name-item">G</div>
@@ -594,219 +855,415 @@
             </div>
           </div>
 
-          <div class="admin-section" id="adminSection">
-            <label for="usernameInput">Submissions</label>
-            <textarea id="usernameInput" placeholder="ChrisYepYep&#10;Macklebee&#10;Wowin&#10;"></textarea>
-            <div class="admin-meta-row">
-              <span id="entryCount" class="entry-count">0 entries</span>
-              <span id="validationMessage" class="validation-message"></span>
+          <div class="panel-slot">
+            <div class="admin-section" id="adminSection">
+              <label for="usernameInput">Submissions</label>
+              <textarea id="usernameInput" spellcheck="false" autocomplete="off"
+                placeholder="ChrisYepYep&#10;Macklebee&#10;Wowin"></textarea>
+              <div class="admin-meta-row">
+                <span id="entryCount" class="entry-count">0 entries</span>
+                <span id="validationMessage" class="validation-message" role="alert"></span>
+              </div>
             </div>
+            <div class="floor-buttons" id="floorButtons" aria-hidden="true"></div>
           </div>
 
-          <button class="btn" id="drawBtn" onclick="startElevatorDraw()">Transit</button>
-          <button class="btn btn-reset" id="resetBtn" onclick="resetDraw()" style="display: none;">Reset</button>
-
+          <button type="button" class="btn btn-primary" id="drawBtn">Transit</button>
+          <button type="button" class="btn btn-reset" id="resetBtn" hidden>Reset</button>
         </div>
-      </div>
 
-    </div>
-
-    <!-- FULL-WIDTH FLOOR SECTION -->
-    <div class="hallway-floor">
-      <div class="floor-projection-area">
-        <div class="floor-light-cast"></div>
       </div>
     </div>
+
+    <div class="hallway-floor"></div>
 
   </div>
 
 <script>
-  const elevatorFrame = document.getElementById('elevatorFrame');
-  const elevatorInterior = document.getElementById('elevatorInterior');
-  const winnerDisplay = document.getElementById('winnerDisplay');
-  const adminSection = document.getElementById('adminSection');
-  const usernameInput = document.getElementById('usernameInput');
-  const scrollTrack = document.getElementById('scrollTrack');
-  const statusLabel = document.getElementById('statusLabel');
-  const dirLight = document.getElementById('dirLight');
-  const drawBtn = document.getElementById('drawBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const entryCountEl = document.getElementById('entryCount');
-  const validationMessageEl = document.getElementById('validationMessage');
+(function () {
+  'use strict';
 
-  const ITEM_HEIGHT = 45;
-  let animationFrameId = null;
+  /* ---------- Tuning ---------- */
+  var SCROLL_DURATION_MS = 15000;   // length of the transit animation
+  var TARGET_TRAVEL_ITEMS = 140;    // roughly how many names scroll past
+  var START_FLOOR = 13;             // top floor shown on the lintel indicator
+  var NAMES_STORAGE_KEY = 'elevatorDrawNames';
+  var MUTE_STORAGE_KEY = 'elevatorDrawMuted';
 
-  const NAMES_STORAGE_KEY = 'elevatorDrawNames';
+  /* ---------- Elements ---------- */
+  var elevatorFrame    = document.getElementById('elevatorFrame');
+  var elevatorInterior = document.getElementById('elevatorInterior');
+  var winnerRevealBox  = document.getElementById('winnerRevealBox');
+  var winnerDisplay    = document.getElementById('winnerDisplay');
+  var adminSection     = document.getElementById('adminSection');
+  var usernameInput    = document.getElementById('usernameInput');
+  var scrollTrack      = document.getElementById('scrollTrack');
+  var statusLabel      = document.getElementById('statusLabel');
+  var dirLight         = document.getElementById('dirLight');
+  var lintelArrow      = document.getElementById('lintelArrow');
+  var lintelFloor      = document.getElementById('lintelFloor');
+  var drawBtn          = document.getElementById('drawBtn');
+  var resetBtn         = document.getElementById('resetBtn');
+  var entryCountEl     = document.getElementById('entryCount');
+  var validationEl     = document.getElementById('validationMessage');
+  var muteToggle       = document.getElementById('muteToggle');
+  var floorButtons     = document.getElementById('floorButtons');
 
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // The track is offset in whole/fractional rows rather than pixels, so a
+  // breakpoint that changes --item-height can never desync the display.
+  function trackOffset(rows) {
+    return 'translateY(calc(var(--item-height) * ' + (-rows).toFixed(4) + '))';
+  }
+
+  var animationFrameId = null;
+  var pendingTimeouts = [];
+  var isDrawing = false;
+  var muted = false;
+
+  /* ---------- Storage (a blocked store must not break the page) ---------- */
+  function storeGet(key) {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function storeSet(key, value) {
+    try { window.localStorage.setItem(key, value); } catch (e) { /* ignore */ }
+  }
+
+  function after(ms, fn) {
+    pendingTimeouts.push(window.setTimeout(fn, ms));
+  }
+  function clearPending() {
+    pendingTimeouts.forEach(clearTimeout);
+    pendingTimeouts = [];
+  }
+
+  /* ---------- Floor buttons (call plate shown during transit) ---------- */
+  var floorCells = [];
+  (function buildFloorButtons() {
+    var frag = document.createDocumentFragment();
+    for (var f = START_FLOOR; f >= 0; f--) {
+      var cell = document.createElement('span');
+      cell.className = 'floor-btn';
+      cell.textContent = f === 0 ? 'G' : String(f);
+      frag.appendChild(cell);
+      floorCells[f] = cell;
+    }
+    floorButtons.appendChild(frag);
+  })();
+
+  function litFloor(floor) {
+    for (var f = 0; f <= START_FLOOR; f++) {
+      floorCells[f].classList.toggle('lit', f === floor);
+    }
+  }
+
+  /* ---------- Entries ---------- */
   function parseUsers(rawText) {
-    return rawText.split('\n').map(u => u.trim()).filter(u => u.length > 0);
+    return rawText
+      .split('\n')
+      .map(function (u) { return u.trim(); })
+      .filter(function (u) { return u.length > 0; });
   }
 
   function updateEntryCount() {
-    const count = parseUsers(usernameInput.value).length;
-    entryCountEl.textContent = `${count} ${count === 1 ? 'entry' : 'entries'}`;
-  }
+    var users = parseUsers(usernameInput.value);
+    var unique = new Set(users.map(function (u) { return u.toLowerCase(); })).size;
 
-  const savedNames = localStorage.getItem(NAMES_STORAGE_KEY);
-  if (savedNames) {
-    usernameInput.value = savedNames;
-  }
-  updateEntryCount();
-
-  usernameInput.addEventListener('input', () => {
-    updateEntryCount();
-    localStorage.setItem(NAMES_STORAGE_KEY, usernameInput.value);
-    validationMessageEl.textContent = '';
-  });
-
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  let audioCtx = null;
-
-  function playElevatorChime() {
-    if (!audioCtx) {
-      audioCtx = new AudioContext();
-    } else if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
+    if (users.length === 0) {
+      entryCountEl.textContent = '0 entries';
+    } else if (unique < users.length) {
+      entryCountEl.textContent = users.length + ' entries · ' + unique + ' unique';
+    } else {
+      entryCountEl.textContent = users.length + (users.length === 1 ? ' entry' : ' entries');
     }
+  }
 
-    const now = audioCtx.currentTime;
-    const frequencies = [659.25, 987.77];
+  /* ---------- Audio ---------- */
+  var AudioCtx = window.AudioContext || window.webkitAudioContext;
+  var audioCtx = null;
 
-    frequencies.forEach(freq => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+  function ensureAudio() {
+    if (muted || !AudioCtx) return null;
+    if (!audioCtx) {
+      try { audioCtx = new AudioCtx(); } catch (e) { return null; }
+    }
+    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+    return audioCtx;
+  }
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now);
+  function tone(ctx, freq, startOffset, duration, peak, type) {
+    var t0 = ctx.currentTime + startOffset;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(peak, t0 + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + duration + 0.05);
+  }
 
-      gain.gain.setValueAtTime(0.25, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
+  function playArrivalChime() {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    tone(ctx, 987.77, 0, 2.2, 0.22, 'sine');
+    tone(ctx, 659.25, 0.30, 2.4, 0.18, 'sine');
+  }
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+  var lastTickAt = 0;
+  function playTick() {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    var now = performance.now();
+    if (now - lastTickAt < 70) return;   // no machine-gun clicking at full speed
+    lastTickAt = now;
+    tone(ctx, 1250, 0, 0.035, 0.035, 'square');
+  }
 
-      osc.start(now);
-      osc.stop(now + 2.5);
-    });
+  /* ---------- Unbiased random ---------- */
+  function randomIndex(n) {
+    if (window.crypto && window.crypto.getRandomValues) {
+      var limit = Math.floor(4294967296 / n) * n;
+      var buf = new Uint32Array(1);
+      var v;
+      do { window.crypto.getRandomValues(buf); v = buf[0]; } while (v >= limit);
+      return v % n;
+    }
+    return Math.floor(Math.random() * n);
+  }
+
+  /* ---------- Reveal ---------- */
+  function setWinnerText(name) {
+    winnerDisplay.textContent = name;
+    var len = name.length;
+    var rem = len <= 10 ? 2.6 : len <= 16 ? 2.1 : len <= 24 ? 1.55 : 1.15;
+    winnerDisplay.style.fontSize = 'min(' + rem + 'rem, 11vw)';
   }
 
   function spawnRevealParticles() {
-    const box = document.querySelector('.winner-reveal-box');
-    if (!box) return;
-
-    const particleCount = 70;
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
+    if (reduceMotion) return;
+    for (var i = 0; i < 70; i++) {
+      var particle = document.createElement('div');
       particle.className = 'reveal-particle';
-      const angle = Math.random() * Math.PI * 2;
-      const distance = 80 + Math.random() * 320;
-      particle.style.setProperty('--px', `${Math.cos(angle) * distance}px`);
-      particle.style.setProperty('--py', `${Math.sin(angle) * distance}px`);
-      particle.style.animationDelay = `${Math.random() * 0.3}s`;
-      particle.addEventListener('animationend', () => particle.remove());
-      box.appendChild(particle);
+      var angle = Math.random() * Math.PI * 2;
+      var distance = 80 + Math.random() * 320;
+      particle.style.setProperty('--px', (Math.cos(angle) * distance).toFixed(1) + 'px');
+      particle.style.setProperty('--py', (Math.sin(angle) * distance).toFixed(1) + 'px');
+      particle.style.animationDelay = (Math.random() * 0.3).toFixed(2) + 's';
+      particle.addEventListener('animationend', function () { this.remove(); });
+      winnerRevealBox.appendChild(particle);
     }
   }
 
-  function startElevatorDraw() {
-    if (!audioCtx) {
-      audioCtx = new AudioContext();
+  /* ---------- Draw ---------- */
+  function buildSequence(users, winnerIndex) {
+    var len = users.length;
+    var repeats = Math.max(4, Math.min(14, Math.ceil(TARGET_TRAVEL_ITEMS / len) + 2));
+    if (len * repeats > 1200) {
+      repeats = Math.max(3, Math.floor(1200 / len));
     }
 
-    const users = parseUsers(usernameInput.value);
+    var frag = document.createDocumentFragment();
+    var targetIndex = (repeats - 2) * len + winnerIndex;
+    var winningEl = null;
+    var idx = 0;
+
+    for (var r = 0; r < repeats; r++) {
+      for (var i = 0; i < len; i++) {
+        var div = document.createElement('div');
+        div.className = 'name-item';
+        div.textContent = users[i];
+        if (idx === targetIndex) { winningEl = div; }
+        frag.appendChild(div);
+        idx++;
+      }
+    }
+
+    scrollTrack.textContent = '';
+    scrollTrack.appendChild(frag);
+    return { targetIndex: targetIndex, winningEl: winningEl };
+  }
+
+  function startElevatorDraw() {
+    if (isDrawing) return;
+
+    var users = parseUsers(usernameInput.value);
     if (users.length === 0) {
-      validationMessageEl.textContent = 'Enter at least one username.';
+      validationEl.textContent = 'Enter at least one name.';
+      usernameInput.focus();
       return;
     }
-    validationMessageEl.textContent = '';
+    validationEl.textContent = '';
 
-    const winnerIndex = Math.floor(Math.random() * users.length);
-    const winner = users[winnerIndex];
+    ensureAudio();   // unlock audio inside the click gesture
 
-    const repeatCount = 10;
-    let fullSequence = [];
-    for (let i = 0; i < repeatCount; i++) {
-      fullSequence.push(...users);
-    }
-    const targetIndex = (repeatCount - 2) * users.length + winnerIndex;
+    var winnerIndex = randomIndex(users.length);
+    var winner = users[winnerIndex];
+    var seq = buildSequence(users, winnerIndex);
 
-    scrollTrack.innerHTML = '';
-    fullSequence.forEach((name, idx) => {
-      const div = document.createElement('div');
-      div.className = 'name-item';
-      div.textContent = name;
-      if (idx === targetIndex) div.id = 'winningItem';
-      scrollTrack.appendChild(div);
-    });
-
+    isDrawing = true;
     drawBtn.disabled = true;
-    statusLabel.textContent = "Transit...";
+    adminSection.classList.add('hidden');
+    floorButtons.classList.add('shown');
+    litFloor(START_FLOOR);
+    statusLabel.textContent = 'In transit';
     dirLight.classList.add('active');
+    lintelArrow.classList.add('active');
 
-    const totalDistance = targetIndex * ITEM_HEIGHT;
-    let startTime = null;
-    const duration = 22000;
+    var totalRows = seq.targetIndex;
+    var duration = reduceMotion ? 1200 : SCROLL_DURATION_MS;
+    var startTime = performance.now();
+    var lastItem = -1;
+    var lastFloor = -1;
 
-    function quarticEaseOut(t) {
-      return 1 - Math.pow(1 - t, 4);
-    }
+    function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
 
-    function animateScroll(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      const easedProgress = quarticEaseOut(progress);
-      const currentPos = easedProgress * totalDistance;
+    function animateScroll() {
+      var progress = Math.min((performance.now() - startTime) / duration, 1);
+      var eased = easeOutQuart(progress);
+      var rows = eased * totalRows;
 
-      scrollTrack.style.transform = `translateY(-${currentPos}px)`;
+      scrollTrack.style.transform = trackOffset(rows);
+
+      var floorsLeft = Math.round(START_FLOOR * (1 - eased));
+      if (floorsLeft !== lastFloor) {
+        lastFloor = floorsLeft;
+        lintelFloor.textContent = floorsLeft === 0 ? 'G' : String(floorsLeft);
+        litFloor(floorsLeft);
+      }
+
+      var item = Math.round(rows);
+      if (item !== lastItem) { lastItem = item; playTick(); }
 
       if (progress < 1) {
         animationFrameId = requestAnimationFrame(animateScroll);
       } else {
-        scrollTrack.style.transform = `translateY(-${totalDistance}px)`;
-        const winningEl = document.getElementById('winningItem');
-        if (winningEl) winningEl.classList.add('arrived');
-
-        statusLabel.textContent = "Arrived";
-        dirLight.classList.remove('active');
-        resetBtn.style.display = 'block';
-        drawBtn.style.display = 'none';
-
-        winnerDisplay.textContent = winner;
-        elevatorFrame.classList.add('open');
-        elevatorInterior.classList.add('revealed');
-
-        setTimeout(spawnRevealParticles, 900);
-        playElevatorChime();
+        animationFrameId = null;
+        finishDraw(winner, seq.winningEl, totalRows);
       }
     }
 
     animationFrameId = requestAnimationFrame(animateScroll);
+
+    // requestAnimationFrame is paused in a backgrounded tab, so guarantee the
+    // draw still lands with a timer, which keeps running (throttled) when hidden.
+    after(duration + 400, function () {
+      finishDraw(winner, seq.winningEl, totalRows);
+    });
+  }
+
+  function finishDraw(winner, winningEl, totalRows) {
+    if (!isDrawing) return;
+    isDrawing = false;
+    if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+    clearPending();
+
+    scrollTrack.style.transform = trackOffset(totalRows);
+    if (winningEl) winningEl.classList.add('arrived');
+
+    statusLabel.textContent = 'Arrived';
+    lintelFloor.textContent = 'G';
+    litFloor(0);
+    dirLight.classList.remove('active');
+    lintelArrow.classList.remove('active');
+    playArrivalChime();
+
+    drawBtn.hidden = true;
+    resetBtn.hidden = false;
+
+    setWinnerText(winner);
+
+    // Doors open, interior lights up, name lands, then the burst.
+    var t = reduceMotion ? 0.35 : 1;
+    after(500 * t,  function () { elevatorFrame.classList.add('open'); });
+    after(1500 * t, function () { elevatorInterior.classList.add('revealed'); });
+    after(2200 * t, function () { winnerRevealBox.classList.add('show'); });
+    after(2500 * t, spawnRevealParticles);
+    after(2600 * t, function () { resetBtn.focus(); });
   }
 
   function resetDraw() {
-    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    if (animationFrameId) { cancelAnimationFrame(animationFrameId); animationFrameId = null; }
+    clearPending();
+    isDrawing = false;
 
     elevatorFrame.classList.remove('open');
     elevatorInterior.classList.remove('revealed');
-    
+    winnerRevealBox.classList.remove('show');
+
     adminSection.classList.remove('hidden');
+    floorButtons.classList.remove('shown');
+    litFloor(-1);
     drawBtn.disabled = false;
-    drawBtn.style.display = 'block';
-    resetBtn.style.display = 'none';
-    
-    scrollTrack.style.transform = 'translateY(0px)';
-    scrollTrack.innerHTML = '<div class="name-item">G</div>';
+    drawBtn.hidden = false;
+    resetBtn.hidden = true;
+
+    scrollTrack.style.transform = trackOffset(0);
+    scrollTrack.textContent = '';
+    var placeholder = document.createElement('div');
+    placeholder.className = 'name-item';
+    placeholder.textContent = 'G';
+    scrollTrack.appendChild(placeholder);
 
     statusLabel.textContent = 'Idle';
+    lintelFloor.textContent = 'G';
     dirLight.classList.remove('active');
+    lintelArrow.classList.remove('active');
 
     winnerDisplay.textContent = '---';
-    validationMessageEl.textContent = '';
-    document.querySelectorAll('.reveal-particle').forEach(p => p.remove());
+    winnerDisplay.style.fontSize = '';
+    validationEl.textContent = '';
+
+    Array.prototype.forEach.call(
+      winnerRevealBox.querySelectorAll('.reveal-particle'),
+      function (p) { p.remove(); }
+    );
   }
+
+  /* ---------- Wiring ---------- */
+  var savedNames = storeGet(NAMES_STORAGE_KEY);
+  if (savedNames) usernameInput.value = savedNames;
+  updateEntryCount();
+
+  muted = storeGet(MUTE_STORAGE_KEY) === '1';
+  function renderMute() {
+    muteToggle.setAttribute('aria-pressed', muted ? 'true' : 'false');
+    muteToggle.textContent = muted ? '✕' : '♫';
+    muteToggle.title = muted ? 'Unmute sound' : 'Mute sound';
+    muteToggle.setAttribute('aria-label', muteToggle.title);
+  }
+  renderMute();
+
+  usernameInput.addEventListener('input', function () {
+    updateEntryCount();
+    storeSet(NAMES_STORAGE_KEY, usernameInput.value);
+    validationEl.textContent = '';
+  });
+
+  usernameInput.addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      startElevatorDraw();
+    }
+  });
+
+  drawBtn.addEventListener('click', startElevatorDraw);
+  resetBtn.addEventListener('click', resetDraw);
+
+  muteToggle.addEventListener('click', function () {
+    muted = !muted;
+    storeSet(MUTE_STORAGE_KEY, muted ? '1' : '0');
+    renderMute();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !resetBtn.hidden) resetDraw();
+  });
+})();
 </script>
 </body>
 </html>
