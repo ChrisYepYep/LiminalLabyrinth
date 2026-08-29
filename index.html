@@ -72,9 +72,9 @@
             pointer-events: none;
         } 
 
-        /* ================= COUNTDOWN & OPENING SEQUENCE ================= */
-        .countdown-wrapper {
-            margin-top: -140px;
+        /* ================= LANDING BLURB & OPENING SEQUENCE ================= */
+        .landing-blurb-wrapper {
+            margin-top: -145px;
             z-index: 15;
             text-align: center;
             display: flex;
@@ -83,29 +83,31 @@
             transition: all 1s ease-in-out;
         }
 
-        .countdown-label {
+        /* Same CRT phosphor treatment the typed countdown text used, but this
+           copy is long enough that it has to wrap. */
+        .landing-blurb {
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.7rem;
             color: #00ff66; /* CRT Phosphor Green */
             letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-shadow: 
-                0 0 3px rgba(0, 255, 102, 0.9),
-                0 0 8px rgba(0, 255, 102, 0.5);
-            min-height: 1.4em;
+            line-height: 1.7;
+            margin: 0 auto;
+            padding: 0 12px;
+            max-width: min(520px, 100%);
+            text-align: center;
+            text-shadow:
+                0 0 2px rgba(127, 255, 0, 0.9),
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 6px rgba(0, 255, 100, 0.6),
+                0 0 8px rgba(0, 255, 100, 0.4);
         }
 
-        .countdown-digits {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.75rem;
-            font-weight: bold;
-            letter-spacing: 4px;
-            color: #00ff66;
-            text-shadow: 
-                0 0 4px rgba(0, 255, 102, 0.9),
-                0 0 12px rgba(0, 255, 102, 0.5),
-                0 0 22px rgba(0, 255, 102, 0.3);
-            font-variant-numeric: tabular-nums;
+        @media (max-width: 400px) {
+            .landing-blurb {
+                font-size: 0.6rem;
+                letter-spacing: 1.5px;
+                max-width: 100%;
+            }
         }
 
         .landing-action-group {
@@ -418,7 +420,6 @@
         }
 
         div[id^="exp"] .expanse-blurb-text,
-        .countdown-label,
         #youwontext {
             font-family: 'Courier New', Courier, monospace;
             color: #00ff66;
@@ -434,14 +435,12 @@
 
         @media (max-width: 400px) {
             div[id^="exp"] .expanse-blurb-text,
-            .countdown-label,
             #youwontext {
                 font-size: 0.6rem;
             }
         }
 
-        .expanse-blurb-text.typing::after,
-        .countdown-label.typing::after {
+        .expanse-blurb-text.typing::after {
             content: '█';
             display: inline-block;
             vertical-align: text-bottom;
@@ -843,33 +842,6 @@
 
         .policy-text a:hover { opacity: 1; text-shadow: 0 0 10px rgba(255, 248, 250, 0.8); }
 
-        /* ================= COUNTDOWN COMPLETION GLOW ================= */
-        #landing-header-glow {
-            position: absolute;
-            top: var(--glow-top, 55px);
-            left: var(--glow-left, 50%);
-            transform: translate(-50%, -50%);
-            width: min(90%, 460px);
-            height: 150px;
-            border-radius: 50%;
-            background: radial-gradient(circle,
-                rgba(0, 255, 102, 0.4) 0%,
-                rgba(0, 255, 102, 0.18) 45%,
-                rgba(0, 255, 102, 0) 75%);
-            filter: blur(18px);
-            opacity: 0;
-            pointer-events: none;
-            z-index: 6;
-        }
-
-        #landing-header-glow.glow-active {
-            animation: headerGlowFadeUp 5s ease-out forwards;
-        }
-
-        @keyframes headerGlowFadeUp {
-            0%   { opacity: 0; }
-            100% { opacity: 1; }
-        }
     </style>
 </head>
 <body>
@@ -878,16 +850,14 @@
     <!-- LANDING SCREEN -->
     <div id="landing" class="room active">
         <div class="room-image-frame" id="landing-frame">
-            <div id="landing-header-glow"></div>
             <h1 class="landing-title">Liminal Labyrinth</h1>
             <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
             <img id="landing-crt" class="room-image-crt" src="roomassets/figmentCRT.png?raw=true" alt="">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
-        <div id="countdown-container" class="countdown-wrapper">
-            <p id="countdown-label" class="countdown-label expanse-blurb-text"></p>
-            <div id="countdown-timer" class="countdown-digits">00d : 00h : 00m : 00s</div>
+        <div id="landing-blurb-container" class="landing-blurb-wrapper">
+            <p class="landing-blurb">Liminal Labyrinth, An Audio Experience; progress through the audio on this website alongside ChrisYepYep's Liminal Labyrinth maze in Habbo Hotel: Origins</p>
         </div>
 
         <div id="landing-action-group" class="landing-action-group">
@@ -2116,47 +2086,6 @@
 const PLAY_ICON_URL = "images/playicon.png?raw=true";
 const PAUSE_ICON_URL = "images/pauseicon.png?raw=true";
 
-const TARGET_DATE = new Date("2026-08-22T17:05:00Z").getTime();
-
-/* ================= UTC PHRASE SCHEDULE CONFIGURATION ================= */
-const LANDING_PHRASE_SCHEDULE = [
-    {
-        startTime: 0,
-        phrases: [
-            "[TRANSMISSION LOCKED] - AWAITING SIGNAL",
-            "[CARRIER WAVE DORMANT] - MONITORING FREQUENCY",
-            "[SIGNAL UNRESOLVED] - PATIENCE IS REQUIRED",
-            "[STATIC DETECTED] - AWAITING BEACON TRANSMISSION"
-        ]
-    },
-    {
-        startTime: new Date("2026-08-22T16:59:00Z").getTime(),
-        phrases: [
-            "[FREQUENCY ALIGNED] - ESTABLISHING CONNECTION",
-            "[SUBSPACE RELAY ACTIVE] - SYNCHRONIZING CLOCKS",
-            "[ENCRYPTION KEY ACCEPTED] - PREPARING STREAM",
-            "[SIGNAL STRENGTH 84%] - NOISE FLOOR REDUCED"
-        ]
-    },
-    {
-        startTime: new Date("2026-08-22T17:02:00Z").getTime(),
-        phrases: [
-            "[CARRIER WAVE LOCATED] - CONFIRMING STREAM ACTIVE",
-            "[BROADCAST INITIATED] - STAND BY FOR DECRYPTION",
-            "[GATEWAY OPENING] - TRANSMISSION IN PROGRESS",
-            "[STREAM CONFIRMATION] - THE LEET SHOW LIVE"
-        ]
-    },
-    {
-        startTime: new Date("2026-08-22T17:05:00Z").getTime(),
-        phrases: [
-            "[TRANSMISSION LIVE] - SIGNAL UNLOCKED",
-            "[LABYRINTH PROTOCOL ENGAGED] - ENTER WHEN READY",
-            "[SIGNAL STABLE] - PROCEED TO THE LABYRINTH"
-        ]
-    }
-];
-
 function fadeAudioOut(audio, duration = 1500) {
     return new Promise((resolve) => {
         if (!audio || audio.paused || audio.volume === 0) {
@@ -2216,118 +2145,28 @@ function toggleAudio(btn) {
     }
 }
 
-let landingTypingInterval = null;
-let landingTypingTimeout = null;
-let lastLandingPhraseIndex = -1;
-
-function startLandingTypewriter() {
-    const label = document.getElementById('countdown-label');
-    if (!label) return;
-
-    clearInterval(landingTypingInterval);
-    clearTimeout(landingTypingTimeout);
-
-    const typingSpeed = 85; 
-    const loopPause   = 8000;
-
-    function typeNextPhrase() {
-        const now = Date.now();
-        const activeBlock = LANDING_PHRASE_SCHEDULE
-            .slice()
-            .reverse()
-            .find(block => now >= block.startTime) || LANDING_PHRASE_SCHEDULE[0];
-
-        let phraseIndex = 0;
-        if (activeBlock.phrases.length > 1) {
-            do {
-                phraseIndex = Math.floor(Math.random() * activeBlock.phrases.length);
-            } while (phraseIndex === lastLandingPhraseIndex);
-        }
-        lastLandingPhraseIndex = phraseIndex;
-        const fullText = activeBlock.phrases[phraseIndex];
-
-        label.textContent = '';
-        label.classList.remove('typing');
-
-        let charIndex = 0;
-        landingTypingInterval = setInterval(() => {
-            if (charIndex < fullText.length) {
-                label.textContent += fullText.charAt(charIndex);
-                charIndex++;
-            } else {
-                clearInterval(landingTypingInterval);
-                label.classList.add('typing');
-
-                landingTypingTimeout = setTimeout(() => {
-                    typeNextPhrase();
-                }, loopPause);
-            }
-        }, typingSpeed);
-    }
-
-    typeNextPhrase();
-}
-
 let hasRevealedLandingAction = false;
+let landingRevealTimeout = null;
 
-function updateCountdown() {
-    const timerElement = document.getElementById('countdown-timer');
-    if (!timerElement) return;
+/* Launch has passed, so the opening sequence runs straight away instead of
+   waiting on a countdown: the CRT overlay fades, then Enter appears. */
+function revealLandingAction() {
+    if (hasRevealedLandingAction) return;
+    hasRevealedLandingAction = true;
 
-    const now = Date.now();
-    const timeRemaining = TARGET_DATE - now;
-
-    if (timeRemaining <= 0) {
-        timerElement.textContent = "00d : 00h : 00m : 00s";
-
-        if (!hasRevealedLandingAction) {
-            hasRevealedLandingAction = true;
-            
-            const crtImage = document.getElementById('landing-crt');
-            if (crtImage) {
-                crtImage.classList.add('fade-out');
-            }
-
-            const headerGlow = document.getElementById('landing-header-glow');
-            if (headerGlow) {
-                positionHeaderGlow();
-                headerGlow.classList.add('glow-active');
-            }
-
-            setTimeout(() => {
-                const actionGroup = document.getElementById('landing-action-group');
-                if (actionGroup) {
-                    actionGroup.classList.add('revealed');
-                }
-            }, 3000);
-        }
-        return;
+    const crtImage = document.getElementById('landing-crt');
+    if (crtImage) {
+        crtImage.classList.add('fade-out');
     }
 
-    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-
-    const pad = (n) => String(n).padStart(2, '0');
-    timerElement.textContent = `${pad(days)}d : ${pad(hours)}h : ${pad(minutes)}m : ${pad(seconds)}s`;
+    clearTimeout(landingRevealTimeout);
+    landingRevealTimeout = setTimeout(() => {
+        const actionGroup = document.getElementById('landing-action-group');
+        if (actionGroup) {
+            actionGroup.classList.add('revealed');
+        }
+    }, 3000);
 }
-
-function positionHeaderGlow() {
-    const headerGlow = document.getElementById('landing-header-glow');
-    const title = document.querySelector('.landing-title');
-    const frame = document.getElementById('landing-frame');
-    if (!headerGlow || !title || !frame) return;
-
-    const titleRect = title.getBoundingClientRect();
-    const frameRect = frame.getBoundingClientRect();
-    if (titleRect.width === 0 && titleRect.height === 0) return;
-
-    headerGlow.style.setProperty('--glow-top', `${titleRect.top - frameRect.top + titleRect.height / 2}px`);
-    headerGlow.style.setProperty('--glow-left', `${titleRect.left - frameRect.left + titleRect.width / 2}px`);
-}
-
-window.addEventListener('resize', positionHeaderGlow);
 
 const MAZE_SEQUENCE = [
     'room1', 'exp1', 'room2', 'exp2', 'room3', 'exp3', 'room4', 'exp4', 'room5', 'exp5',
@@ -2411,16 +2250,6 @@ function triggerLandingCollapse(btn) {
         });
     }
 
-    const headerGlow = document.getElementById('landing-header-glow');
-    if (headerGlow) {
-        const currentOpacity = getComputedStyle(headerGlow).opacity;
-        headerGlow.style.animation = 'none';
-        headerGlow.style.opacity = currentOpacity;
-        void headerGlow.offsetWidth;
-        headerGlow.style.transition = 'opacity 2.5s ease-in';
-        headerGlow.style.opacity = '0';
-    }
-
     setTimeout(() => {
         landing.classList.add('fade-out');
     }, 2500);
@@ -2472,14 +2301,6 @@ function resetLandingScreen() {
     const crtImage = document.getElementById('landing-crt');
     if (crtImage) crtImage.classList.remove('fade-out');
 
-    const headerGlow = document.getElementById('landing-header-glow');
-    if (headerGlow) {
-        headerGlow.classList.remove('glow-active');
-        headerGlow.style.animation = '';
-        headerGlow.style.transition = '';
-        headerGlow.style.opacity = '';
-    }
-
     const actionGroup = document.getElementById('landing-action-group');
     if (actionGroup) actionGroup.classList.remove('revealed');
 
@@ -2489,7 +2310,11 @@ function resetLandingScreen() {
         delete title.dataset.split;
     }
 
+    clearTimeout(landingRevealTimeout);
     hasRevealedLandingAction = false;
+
+    // Nothing gates the reveal any more, so replay the opening sequence.
+    revealLandingAction();
 }
 
 function confirmReset(shouldReset) {
@@ -2650,8 +2475,7 @@ function initAudioPreloading() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    setInterval(updateCountdown, 1000);
-    startLandingTypewriter();
+    revealLandingAction();
     initProgressBreadcrumbs();
     initAudioPreloading();
 
