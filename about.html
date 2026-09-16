@@ -491,10 +491,38 @@
             text-shadow: 0 0 10px rgba(0, 255, 102, 0.9);
         }
     </style>
+    <link rel="stylesheet" href="ll-chrome.css">
 </head>
 <body>
 
+<!-- THE TOP BAR, borrowed from mazerats.net and wearing this site's colours.
+     Same markup as index.html; the styles live in ll-chrome.css so there is
+     one copy of them rather than three.
+
+     The pill is a real link: on mazerats.net it names the site you are already
+     standing on, so it is a plain span there; here it is the way across to it,
+     and it opens in a new tab. rel="noopener" because target="_blank" without
+     it hands the new page a handle back to this one. -->
+<header class="ll-topbar">
+    <div class="ll-brand-group">
+        <a class="ll-brand" href="index.html">
+            <span class="ll-brand-text">LIMINAL LABYRINTH</span>
+            <span class="ll-brand-tagline">An Audio Experience.</span>
+        </a>
+        <a class="ll-powered" href="https://mazerats.net" target="_blank" rel="noopener noreferrer">Powered by mazerats.net</a>
+    </div>
+</header>
+
+
 <div class="container">
+<!-- The window. Wraps the page's content rather than being painted on
+     .container itself, which is the element that fills the column — a frame
+     there is drawn around the height of the viewport rather than the content.
+     No --room modifier: that one is for the maze, where a single room is
+     centred in a panel with a floor. A page of prose flows from the top. -->
+<div class="ll-window">
+<div class="ll-titlebar" aria-hidden="true"></div>
+<div class="ll-window-inner">
     <div class="about-layout">
         
         <div class="room-image-frame">
@@ -543,6 +571,8 @@
         </div>
                 
     </div>
+</div><!-- /.ll-window-inner -->
+</div><!-- /.ll-window -->
 </div>
 
 <!-- Modal Popups -->
@@ -641,7 +671,7 @@
 
 <footer class="site-footer">
     <p>Liminal Labyrinth: An Audio Experience, is created solely by ChrisYepYep; Liminal Labyrinth is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
-    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a href="privacy.html">Privacy Policy & Event Rules</a></p>
+    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a href="privacy.html">Privacy Policy</a></p>
 </footer>
 
 <script>

@@ -1,0 +1,310 @@
+/* =============================================================================
+   LIMINAL LABYRINTH — THE SHARED CHROME
+
+   The top bar, the window surround and the tiled background, borrowed from
+   mazerats.net and wearing this site's colours. Used by index.html, about.html
+   and privacy.html.
+
+   ONE FILE RATHER THAN THREE COPIES. This began inline in index.html, which
+   was fine while it was one page; the moment the about and privacy pages
+   wanted the same frame, keeping it inline meant three copies of four hundred
+   lines and three places to forget. Each page keeps its OWN styles inline —
+   they share nothing else — and links this for the parts that must match.
+
+   The frame and the tile are the SAME pixel art the archive uses, recoloured
+   rather than redrawn: every coloured pixel had its hue replaced with 272deg
+   and its lightness cut, so the shapes, the highlight-over-fill relationship
+   and the black outline are all exactly what they are over there. See
+   images/ll_*.png, and tools in the session scratchpad that made them.
+
+   Loaded AFTER each page's own <style> block, so these rules win where they
+   deliberately override what is already there — body's flat background, and
+   the fact that nothing used to sit inside a frame.
+   ============================================================================= */
+
+:root {
+    /* Straight off the recoloured frame, so the CSS and the pixels cannot
+       drift apart: --ll-chrome-fill IS window_frame.png's fill colour, and
+       --ll-chrome-edge is its highlight. */
+    --ll-chrome-fill: #170a23;
+    --ll-chrome-edge: #2c1b3b;
+    --ll-violet: #6a4b8c;
+    --ll-violet-bright: #b9a0d8;
+    --ll-ink: #fff8fa;
+}
+
+/* ---- the tiled maze, barely there ------------------------------------------
+
+   The archive wears this tile at full strength. Here it is texture rather than
+   pattern: something that stops a flat black page looking like a rendering
+   failure, and that you have to go looking for to notice at all.
+
+   Two layers over the black. The tile is already dark — its brightest pixel
+   came out of the recolour at rgb(25,15,33) — and the gradient takes some of
+   what is left, heavier at the top where the bar and the heading sit than at
+   the foot.
+
+   THE FIRST NUMBERS WERE TOO DARK TO SEE. The gradient ran 0.86 to 0.94, which
+   against a tile that peaks at rgb(25,15,33) leaves a brightest pixel of about
+   rgb(2,1,2) — present in the compositor and absent to the eye. "Barely there"
+   has to still be there. At 0.62 falling to 0.46 the same pixel lands near
+   rgb(10,6,13): a texture you notice once and then stop seeing.
+
+   `fixed` pins it to the viewport, so on a long page the texture stays put
+   instead of scrolling past and drawing the eye. */
+body {
+    background-color: #000000;
+    background-image:
+        linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.62) 0%,
+            rgba(0, 0, 0, 0.58) 25%,
+            rgba(0, 0, 0, 0.52) 55%,
+            rgba(0, 0, 0, 0.47) 80%,
+            rgba(0, 0, 0, 0.46) 100%),
+        url('images/ll_bg_tile.png');
+    background-repeat: no-repeat, repeat;
+    background-size: 100% 100%, 220px;
+    background-attachment: fixed;
+
+    /* Room for the fixed bar. BORDER-BOX is the load-bearing half of this:
+       every page carries `min-height: 100vh`, and under the default
+       content-box this padding is added ON TOP of the viewport height — so the
+       page ends up exactly 46px taller than the screen and scrolls by exactly
+       that, with the footer pushed below the fold. Counted inside now. */
+    box-sizing: border-box;
+    padding-top: 46px;
+}
+
+/* ---- the top bar -----------------------------------------------------------
+
+   Fixed rather than sticky. <body> centres its children, and a bar in that
+   flow would be centred along with everything else — it would sit above the
+   content but well below the top of the screen. Taken out of flow it is where
+   a top bar belongs, and the padding on body above gives back the height it no
+   longer occupies. */
+.ll-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    /* flex-start, not space-between: the pill belongs beside the wordmark,
+       not at the far end of the bar. */
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 6px 20px;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, rgba(10, 5, 16, 0.97), rgba(10, 5, 16, 0.88));
+    border-bottom: 1px solid var(--ll-chrome-edge);
+    backdrop-filter: blur(4px);
+}
+
+.ll-brand-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.ll-brand {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    min-width: 0;
+}
+
+.ll-brand-text {
+    display: block;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 0.86rem;
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--ll-ink);
+    text-shadow: 0 0 6px rgba(255, 248, 250, 0.25);
+    white-space: nowrap;
+}
+
+.ll-brand-tagline {
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.56rem;
+    letter-spacing: 0.4px;
+    line-height: 1;
+    margin-top: 3px;
+    color: rgba(255, 248, 250, 0.45);
+    white-space: nowrap;
+}
+
+/* The pill. A link here rather than the archive's plain <span>: on
+   mazerats.net it names the site you are already on, and on this one it is the
+   way to it. target=_blank because a reader part-way through the maze has
+   audio playing and progress saved — sending them away from the tab would cost
+   them both. */
+.ll-powered {
+    flex: 0 0 auto;
+    padding: 3px 9px;
+    border: 1px solid var(--ll-violet);
+    border-radius: 10px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 0.56rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--ll-violet-bright);
+    background: rgba(106, 75, 140, 0.12);
+    transition: color 0.3s ease, border-color 0.3s ease,
+                background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ll-powered:hover,
+.ll-powered:focus-visible {
+    color: var(--ll-ink);
+    border-color: var(--ll-violet-bright);
+    background: rgba(106, 75, 140, 0.28);
+    box-shadow: 0 0 10px rgba(185, 160, 216, 0.35);
+}
+
+/* ---- the window surround ---------------------------------------------------
+
+   The archive's own panel frame, drawn by the same 14px border-image and now
+   in violet. `fill` in border-image-slice is what paints the middle of the
+   tile across the box, so the frame brings its own interior with it rather
+   than leaving a hole for a background colour to show through.
+
+   It goes on .ll-window, never on a page's .container: the container is the
+   element that fills the column, so a frame painted there is drawn around the
+   height of the VIEWPORT rather than around the content. */
+.ll-window {
+    width: 100%;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 14px;
+    border-image-source: url('images/ll_window_frame.png');
+    border-image-slice: 14 fill;
+    border-image-width: 14px;
+    border-image-repeat: stretch;
+    border-radius: 14px;   /* the frame is the border-image; this only rounds
+                              the shadow below to its curve */
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.75);
+    /* The frame's own breathing space around the panel. Kept tight — the frame
+       is 14px of art already, and the gap is there to show it. */
+    padding: 10px;
+}
+
+/* ---- the grab bar ----------------------------------------------------------
+
+   ll_title_pattern.png, the archive's own titlebar dots, recoloured with the
+   frame. 16x16 at a quarter coverage, repeated — so it is a texture rather
+   than a row of drawn dots, and it tiles at any width without the ends having
+   to land on a whole one.
+
+   `pixelated` matters: the source is 1px on, 1px off, and any smoothing turns
+   a crisp grid into grey mush.
+
+   IT RUNS TO THE WINDOW'S EDGE, over the frame rather than inside it. The
+   archive's grips do the same — they start in the bar, already inside the
+   border, then reach back OUT until they stop about 4px short of the window's
+   outer edge. Half the frame tile is plain fill anyway, so a bar that stops at
+   the padding leaves a band of violet between the dots and the edge and reads
+   as a stripe laid on the window rather than part of it.
+
+   -20px is that reach: 10px of .ll-window's padding plus 10px of its 14px
+   border, leaving the outer 4px of frame showing. */
+.ll-titlebar {
+    height: 22px;
+    margin: -20px -20px 10px;
+    background-image: url('images/ll_title_pattern.png');
+    background-repeat: repeat;
+    image-rendering: pixelated;
+    border-radius: 8px 8px 0 0;
+}
+
+/* ---- the panel inside the frame --------------------------------------------
+
+   The archive's .chrome-frame, in LL's terms: a black field with the frame's
+   own radius, set into the surround by the padding above. Content sat directly
+   on the violet fill before, which made window and content read as one flat
+   slab; a black ground under it is what gives the frame something to be a
+   frame AROUND.
+
+   The inset lines are the archive's too — a lighter edge along the top and
+   left, nothing on the other two — which is what makes the panel read as sunk
+   rather than as a black rectangle drawn on top. */
+.ll-window-inner {
+    background: #000000;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 18px 14px;
+    box-sizing: border-box;
+    box-shadow:
+        inset 0 1px 0 var(--ll-chrome-edge),
+        inset 1px 0 0 var(--ll-chrome-edge);
+}
+
+/* THE MAZE'S OWN PANEL, which is a different job from a page of prose.
+
+   index.html shows one room at a time and centres it, so that panel takes a
+   floor and a centring column, and the script at the foot of that page eases
+   its height between rooms. A document page wants none of that: its content is
+   longer than the screen, flows from the top and scrolls, and a centring
+   column with a 660px floor would strand a short page in the middle of a tall
+   black box. So the behaviour is opt-in rather than assumed. */
+.ll-window-inner--room {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: min(660px, calc(100vh - 240px));
+    transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* flex-shrink: 0 IS LOAD-BEARING, not tidying.
+
+   Every room in that panel is a flex item and takes the default flex-shrink: 1
+   — free to be squeezed below its own content height. That makes measuring it
+   circular: the script asks the room how tall it is, the room answers with the
+   squeezed height it has been given, the panel is sized to that, and the
+   content spills past and is cut off by the overflow clip. Room 8 on a phone
+   reported 755px and needed 823. */
+.ll-window-inner--room > .room {
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+/* THE BLURBS ARE MEASURED IN PIXELS, and the frame has taken some.
+
+   .room-blurb-text is width: 300px, #welcome's is 350px, and the figment and
+   expanse variants are 300px each — all hard widths, not maximums. On a 375px
+   phone the panel's inside is 298px, so the welcome copy ran 52px past it and
+   the clip cut it mid-sentence. It never fitted 337px of container either;
+   body's overflow-x: hidden was quietly swallowing it. Capped rather than
+   rewritten: max-width beats width, so each keeps its intended measure where
+   there is room and gives way where there is not. */
+.ll-window-inner [class*="blurb-text"] { max-width: 100%; }
+
+/* ---- narrow screens --------------------------------------------------------
+
+   THE BORDER KEEPS ITS 14px. Halving it to buy back width was the first
+   instinct and it is the wrong trade: the source is 42px square cut into 14px
+   thirds, so at 14 the art is drawn 1:1 and at 7 every slice is resampled to
+   half size — which on a frame that is one pixel of black, one of fill and one
+   of highlight is the difference between an edge and a smudge. The 28px it
+   costs comes out of the padding instead, which nobody can see. */
+@media (max-width: 480px) {
+    .ll-window { padding: 6px; }
+
+    /* A lower floor on a phone. The rooms are far taller here — narrow columns
+       wrap the prose to many more lines, 450px to 864px against 572px of
+       screen — so the height set by script does most of the work and this only
+       stops a short room collapsing to a letterbox. */
+    .ll-window-inner--room { min-height: min(470px, calc(100vh - 240px)); }
+    .ll-window-inner { padding: 14px 8px; }
+
+    .ll-topbar { padding: 6px 12px; }
+    .ll-brand-tagline { display: none; }
+}

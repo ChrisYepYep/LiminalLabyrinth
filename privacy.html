@@ -8,9 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
     <title>Liminal Labyrinth - Privacy Policy</title>
-    <meta name="description" content="Privacy Policy & Event Rules for the Liminal Labyrinth prize draw.">
+    <meta name="description" content="Privacy Policy for Liminal Labyrinth, an audio experience in Habbo Hotel: Origins.">
     <meta property="og:title" content="Liminal Labyrinth - Privacy Policy">
-    <meta property="og:description" content="Privacy Policy & Event Rules for the Liminal Labyrinth prize draw.">
+    <meta property="og:description" content="Privacy Policy for Liminal Labyrinth, an audio experience in Habbo Hotel: Origins.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://liminallabyrinth.quest/privacy.html">
     <meta property="og:image" content="https://liminallabyrinth.quest/roomassets/Figment.png?raw=true">
@@ -120,6 +120,30 @@
             text-transform: uppercase;
             border-bottom: 1px solid rgba(255, 248, 250, 0.1);
             padding-bottom: 3px;
+        }
+
+        /* ---- THE SECTION NUMBERS COUNT THEMSELVES.
+
+           They used to be typed into each heading — "01. Event Entry Rules",
+           "02. Waking Volition" and so on — which meant hiding or adding a
+           section was never one edit: every heading after it had to be
+           renumbered by hand, and the first one anybody forgot left the policy
+           with two 03s.
+
+           A counter cannot get that wrong. And it handles the case this was
+           introduced for exactly: an element with `display: none` generates no
+           box, so it does not increment — which means the hidden Event Entry
+           Rules section below is skipped automatically, and taking its
+           `hidden` attribute off puts it back AND renumbers everything under
+           it on its own. Nothing else to remember.
+
+           decimal-leading-zero to keep the 01, 02, 03 the headings had. */
+        .policy-content-wrapper { counter-reset: policy-section; }
+
+        .policy-section-title { counter-increment: policy-section; }
+
+        .policy-section-title::before {
+            content: counter(policy-section, decimal-leading-zero) ". ";
         }
 
         .policy-text {
@@ -255,10 +279,38 @@
         .modal-actions { display: flex; gap: 20px; justify-content: center; }
         .modal-action-btn { padding: 6px 22px; font-size: 0.95rem; }
     </style>
+    <link rel="stylesheet" href="ll-chrome.css">
 </head>
 <body>
 
+<!-- THE TOP BAR, borrowed from mazerats.net and wearing this site's colours.
+     Same markup as index.html; the styles live in ll-chrome.css so there is
+     one copy of them rather than three.
+
+     The pill is a real link: on mazerats.net it names the site you are already
+     standing on, so it is a plain span there; here it is the way across to it,
+     and it opens in a new tab. rel="noopener" because target="_blank" without
+     it hands the new page a handle back to this one. -->
+<header class="ll-topbar">
+    <div class="ll-brand-group">
+        <a class="ll-brand" href="index.html">
+            <span class="ll-brand-text">LIMINAL LABYRINTH</span>
+            <span class="ll-brand-tagline">An Audio Experience.</span>
+        </a>
+        <a class="ll-powered" href="https://mazerats.net" target="_blank" rel="noopener noreferrer">Powered by mazerats.net</a>
+    </div>
+</header>
+
+
 <div class="container">
+<!-- The window. Wraps the page's content rather than being painted on
+     .container itself, which is the element that fills the column — a frame
+     there is drawn around the height of the viewport rather than the content.
+     No --room modifier: that one is for the maze, where a single room is
+     centred in a panel with a floor. A page of prose flows from the top. -->
+<div class="ll-window">
+<div class="ll-titlebar" aria-hidden="true"></div>
+<div class="ll-window-inner">
     <div class="privacy-layout">
         
         <div class="room-image-frame">
@@ -273,7 +325,32 @@
                 Last calibrated: August 2026
             </p>
 
-            <div class="policy-section-title">01. Event Entry Rules</div>
+            <!-- ================= EVENT ENTRY RULES — HIDDEN =================
+
+                 Kept in full rather than deleted, because it is wanted again
+                 the next time there is a prize draw.
+
+                 TO PUT IT BACK: delete the `hidden` attribute on the div
+                 below. That is the whole job — the section numbers are CSS
+                 counters now (see .policy-section-title::before), and a
+                 hidden element does not increment one, so the sections under
+                 it renumber themselves both ways with nothing typed.
+
+                 Check the dates and the stream details before it goes back
+                 up: they name August 2026 and a specific Twitch stream.
+
+                 AND PUT THE WORDING BACK. Three places said "Privacy Policy &
+                 Event Rules" while this section was showing, and now say just
+                 "Privacy Policy" because it is not:
+
+                   · this page's <meta name="description"> and og:description
+                   · the footer link on index.html, about.html and this page
+
+                 The section itself renumbers on its own; those lines are
+                 prose and do not.
+                 ============================================================ -->
+            <div class="policy-section" hidden>
+            <div class="policy-section-title">Event Entry Rules</div>
             <p class="policy-text">
             • Prize will be awarded in GBP and converted automatically to overseas currencies by Steam.<br>
             • Only entries submitted via this website submission form will be accepted.<br>
@@ -281,25 +358,26 @@
             • Winners must have a Steam account to claim the prize. No alternative prize offered.<br>
             • If drawn winner is ineligible or refuses the prize, draw will be rerolled.<br>
             • Draw will take place during a live stream hosted by vincentleet on Twitch.tv; the stream will begin at 19:00UTC, August 29th.<br>
-            • Prize winner will be contacted by ChrisYepYep within 48 hours of the draw taking place, via Discord. If the winner is not accessible via Discord, an undefined amount of time for contact may be required.   
+            • Prize winner will be contacted by ChrisYepYep within 48 hours of the draw taking place, via Discord. If the winner is not accessible via Discord, an undefined amount of time for contact may be required.
             </p>
+            </div><!-- /.policy-section [hidden] — Event Entry Rules -->
 
-            <div class="policy-section-title">02. Waking Volition</div>
+            <div class="policy-section-title">Waking Volition</div>
             <p class="policy-text">
                 When navigating this labyrinth, the completion room will request parameters such as entering your Habbo Origins username and providing a screenshot asset to cross the threshold of the final prize diagnostic. This data is passed securely through <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Formspree</a>. No permanent databases store your records here, and no elements are ever distributed to tracking configurations. A record of the username you enter, and the image you upload, will be stored for the duration of the event plus 1 calender month; to ensure we have your submission should the prize draw need to be rerolled.
             </p>
 
-            <div class="policy-section-title">03. Spatial Local Cache</div>
+            <div class="policy-section-title">Spatial Local Cache</div>
             <p class="policy-text">
                 To prevent structural reality collapses during progression, this script utilizes your application environment's <code>localStorage</code> metrics to retain structural context (remembering your active room indexes or audio configurations). This variable state lives directly upon your system and is never sent back to external endpoints.
             </p>
 
-            <div class="policy-section-title">04. Repository Environmental Logs</div>
+            <div class="policy-section-title">Repository Environmental Logs</div>
             <p class="policy-text">
                 This diagnostic environment runs deployed atop the <strong>GitHub Pages</strong> server matrix. Due to this server architecture, network metadata (including standard IP allocations, browser configurations, and structural request timestamp parameters) is logged inherently by operational frameworks. To verify how this structural code environment works, read the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement</a>.
             </p>
 
-            <div class="policy-section-title">05. Terminal Termination</div>
+            <div class="policy-section-title">Terminal Termination</div>
             <p class="policy-text">
                 If you desire to completely erase your data fingerprints from the architectural history of the maze, simply initiate the <strong>Reset Progress</strong> utility or scrub your web browser cache logs directly.
             </p>
@@ -310,6 +388,8 @@
         </div>
 
     </div>
+</div><!-- /.ll-window-inner -->
+</div><!-- /.ll-window -->
 </div>
 
 <div id="reset-modal" class="modal-overlay">
@@ -326,7 +406,7 @@
 <footer class="site-footer">
     <p><a class="resetlink" role="button" tabindex="0" onclick="resetProgress()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();resetProgress();}">Reset Progress</a></p>
     <p>Liminal Labyrinth: An Audio Experience, is produced by ChrisYepYep; Liminal Labyrinth is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
-    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a class="privacylink" href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy & Event Rules</a></p>
+    <p>© 2026 Liminal Labyrinth. All rights reserved. | <a class="privacylink" href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a></p>
 </footer>
 
 <script>
