@@ -722,28 +722,601 @@
 
         .policy-text a:hover { opacity: 1; text-shadow: 0 0 10px rgba(255, 248, 250, 0.8); }
 
+        /* =====================================================================
+           MAZE RATS CHROME, IN LIMINAL LABYRINTH'S COLOURS
+
+           Three borrowed things: the top bar, the window surround the archive
+           draws its panels in, and the tiled maze background. All three come
+           from mazerats.net and none of them arrive brown.
+
+           The frame and the tile are the SAME pixel art as the archive uses,
+           recoloured rather than redrawn: every coloured pixel had its hue
+           replaced with 272deg and its lightness cut, so the shapes, the
+           highlight-over-fill relationship and the black outline are all
+           exactly what they are over there. See Images/ll_*.png.
+
+           Written at the end of the stylesheet on purpose. Everything here is
+           additive, and being last means these rules win over the earlier ones
+           they deliberately override (body's flat background, .container's
+           bare edges) without either having to be edited in place.
+           ===================================================================== */
+
+        :root {
+            /* Straight off the recoloured frame, so the CSS and the pixels
+               cannot drift apart: --ll-chrome-fill IS window_frame.png's fill
+               colour, and --ll-chrome-edge is its highlight. */
+            --ll-chrome-fill: #170a23;
+            --ll-chrome-edge: #2c1b3b;
+            --ll-violet: #6a4b8c;
+            --ll-violet-bright: #b9a0d8;
+            --ll-ink: #fff8fa;
+        }
+
+        /* ---- the tiled maze, barely there --------------------------------
+
+           The archive wears this tile at full strength. Here it is texture
+           rather than pattern: something that stops a flat black page looking
+           like a rendering failure, and that you have to go looking for to
+           notice at all.
+
+           Two layers over the black. The tile is already dark — its brightest
+           pixel came out of the recolour at rgb(25,15,33) — and the gradient
+           takes some of what is left, heavier at the top where the bar and
+           the heading sit than at the foot.
+
+           THE FIRST NUMBERS WERE TOO DARK TO SEE. The gradient ran 0.86 to
+           0.94, which against a tile that peaks at rgb(25,15,33) leaves a
+           brightest pixel of about rgb(2,1,2) — two levels above black, which
+           is present in the compositor and absent to the eye. "Barely there"
+           has to still be there. At 0.62 falling to 0.46 the same pixel lands
+           near rgb(10,6,13) at the top and rgb(13,8,18) at the foot: a texture
+           you notice once and then stop seeing, which is the intent.
+
+           `fixed` pins it to the viewport, so on a long room the texture stays
+           put instead of scrolling past and drawing the eye. */
+        body {
+            background-color: #000000;
+            background-image:
+                linear-gradient(to bottom,
+                    rgba(0, 0, 0, 0.62) 0%,
+                    rgba(0, 0, 0, 0.58) 25%,
+                    rgba(0, 0, 0, 0.52) 55%,
+                    rgba(0, 0, 0, 0.47) 80%,
+                    rgba(0, 0, 0, 0.46) 100%),
+                url('images/ll_bg_tile.png');
+            background-repeat: no-repeat, repeat;
+            background-size: 100% 100%, 220px;
+            background-attachment: fixed;
+
+            /* Room for the fixed bar. BORDER-BOX is the load-bearing half of
+               this: body carries `min-height: 100vh` from the original
+               stylesheet, and under the default content-box that padding is
+               added ON TOP of the viewport height — so the page was exactly
+               46px taller than the screen and scrolled by exactly that, with
+               the footer pushed below the fold. Counted inside now, and the
+               footer lands on the bottom edge with nothing to scroll. */
+            box-sizing: border-box;
+            padding-top: 46px;
+        }
+
+        /* ---- the top bar -------------------------------------------------
+
+           Fixed rather than sticky. <body> centres its children on both axes,
+           and a bar in that flow would be centred along with everything else —
+           it would sit above the content but well below the top of the screen.
+           Taken out of flow it is where a top bar belongs, and the padding on
+           body above gives back the height it no longer occupies. */
+        .ll-topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            /* flex-start, not space-between: the pill belongs beside the
+               wordmark, not at the far end of the bar. */
+            justify-content: flex-start;
+            gap: 12px;
+            padding: 6px 20px;
+            box-sizing: border-box;
+            background: linear-gradient(180deg, rgba(10, 5, 16, 0.97), rgba(10, 5, 16, 0.88));
+            border-bottom: 1px solid var(--ll-chrome-edge);
+            backdrop-filter: blur(4px);
+        }
+
+        .ll-brand-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .ll-brand {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            min-width: 0;
+        }
+
+        .ll-brand-text {
+            display: block;
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: 0.86rem;
+            letter-spacing: 2px;
+            line-height: 1;
+            color: var(--ll-ink);
+            text-shadow: 0 0 6px rgba(255, 248, 250, 0.25);
+            white-space: nowrap;
+        }
+
+        .ll-brand-tagline {
+            display: block;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.56rem;
+            letter-spacing: 0.4px;
+            line-height: 1;
+            margin-top: 3px;
+            color: rgba(255, 248, 250, 0.45);
+            white-space: nowrap;
+        }
+
+        /* The pill. A link here rather than the archive's plain <span>: on
+           mazerats.net it names the site you are already on, and on this one
+           it is the way to it. target=_blank because a reader part-way
+           through the maze has audio playing and progress saved — sending
+           them away from the tab would cost them both. */
+        .ll-powered {
+            flex: 0 0 auto;
+            padding: 3px 9px;
+            border: 1px solid var(--ll-violet);
+            border-radius: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.56rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            white-space: nowrap;
+            color: var(--ll-violet-bright);
+            background: rgba(106, 75, 140, 0.12);
+            transition: color 0.3s ease, border-color 0.3s ease,
+                        background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ll-powered:hover,
+        .ll-powered:focus-visible {
+            color: var(--ll-ink);
+            border-color: var(--ll-violet-bright);
+            background: rgba(106, 75, 140, 0.28);
+            box-shadow: 0 0 10px rgba(185, 160, 216, 0.35);
+        }
+
+        /* ---- the window surround -----------------------------------------
+
+           The archive's own panel frame, drawn by the same 14px border-image
+           and now in violet. `fill` in border-image-slice is what paints the
+           middle of the tile across the box, so the frame brings its own
+           interior with it rather than leaving a hole for a background colour
+           to show through.
+
+           IT GOES ON .ll-window, NOT ON .container. .container is the element
+           that fills the column and centres the rooms inside it, so a frame
+           painted there is drawn around the height of the VIEWPORT rather than
+           around the maze — and the rooms stop being centred, because there is
+           no longer any free space for .container to centre them in. They sat
+           against the top of the screen. The wrapper hugs its content instead
+           and .container centres it exactly as it always did. */
+        .ll-window {
+            width: 100%;
+            box-sizing: border-box;
+            border-style: solid;
+            border-width: 14px;
+            border-image-source: url('images/ll_window_frame.png');
+            border-image-slice: 14 fill;
+            border-image-width: 14px;
+            border-image-repeat: stretch;
+            border-radius: 14px;   /* the frame is the border-image; this only
+                                      rounds the shadow below to its curve */
+            box-shadow: 0 16px 44px rgba(0, 0, 0, 0.75);
+            /* The frame's own breathing space around the panel below. Kept
+               tight — the frame is 14px of art already, and the gap is there
+               to show it, not to add a second margin. */
+            padding: 10px;
+        }
+
+        /* ---- the grab bar ------------------------------------------------
+
+           ll_title_pattern.png, the archive's own titlebar dots, recoloured
+           with the frame. 16x16 at a quarter coverage, repeated — so it is a
+           texture rather than a row of drawn dots, and it tiles at any width
+           without the ends having to land on a whole one.
+
+           `pixelated` matters here: the source is 1px on, 1px off, and any
+           smoothing at all turns a crisp grid into grey mush.
+
+           IT RUNS TO THE WINDOW'S EDGE, over the frame rather than inside it.
+           The archive's grips do the same: they start in the bar, which is
+           already inside the border, and then reach back OUT by
+           --titlebar-bleed until they stop about 4px short of the window's
+           outer edge. Half the frame tile is plain fill anyway, so a bar that
+           stops politely at the padding leaves a band of violet between the
+           dots and the edge and reads as a stripe laid on the window instead
+           of as part of it.
+
+           -20px is that reach here: 10px of .ll-window's padding plus 10px of
+           its 14px border, leaving the outer 4px of frame showing. The top
+           corners take the frame's own radius less those same 4px, so the
+           pattern follows the curve rather than cutting across it. */
+        .ll-titlebar {
+            height: 22px;
+            margin: -20px -20px 10px;
+            background-image: url('images/ll_title_pattern.png');
+            background-repeat: repeat;
+            image-rendering: pixelated;
+            border-radius: 8px 8px 0 0;
+        }
+
+        /* ---- the panel inside the frame ----------------------------------
+
+           The archive's .chrome-frame, in LL's terms: a black field with the
+           frame's own radius, set into the surround by the padding above. The
+           rooms sat directly on the violet fill before, which made window and
+           content read as one flat slab; a black ground under them is what
+           gives the frame something to be a frame AROUND.
+
+           The inset lines are the archive's too — a lighter edge along the
+           top and left, nothing on the other two — which is what makes the
+           panel read as sunk rather than as a black rectangle drawn on top.
+
+           IT ANIMATES BETWEEN ROOMS RATHER THAN JUMPING.
+
+           The window used to snap to each room's height on every Progress —
+           measured live, 520 to 644 at desktop width — taking the frame, the
+           grab bar and the footer with it.
+
+           A single fixed height was the first answer and it does not survive
+           the actual content. Checked across all 39 rooms rather than the
+           handful that first pass sampled: they run 427px to 753px at desktop
+           width, and 450px to 864px on a phone, where the tallest is taller
+           than the whole viewport. Any constant only decides which rooms get
+           cut off — and it cut the title off the top of room 3 and the
+           instruction off the bottom.
+
+           So the height is set to fit whatever room is up, and transitioned.
+           The script at the foot of the page measures the active room and
+           writes an explicit pixel height here; this rule supplies the
+           easing, and min-height the floor so a short room still gets a
+           window rather than a letterbox.
+
+           WITHOUT SCRIPT IT STILL WORKS. height stays auto, the floor still
+           applies, and the window sizes to its room exactly as it did before
+           — no animation, nothing broken. 240px is what sits above and below,
+           measured: 46 bar, 48 frame padding and border, 40 .container
+           padding, 73 footer, rest as slack. */
+        .ll-window-inner {
+            background: #000000;
+            border: 1px solid #000000;
+            border-radius: 8px;
+            /* x hidden so the rounded corners clip. y hidden too: the height
+               is made to fit the room, so a scrollbar here would only ever be
+               a flicker mid-transition. */
+            overflow: hidden;
+            min-height: min(660px, calc(100vh - 240px));
+            transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 18px 14px;
+            box-sizing: border-box;
+            box-shadow:
+                inset 0 1px 0 var(--ll-chrome-edge),
+                inset 1px 0 0 var(--ll-chrome-edge);
+        }
+
+        /* The landing screen sets its own transparent background and the room
+           images bleed to the panel's inner edge, so nothing inside needs to
+           know the frame is there. This only stops a room's own square corners
+           poking through the panel's rounded ones. */
+        /* flex-shrink: 0 IS LOAD-BEARING, not tidying.
+
+           .ll-window-inner is a flex column, so every room in it is a flex
+           item and takes the default flex-shrink: 1 — free to be squeezed
+           below its own content height whenever the panel is shorter than it
+           wants to be. That makes measuring it circular: the script asks the
+           room how tall it is, the room answers with the squeezed height it
+           has been given, the script sizes the panel to that, and the content
+           spills past it and is cut off by the overflow clip. Room 8 on a
+           phone reported 755px and needed 823.
+
+           Refusing to shrink makes the measurement honest — the room always
+           reports what it actually needs, and the panel is sized to fit it. */
+        .ll-window-inner > .room {
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        /* THE BLURBS ARE MEASURED IN PIXELS, and the frame has taken some.
+
+           .room-blurb-text is width: 300px, #welcome's is 350px, and the
+           figment and expanse variants are 300px each — all hard widths, not
+           maximums. On a 375px phone the panel's inside is 298px, so the
+           welcome copy ran 52px past it and `overflow: hidden` on the panel cut
+           it off mid-sentence rather than wrapping.
+
+           This was already true before the frame existed — 350px never fitted
+           337px of container either — but body's overflow-x: hidden was quietly
+           swallowing it, so it only became visible once the panel started
+           clipping. Capped rather than rewritten: max-width beats width, so
+           each keeps its intended measure on a screen with room for it and
+           gives way on one without. */
+        .ll-window-inner [class*="blurb-text"] { max-width: 100%; }
+
+        /* =====================================================================
+           THE LANDING SCREEN
+
+           It was the odd one out. Every other room states a title, a subtitle
+           and a paragraph in the site's own type; the landing had a title, no
+           subtitle, and one long CRT-green sentence that opened by repeating
+           its own name — so the screen that has to explain the site was the
+           least clear one on it. The pieces are the same, only sorted.
+
+           The Figment room, the CRT overlay and the title's letter-scatter are
+           untouched: that is the identity, and none of it was the problem.
+           ===================================================================== */
+
+        /* The group carries the position; the title and subtitle inside it are
+           back in normal flow, so the subtitle follows the title however many
+           lines it takes. Same arrangement as .room-header-group elsewhere. */
+        .landing-header-group {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            z-index: 15;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        /* Overrides the absolute positioning the title carries on its own —
+           the group above does that job now. Everything else about it, and the
+           per-letter scatter the script builds inside it, is untouched. */
+        .landing-header-group .landing-title {
+            position: static;
+            transform: none;
+            top: auto;
+            left: auto;
+        }
+
+        .landing-subtitle {
+            margin: 2px 0 0;
+            pointer-events: none;
+            text-align: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255, 248, 250, 0.75);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.8);
+        }
+
+        /* THE BLURB IS THE SITE'S OWN VOICE, NOT THE TERMINAL'S.
+
+           It was glowing green Courier — the same treatment as the countdown
+           it was copied from — and that is what made this screen read as
+           clunky next to the rest. Three things were working against it at
+           once: a monospace face for running prose, 2px of tracking, and
+           `text-align: justify` on a short measure, which opens rivers between
+           the words. Together they made the one paragraph a newcomer has to
+           read the hardest thing on the page to read.
+
+           Set in Roboto now, matching .room-blurb-text in every other room, so
+           the landing sounds like the site it opens.
+
+           THE GREEN IS NOT GONE, it is spent where it earns something: one
+           line, .landing-cue below, right before the button. Kept everywhere
+           it was, it was wallpaper; kept for a single line, it is a voice. */
+        .landing-blurb {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            font-size: 0.82rem;
+            letter-spacing: 0.3px;
+            line-height: 1.7;
+            text-align: center;
+            color: #fff8fa;
+            opacity: 0.8;
+            text-shadow: none;
+            /* Wide enough to use the panel it sits in. At 42ch it was holding
+               itself to 314px inside 550px of window and breaking into four
+               stubby lines with a single word on the last — the measure was
+               fighting the space rather than fitting it. */
+            max-width: min(52ch, 100%);
+        }
+
+        /* The practical note, deliberately quieter than the blurb and in the
+           site's own face rather than the terminal's — it is the page talking,
+           not the machine. */
+        .landing-hint {
+            margin: 10px 0 0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 248, 250, 0.4);
+        }
+
+        /* The line that was the top half of the button. Still the same words,
+           no longer a click target — so the button underneath can be the one
+           thing on the screen that looks pressable. */
+        .landing-cue {
+            margin: 0 0 2px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            color: #00ff66;
+            text-shadow:
+                0 0 4px rgba(0, 255, 100, 0.8),
+                0 0 8px rgba(0, 255, 100, 0.4);
+        }
+
+        /* A THIN RULE, NOT A BOX.
+
+           The first attempt at making this look pressable gave it a 1px box,
+           a fill and a 6px radius at 1.1rem — which read as a big fat
+           rectangle sitting in the middle of a very quiet screen. The problem
+           was never that it needed MORE, it is that bare text gave a
+           first-time visitor nothing to aim at.
+
+           So: no fill, no box. Small caps, opened right out on the tracking,
+           over a hairline that runs the width of the word. That is enough to
+           say "press this" on a screen with nothing else on it, and it keeps
+           the weight of everything else here.
+
+           The rule is a border rather than an underline so it can sit a clear
+           8px below the text instead of tight against the baseline, and so it
+           can brighten on hover without dragging the text-decoration with it. */
+        #landing .nav-btn-landing {
+            padding: 6px 4px 8px;
+            border: 0;
+            border-bottom: 1px solid rgba(255, 248, 250, 0.3);
+            border-radius: 0;
+            background: none;
+            font-size: 0.82rem;
+            font-weight: 400;
+            letter-spacing: 6px;
+            /* The tracking is on the right of each letter including the last,
+               which pushes the word off-centre over its own rule. Pulled back
+               by one space so the two line up. */
+            text-indent: 6px;
+            text-transform: uppercase;
+            color: rgba(255, 248, 250, 0.85);
+            text-shadow: none;
+            transition: color 0.35s ease, border-color 0.35s ease,
+                        text-shadow 0.35s ease;
+        }
+
+        #landing .nav-btn-landing:hover,
+        #landing .nav-btn-landing:focus-visible {
+            color: #fff8fa;
+            border-bottom-color: rgba(255, 248, 250, 0.9);
+            text-shadow: 0 0 12px rgba(255, 248, 250, 0.55);
+        }
+
+        /* ---- narrow screens ----------------------------------------------
+
+           THE BORDER KEEPS ITS 14px. Halving it to buy back width was the
+           first instinct and it is the wrong trade: the source is 42px square
+           cut into 14px thirds, so at 14 the art is drawn 1:1 and at 7 every
+           slice is resampled to half size — which on a frame that is one pixel
+           of black, one of fill and one of highlight is the difference between
+           an edge and a smudge. The 28px it costs comes out of the padding
+           instead, which nobody can see. */
+        @media (max-width: 480px) {
+            .ll-window { padding: 6px; }
+            /* A LOWER FLOOR ON A PHONE. The rooms are far taller here — narrow
+               columns wrap the prose to many more lines, 450px to 864px against
+               572px of screen — so the animated height does most of the work
+               and this only stops a short room collapsing to a letterbox. */
+            .ll-window-inner {
+                min-height: min(470px, calc(100vh - 240px));
+                padding: 14px 8px;
+            }
+            .ll-topbar { padding: 6px 12px; }
+            .ll-brand-tagline { display: none; }
+        }
+
     </style>
 </head>
 <body>
 
+<!-- THE TOP BAR, borrowed from mazerats.net and wearing this site's colours.
+
+     Modelled on the one the archive's atlas page carries rather than its
+     main header: no navigation, no account, just who this is and where it
+     comes from. There is nowhere else on this site to navigate TO — the maze
+     is one page you move through — so a bar with links would be pretending.
+
+     The pill is a real link here. On mazerats.net it names the site you are
+     already standing on, so it is a plain span; here it is the way across to
+     it, and it opens in a new tab: somebody part-way through the maze has
+     audio playing and progress saved, and navigating the tab away would take
+     both. rel="noopener" because target="_blank" without it hands the new
+     page a handle back to this one. -->
+<header class="ll-topbar">
+    <div class="ll-brand-group">
+        <a class="ll-brand" href="index.html">
+            <span class="ll-brand-text">LIMINAL LABYRINTH</span>
+            <span class="ll-brand-tagline">An Audio Experience.</span>
+        </a>
+        <!-- Inside the brand group, so it sits against the wordmark rather
+             than across the bar. The archive's own pill does the same: it
+             belongs to the name it qualifies, and a pill alone at the far
+             end of a wide bar reads as a control rather than as a credit. -->
+        <a class="ll-powered" href="https://mazerats.net" target="_blank" rel="noopener noreferrer">Powered by mazerats.net</a>
+    </div>
+</header>
+
 <div class="container">
+<!-- THE WINDOW. Wraps the rooms rather than being painted on .container
+     itself, because .container is the thing that fills the column and
+     centres what is in it — put the frame there and it is drawn around the
+     height of the viewport instead of around the maze, and the rooms lose
+     the vertical centring the whole page is built on. This hugs its content
+     and .container goes on centring it, exactly as before. -->
+<div class="ll-window">
+<!-- The panel inside the frame. Same arrangement the archive uses — a
+     .chrome-window holding a .chrome-frame — where the frame is the pixel
+     surround and this is the sunk black field the content actually sits on.
+     Without it the rooms sat straight on the frame's violet fill, which read
+     as one flat slab rather than as something set into a window. -->
+<!-- The grab bar. Purely the archive's untitled titlebar: two grips meeting
+     in the middle with no title between them, which is what Habbo's own
+     untitled windows look like. There is no title to carry here — the page
+     has one bar at the top already — so it is the pattern corner to corner.
+     aria-hidden because it says nothing; it is the window's edge, not a
+     heading. -->
+<div class="ll-titlebar" aria-hidden="true"></div>
+<div class="ll-window-inner">
     <!-- LANDING SCREEN -->
     <div id="landing" class="room active">
         <div class="room-image-frame" id="landing-frame">
-            <h1 class="landing-title">Liminal Labyrinth</h1>
+            <!-- Title and subtitle as one positioned group, the same shape
+                 .room-header-group has in every other room. The subtitle was
+                 first given its own absolute `top`, which held only while the
+                 title stayed on one line — on a phone the title wraps, and the
+                 subtitle landed in the gap between "Liminal" and "Labyrinth".
+                 In the group it simply follows, however the title breaks. -->
+            <div class="landing-header-group">
+                <h1 class="landing-title">Liminal Labyrinth</h1>
+                <!-- The line every other room carries. The landing was the one
+                     screen that never said what this IS, and it is the screen
+                     where nobody knows yet. -->
+                <p class="landing-subtitle">An Audio Experience</p>
+            </div>
             <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
             <img id="landing-crt" class="room-image-crt" src="roomassets/figmentCRT.png?raw=true" alt="">
             <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div id="landing-blurb-container" class="landing-blurb-wrapper">
-            <p class="landing-blurb">Liminal Labyrinth, An Audio Experience; progress through the audio on this website alongside ChrisYepYep's Liminal Labyrinth maze in Habbo Hotel: Origins</p>
+            <!-- Was one run-on sentence that opened by repeating the title and
+                 closed without a full stop. Split into what you do and what
+                 you need: the first line is the instruction, the second is the
+                 one practical thing that ruins the experience if missed. -->
+            <p class="landing-blurb">Progress through the audio here, alongside ChrisYepYep's Liminal Labyrinth maze in Habbo Hotel: Origins.</p>
+            <p class="landing-hint">Best with headphones</p>
         </div>
 
         <div id="landing-action-group" class="landing-action-group">
-            <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">
-                <span>It is time to wake up<br>Enter</span>
-            </button>
+            <!-- The atmospheric line is a line now, not half a button label.
+                 It was set inside the button with a <br>, which made the
+                 clickable target two lines tall and buried the one word that
+                 says what pressing it does. -->
+            <p class="landing-cue">It is time to wake up</p>
+            <button class="nav-btn-landing" onclick="triggerLandingCollapse(this)">Enter</button>
         </div>
     </div>
 
@@ -1890,6 +2463,8 @@
             <a href="https://leet.show/" target="_blank" rel="noopener noreferrer">The Leet Show</a>
         </div>
     </div>
+</div><!-- /.ll-window-inner -->
+</div><!-- /.ll-window -->
 </div>
 
 <div id="reset-modal" class="modal-overlay">
@@ -1910,6 +2485,125 @@
 </footer>
 
 <script>
+/* ---- THE WINDOW RESIZES SMOOTHLY BETWEEN ROOMS.
+
+   Only one .room is shown at a time and they are not the same height — 427px
+   to 753px at desktop width, 450px to 864px on a phone — so the panel snapped
+   to a new size on every Progress, taking the frame, the grab bar and the
+   footer with it.
+
+   No single height holds all of them (on a phone the tallest room is taller
+   than the phone), so rather than pick one and decide which rooms get cut off,
+   the panel is measured and told what to be, and the CSS transition eases it
+   there. In practice most rooms come in under the floor and the window does
+   not move at all; only the few tall ones animate.
+
+   Entirely additive: it reads the page and writes one style property. Nothing
+   in the maze's own code knows this exists, and with script off the panel
+   keeps its CSS min-height and sizes to its room exactly as it always did. */
+(function () {
+    "use strict";
+    const panel = document.querySelector(".ll-window-inner");
+    if (!panel || !window.requestAnimationFrame) return;
+
+    let queued = 0;
+
+    /* NOT ON A PHONE. Narrow columns wrap the prose to many more lines, so the
+       rooms run 450px to 864px there against 572px of screen — the tallest is
+       taller than the whole viewport, the page has to scroll for it either
+       way, and a measured height buys nothing but the chance to be wrong. It
+       was: one room came out 89px short and had its foot cut off by the
+       overflow clip.
+
+       So below the breakpoint the height is handed back to CSS, where the
+       panel sizes to its room and cannot clip. Matches the stylesheet's own
+       480px, and re-runs when the query flips so a rotated phone or a dragged
+       window lands in the right mode. */
+    const narrow = window.matchMedia("(max-width: 480px)");
+
+    function fit() {
+        queued = 0;
+        if (narrow.matches) { panel.style.height = ""; return; }
+        const room = panel.querySelector(".room.active");
+        if (!room) return;
+
+        /* The active room's height plus the panel's own padding and border.
+
+           The panel is border-box, so its height has to include both or the
+           window comes up short by exactly that much and clips the last line.
+
+           Reading the panel back with `height: auto` instead — to catch
+           content that escapes the room's own box — reads better on paper and
+           was worse three different ways: the measurement lands in the middle
+           of the running transition, so the answer depends on when it is asked.
+           It came out anywhere from 2px to 213px wrong and in the end stopped
+           updating at all. This version measured clean across all 39 rooms.
+
+           min-height is deliberately left alone. The height set here is never
+           below the floor, so the two cannot disagree — and clearing it, which
+           an earlier pass did, is what left a page loaded in a hidden tab with
+           no floor at all. */
+        const cs = getComputedStyle(panel);
+        const chrome =
+            parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) +
+            parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
+        const floor = parseFloat(cs.minHeight) || 0;
+        const content = Math.ceil(room.getBoundingClientRect().height + chrome);
+        panel.style.height = Math.max(floor, content) + "px";
+    }
+
+    // Coalesced to one measurement a frame: a room change flips classes on two
+    // elements at once, and both would otherwise measure separately — the first
+    // of them against the room on its way out.
+    const schedule = () => { if (!queued) queued = requestAnimationFrame(fit); };
+
+    /* Class changes are how a room becomes the active one, so that is the
+       signal. `style` and `hidden` are watched too because the landing screen
+       collapses itself through both on the way in.
+
+       FIT'S OWN WRITE IS FILTERED OUT HERE. It sets height on the panel, which
+       is a style change this observer is watching for, so without the test
+       every measurement scheduled another one and the loop ran a frame at a
+       time forever. A `busy` flag does not work for this: observer records
+       arrive as a microtask AFTER the code that caused them has returned, by
+       which point any such flag is false again. A batch containing nothing but
+       a style change on the panel itself is ours, and is ignored. */
+    new MutationObserver((records) => {
+        const ours = records.every(
+            (m) => m.target === panel && m.attributeName === "style"
+        );
+        if (!ours) schedule();
+    }).observe(panel, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["class", "style", "hidden"]
+    });
+
+    /* And a size watch on the rooms themselves, for the height changes no
+       attribute announces: a room image arriving after first paint, a font
+       swapping in, or the prose rewrapping when the window is dragged. */
+    if (window.ResizeObserver) {
+        const ro = new ResizeObserver(schedule);
+        panel.querySelectorAll(".room").forEach((r) => ro.observe(r));
+    }
+
+    window.addEventListener("resize", schedule);
+    window.addEventListener("load", schedule);
+    if (narrow.addEventListener) narrow.addEventListener("change", schedule);
+    else if (narrow.addListener) narrow.addListener(schedule);
+
+    /* A HIDDEN TAB RUNS NO ANIMATION FRAMES AT ALL — not throttled ones, none
+       — so a page opened in a background tab gets no measurement until it is
+       looked at. Queued frames do fire on the way back, so this is belt to
+       that braces, and it also catches a window resized or rotated while the
+       tab was away. */
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) schedule();
+    });
+
+    schedule();
+})();
+
 const PLAY_ICON_URL = "images/playicon.png?raw=true";
 const PAUSE_ICON_URL = "images/pauseicon.png?raw=true";
 
