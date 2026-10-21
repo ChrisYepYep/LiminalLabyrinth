@@ -874,6 +874,632 @@
             text-shadow: 0 0 12px rgba(255, 248, 250, 0.55);
         }
 
+        /* ================= LISTEN AGAIN: THE SOUNDTRACK WINDOW =================
+
+           A window that pops out over the page. The end screen already sends
+           people three places; this one keeps them here, so it is built from
+           the chrome they have been looking at the whole way through —
+           ll_window_frame.png's border-image and the titlebar's dot pattern,
+           the two pieces .ll-window and .ll-titlebar are made of over in
+           ll-chrome.css — and then behaves like a window: it floats, it is
+           dragged by its grab bar, and it has a close box.
+
+           FIXED, AND OUTSIDE THE PANEL. The markup sits at the foot of <body>
+           rather than in #youwon, for two reasons that both bite. The panel it
+           would otherwise be in carries overflow: hidden, which clips a child
+           however it is positioned; and the script at the foot of this page
+           measures the active room to ease the panel's height, so a window
+           added to the room's flow would push the whole page about every time
+           it was opened. Out here it answers to the viewport only.
+
+           left/top are written by the script, which also keeps them inside the
+           viewport. The values below are only where it sits if that never runs. */
+        /* A COLUMN, so the window can be shorter than its contents want to be.
+           On a laptop in a short window the track list is the part that gives:
+           .pl-inner is allowed to shrink and .pl-list scrolls inside it, which
+           is why min-height: 0 is on both — without it a flex item refuses to
+           go below its content and the foot of the window leaves the screen. */
+        /* THE WINDOW'S OWN PALETTE, on :root because two things wear it: the
+           window, and the button on the end screen that opens it.
+
+           It comes from ll_window_frame_green.png, which is the page's own
+           42px frame art with every coloured pixel moved to the hue of
+           #00ff66 — the phosphor green the sector counters, the expanse logs
+           and the seek bar are already drawn in — then desaturated to 60% and
+           lightened to 145%. Straight phosphor green would be unbearable over
+           1300px of fill; muted and lifted, it reads as green without being
+           the green.
+
+           --pl-edge and --pl-moss ARE pixels out of that file, its highlight
+           and its titlebar dots, so the panel edge and the scrollbar cannot
+           drift from the art they sit against. --pl-accent and its bright
+           partner are the same hue carried up the lightness ladder to where
+           --ll-violet and --ll-violet-bright sit, which is how the button
+           keeps the shape and weight of every other pill on the page while
+           belonging to the window it opens. */
+        :root {
+            --pl-edge: #304c3c;
+            --pl-moss: #2d4336;
+            --pl-accent: #4b8b65;
+            --pl-accent-bright: #a6cfb6;
+        }
+
+        .pl-window {
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 50%;
+            top: 12vh;
+            z-index: 500;
+            width: min(420px, calc(100vw - 24px));
+            max-height: calc(100vh - 32px);
+            padding: 8px;
+            box-sizing: border-box;
+            text-align: left;
+            border-style: solid;
+            border-width: 14px;
+            border-image-source: url('images/ll_window_frame_green.png');
+            border-image-slice: 14 fill;
+            border-image-width: 14px;
+            border-image-repeat: stretch;
+            border-radius: 14px;
+            /* Deeper than the panel's own 16px 44px: this one is floating over
+               the page rather than set into it, and the shadow is most of what
+               says so. */
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.85);
+            animation: plOpen 0.28s ease-out both;
+        }
+
+        .pl-window[hidden] { display: none; }
+
+        /* Dragging writes left/top directly, so the script clears this the
+           moment the window is placed; it is here for the first paint. */
+        .pl-window:not(.pl-placed) { transform: translateX(-50%); }
+
+        /* NO `animation: none` HERE, however much it looks like it belongs.
+           Taking the animation off and putting it back is a change of
+           animation-name, which restarts it — so every time a drag ENDED the
+           window played its opening scale again and jumped about 7px. The
+           animation has long finished by the time anything is dragged, and its
+           last frame is scale(1), so it never fights left/top anyway. */
+        .pl-window.pl-dragging {
+            /* A drag that selects the page text behind it looks broken. */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        @keyframes plOpen {
+            from { opacity: 0; transform: scale(0.97); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        /* The open animation and the centring transform cannot both own the
+           transform property, so an unplaced window just fades. */
+        .pl-window:not(.pl-placed) { animation-name: plFade; }
+
+        @keyframes plFade {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .pl-window { animation: none; }
+        }
+
+        /* The grab bar, doing one job more than the page's own: it carries a
+           name. Same tile at the same pixel scale, recoloured with the frame.
+           Reaches out over the frame by 18px — 8px of padding plus 10px of the
+           14px border — which is .ll-titlebar's own trick scaled to this
+           window's smaller padding, leaving the outer 4px of frame showing. */
+        .pl-titlebar {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 22px;
+            margin: -18px -18px 10px;
+            padding: 0 6px;
+            box-sizing: border-box;
+            background-image: url('images/ll_title_pattern_green.png');
+            background-repeat: repeat;
+            image-rendering: pixelated;
+            border-radius: 8px 8px 0 0;
+            /* It is called a grab bar on the archive this art came from, and
+               here it is one. touch-action: none so a drag on a phone moves the
+               window instead of scrolling the page out from under it. */
+            cursor: grab;
+            touch-action: none;
+        }
+
+        .pl-window.pl-dragging .pl-titlebar { cursor: grabbing; }
+
+        /* NO PLATE BEHIND IT. It had a black one, which made the title look
+           like a separate thing dropped onto the bar rather than the bar's own
+           label. The dots it sits on are 1px on, 1px off at a quarter
+           coverage, so a shadow in the same black does the whole job of
+           keeping the letters legible, and the pattern runs on behind them. */
+        .pl-title {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding: 0 2px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.58rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--ll-ink, #fff8fa);
+            text-shadow:
+                0 0 3px #000,
+                0 1px 2px rgba(0, 0, 0, 0.95),
+                0 0 6px rgba(0, 0, 0, 0.8);
+        }
+
+        .pl-close {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 19px;
+            height: 19px;
+            padding: 0;
+            /* This one KEEPS its plate: unlike the title it is a control, and
+               a close box with nothing behind it on a dotted bar reads as a
+               stray character. Its edge is the frame's highlight, so it sits
+               in the bar rather than on it. */
+            background: rgba(0, 0, 0, 0.78);
+            border: 1px solid var(--pl-edge, #304c3c);
+            border-radius: 4px;
+            color: rgba(255, 248, 250, 0.75);
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.8rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .pl-close:hover, .pl-close:focus-visible {
+            color: #fff8fa;
+            border-color: rgba(255, 248, 250, 0.7);
+        }
+
+        /* The sunk black field: .ll-window-inner in miniature, including the
+           inset highlight on the top and left only, which is the part that
+           reads as depth rather than as a black rectangle drawn on top. */
+        .pl-inner {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #000000;
+            border-radius: 8px;
+            padding: 12px 12px 10px;
+            box-sizing: border-box;
+            box-shadow:
+                inset 0 1px 0 var(--pl-edge, #304c3c),
+                inset 1px 0 0 var(--pl-edge, #304c3c);
+        }
+
+        .pl-now, .pl-transport, .pl-volume, .pl-options, .pl-note { flex: 0 0 auto; }
+
+        .pl-now { text-align: center; margin: 2px 0 10px; }
+
+        .pl-now-index {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.55rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin: 0;
+            color: rgba(0, 255, 102, 0.55);
+        }
+
+        .pl-now-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin: 2px 0 0;
+            color: #fff8fa;
+            text-shadow: 0 0 6px rgba(255, 248, 250, 0.35);
+        }
+
+        /* The expanse rooms' own system lines land here, so this is the green
+           CRT voice rather than the ink one. */
+        .pl-now-sub {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.58rem;
+            letter-spacing: 1px;
+            line-height: 1.4;
+            margin: 4px 0 0;
+            min-height: 0.82rem;
+            color: rgba(0, 255, 102, 0.6);
+        }
+
+        .pl-transport {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 10px;
+        }
+
+        .pl-buttons {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .pl-scrub {
+            flex: 1 1 auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .pl-icon-btn {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            background: none;
+            border: none;
+            color: rgba(255, 248, 250, 0.8);
+            cursor: pointer;
+            transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+        }
+
+        .pl-icon-btn:hover:not(:disabled) { transform: scale(1.12); color: #fff8fa; }
+        .pl-icon-btn:disabled { opacity: 0.25; cursor: default; }
+        .pl-icon-btn svg { display: block; width: 14px; height: 14px; }
+        .pl-play img { display: block; width: 22px; height: 22px; }
+
+        .pl-time {
+            flex: 0 0 auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.55rem;
+            letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
+            color: rgba(255, 248, 250, 0.5);
+        }
+
+        /* THE BAR THE MAZE ALREADY USES. .progress-breadcrumb-track and its
+           green fill marked the sectors on the way through, and a seek bar that
+           looked like anything else would be a second visual idea doing the
+           first one's job. Padded rather than made taller, so there is a 16px
+           target to hit on a phone over a 4px line. */
+        .pl-seek {
+            flex: 1 1 auto;
+            padding: 6px 0;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .pl-seek-track {
+            height: 4px;
+            background: rgba(255, 248, 250, 0.12);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .pl-seek-fill {
+            width: 0%;
+            height: 100%;
+            background: #00ff66;
+            box-shadow: 0 0 6px rgba(0, 255, 102, 0.6);
+            border-radius: 2px;
+        }
+
+        .pl-seek:focus-visible {
+            outline: 1px solid rgba(0, 255, 102, 0.6);
+            outline-offset: 3px;
+        }
+
+        /* ---- volume ---- */
+
+        .pl-volume {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 0 10px;
+        }
+
+        .pl-mute { width: 22px; height: 22px; }
+        .pl-mute svg { width: 15px; height: 15px; }
+        .pl-mute .pl-vol-off { display: none; }
+        .pl-mute[aria-pressed="true"] .pl-vol-on { display: none; }
+        .pl-mute[aria-pressed="true"] .pl-vol-off { display: block; }
+        .pl-mute[aria-pressed="true"] { color: rgba(255, 248, 250, 0.4); }
+
+        /* THE SAME 4px LINE AS THE SEEK BAR, drawn by a gradient rather than a
+           child element, because a range input has no inside to put one in.
+           --pl-vol is written by the script on every change and is the hard
+           edge between the green and the unfilled rest. */
+        .pl-vol-range {
+            flex: 0 1 120px;
+            height: 16px;
+            margin: 0;
+            padding: 0;
+            background: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            touch-action: none;
+        }
+
+        .pl-vol-range::-webkit-slider-runnable-track {
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right,
+                #00ff66 var(--pl-vol, 100%),
+                rgba(255, 248, 250, 0.12) var(--pl-vol, 100%));
+        }
+
+        .pl-vol-range::-moz-range-track {
+            height: 4px;
+            border-radius: 2px;
+            background: linear-gradient(to right,
+                #00ff66 var(--pl-vol, 100%),
+                rgba(255, 248, 250, 0.12) var(--pl-vol, 100%));
+        }
+
+        .pl-vol-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 10px;
+            height: 10px;
+            margin-top: -3px;   /* centres a 10px thumb on a 4px track */
+            border: 0;
+            border-radius: 50%;
+            background: #fff8fa;
+            box-shadow: 0 0 6px rgba(0, 255, 102, 0.6);
+        }
+
+        .pl-vol-range::-moz-range-thumb {
+            width: 10px;
+            height: 10px;
+            border: 0;
+            border-radius: 50%;
+            background: #fff8fa;
+            box-shadow: 0 0 6px rgba(0, 255, 102, 0.6);
+        }
+
+        .pl-vol-range:focus-visible {
+            outline: 1px solid rgba(0, 255, 102, 0.6);
+            outline-offset: 3px;
+        }
+
+        /* Muted, the fill goes out with the sound. */
+        .pl-volume.is-muted .pl-vol-range::-webkit-slider-runnable-track {
+            background: rgba(255, 248, 250, 0.12);
+        }
+
+        .pl-volume.is-muted .pl-vol-range::-moz-range-track {
+            background: rgba(255, 248, 250, 0.12);
+        }
+
+        .pl-volume.is-muted .pl-vol-range::-webkit-slider-thumb {
+            background: rgba(255, 248, 250, 0.4);
+            box-shadow: none;
+        }
+
+        .pl-volume.is-muted .pl-vol-range::-moz-range-thumb {
+            background: rgba(255, 248, 250, 0.4);
+            box-shadow: none;
+        }
+
+        #pl-vol-readout { width: 1.6rem; text-align: right; }
+
+        .pl-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin: 0 0 10px;
+        }
+
+        /* The end screen's own pill — .btn-end a — as a button. */
+        .pl-opt {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 13px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 248, 250, 0.2);
+            border-radius: 20px;
+            color: #fff8fa;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            opacity: 0.85;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .pl-opt:hover, .pl-opt:focus-visible {
+            opacity: 1;
+            border-color: rgba(255, 248, 250, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* ON AND OFF ARE SAID IN GREEN, not in a changed pill colour. Every
+           other state readout on this site — the sector counter, the expanse
+           logs, the typed opening — is Courier in phosphor green, and a toggle
+           is a state readout. The pill itself only brightens. */
+        .pl-opt-state {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255, 248, 250, 0.4);
+        }
+
+        .pl-opt[aria-pressed="true"] {
+            opacity: 1;
+            border-color: rgba(0, 255, 102, 0.45);
+        }
+
+        .pl-opt[aria-pressed="true"] .pl-opt-state {
+            color: #00ff66;
+            text-shadow: 0 0 6px rgba(0, 255, 102, 0.5);
+        }
+
+        .pl-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            /* POSITIONED SO THE ROWS ARE MEASURED AGAINST IT. markCurrent()
+               nudges the playing row into view with li.offsetTop, which is read
+               from the nearest positioned ancestor — and without this that is
+               .youwon-layout, several hundred pixels up the page, so the list
+               scrolled to an arbitrary place every time the track changed. */
+            position: relative;
+            /* Allowed to shrink inside a short window (see .pl-window), capped
+               so it does not run away on a tall one. */
+            flex: 1 1 auto;
+            min-height: 56px;
+            max-height: 208px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            border-top: 1px solid rgba(255, 248, 250, 0.08);
+            scrollbar-width: thin;
+            scrollbar-color: var(--pl-moss, #2d4336) rgba(255, 248, 250, 0.05);
+        }
+
+        .pl-list::-webkit-scrollbar { width: 6px; }
+        .pl-list::-webkit-scrollbar-track { background: rgba(255, 248, 250, 0.05); }
+        .pl-list::-webkit-scrollbar-thumb {
+            background: var(--pl-moss, #2d4336);
+            border-radius: 3px;
+        }
+
+        .pl-track { margin: 0; }
+        .pl-track[hidden] { display: none; }
+
+        .pl-track-btn {
+            display: grid;
+            grid-template-columns: 1.9rem 1fr auto;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            padding: 7px 8px;
+            box-sizing: border-box;
+            background: none;
+            border: 0;
+            border-left: 2px solid transparent;
+            border-bottom: 1px solid rgba(255, 248, 250, 0.06);
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.25s ease;
+        }
+
+        .pl-track-btn:hover, .pl-track-btn:focus-visible {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .pl-track-num {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.58rem;
+            letter-spacing: 1px;
+            color: rgba(255, 248, 250, 0.35);
+        }
+
+        .pl-track-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: rgba(255, 248, 250, 0.82);
+        }
+
+        .pl-track-dur {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.55rem;
+            font-variant-numeric: tabular-nums;
+            color: rgba(255, 248, 250, 0.3);
+        }
+
+        .pl-track.is-current .pl-track-btn {
+            border-left-color: #00ff66;
+            background: rgba(0, 255, 102, 0.05);
+        }
+
+        .pl-track.is-current .pl-track-num {
+            color: #00ff66;
+            text-shadow: 0 0 6px rgba(0, 255, 102, 0.5);
+        }
+
+        .pl-track.is-current .pl-track-title { color: #fff8fa; }
+
+        .pl-note {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.55rem;
+            letter-spacing: 1px;
+            text-align: center;
+            margin: 8px 0 0;
+            min-height: 0.7rem;
+            color: rgba(255, 248, 250, 0.3);
+        }
+
+        .btn-listen { display: flex; justify-content: center; margin-top: 10px; }
+
+        /* The three links above it are 0.7rem pills in a row; this is the same
+           pill turned up, because it is the one thing on this screen that does
+           something here instead of sending you somewhere else — and in the
+           soundtrack window's green, so the thing you press and the thing that
+           opens are plainly the same object. It was the page's violet, which
+           left a violet button opening a green window. */
+        .listen-again-btn {
+            padding: 9px 22px;
+            background: rgba(75, 139, 101, 0.18);
+            border: 1px solid var(--pl-accent, #4b8b65);
+            border-radius: 20px;
+            color: var(--pl-accent-bright, #a6cfb6);
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.72rem;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .listen-again-btn:hover, .listen-again-btn:focus-visible {
+            color: #fff8fa;
+            border-color: var(--pl-accent-bright, #a6cfb6);
+            background: rgba(75, 139, 101, 0.32);
+            box-shadow: 0 0 12px rgba(166, 207, 182, 0.3);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 480px) {
+            .pl-window { padding: 6px; }
+            .pl-titlebar { margin: -16px -16px 10px; }
+            .pl-inner { padding: 10px 8px 8px; }
+            .pl-list { max-height: 170px; }
+            .pl-track-title { font-size: 0.68rem; }
+
+            /* The title plate is the first thing to run out of room: the
+               window is about 240px wide inside a 375px phone. */
+            .pl-title { font-size: 0.52rem; letter-spacing: 1px; }
+
+            /* Transport stacked, so the scrubber gets a full line instead of
+               the ~20px the two clocks and three buttons left it. */
+            .pl-transport { flex-direction: column; gap: 2px; }
+            .pl-scrub { width: 100%; }
+        }
+
+
     </style>
     <link rel="stylesheet" href="ll-chrome.css">
 </head>
@@ -2109,10 +2735,116 @@
             <a href="https://furniindex.com/" target="_blank" rel="noopener noreferrer">Furni Index</a>
             <a href="https://leet.show/" target="_blank" rel="noopener noreferrer">The Leet Show</a>
         </div>
+
+        <!-- LISTEN AGAIN. The three links above leave the site; this one pops
+             out the soundtrack window, which is NOT in here with it: that
+             markup sits at the foot of the <body>, just before #reset-modal,
+             so it floats over the page rather than inside the panel. See THE
+             SOUNDTRACK WINDOW there, and at the end of this page's script. -->
+        <div class="btn-listen">
+            <button type="button" id="listen-again-btn" class="listen-again-btn"
+                    aria-expanded="false" aria-controls="playlist-window">Listen Again</button>
+        </div>
     </div>
 </div><!-- /.ll-window-inner -->
 </div><!-- /.ll-window -->
 </div>
+
+<!-- THE SOUNDTRACK WINDOW, popped out over the page.
+
+     IT IS HERE AND NOT IN #youwon WITH ITS BUTTON because it is a window
+     rather than a section of the end screen: position: fixed, dragged by its
+     grab bar, and over the top of whatever is behind it. Inside the panel it
+     was subject to .ll-window-inner's overflow: hidden and to the script that
+     measures the active room and eases the panel's height, neither of which a
+     floating window should ever be answering to. Out here it answers to the
+     viewport and nothing else.
+
+     The track list is empty markup on purpose — it is filled from the rooms
+     themselves, so adding or reordering a room carries the playlist with it. -->
+<section id="playlist-window" class="pl-window" hidden
+         aria-label="Liminal Labyrinth soundtrack">
+    <div class="pl-titlebar" id="pl-titlebar">
+        <span class="pl-title">Liminal Labyrinth &mdash; Soundtrack</span>
+        <button type="button" class="pl-close" id="pl-close"
+                aria-label="Close the soundtrack window">&times;</button>
+    </div>
+
+    <div class="pl-inner">
+        <div class="pl-now">
+            <p class="pl-now-index" id="pl-now-index">Track &ndash;&ndash;</p>
+            <p class="pl-now-title" id="pl-now-title">Nothing playing</p>
+            <p class="pl-now-sub" id="pl-now-sub">Press Play All, or choose a track below.</p>
+        </div>
+
+        <!-- Two groups rather than six children in a row: on a phone the whole
+             lot across 240px left the seek bar about 20px wide, so below 480px
+             .pl-transport turns into a column and the scrubber gets a line of
+             its own. -->
+        <div class="pl-transport">
+            <div class="pl-buttons">
+                <button type="button" class="pl-icon-btn" id="pl-prev" aria-label="Previous track">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2.5v14H6zM20 5v14l-11-7z"/></svg>
+                </button>
+                <button type="button" class="pl-icon-btn pl-play" id="pl-play" aria-label="Play">
+                    <img id="pl-play-icon" src="images/playicon.png?raw=true" alt="">
+                </button>
+                <button type="button" class="pl-icon-btn" id="pl-next" aria-label="Next track">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.5 5H18v14h-2.5zM4 5v14l11-7z"/></svg>
+                </button>
+            </div>
+            <div class="pl-scrub">
+                <span class="pl-time" id="pl-elapsed">0:00</span>
+                <div class="pl-seek" id="pl-seek" role="slider" tabindex="0" aria-label="Seek"
+                     aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00">
+                    <div class="pl-seek-track"><div class="pl-seek-fill" id="pl-seek-fill"></div></div>
+                </div>
+                <span class="pl-time" id="pl-duration">--:--</span>
+            </div>
+        </div>
+
+        <!-- VOLUME IS A NATIVE <input type="range">, where the seek bar beside
+             it is a div. Not an inconsistency: the seek bar has to show a
+             played portion and take a drag anywhere along a 4px line, and the
+             range input cannot be made to do the first part across browsers.
+             Volume wants a grab handle, arrow keys, a Home/End and a screen
+             reader that already knows what it is — all of which come free
+             here, and all of which would have to be built by hand there. The
+             track below is painted from --pl-vol so it still fills green. -->
+        <div class="pl-volume">
+            <button type="button" class="pl-icon-btn pl-mute" id="pl-mute"
+                    aria-pressed="false" aria-label="Mute">
+                <svg class="pl-vol-on" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M4 9v6h3.5L13 19V5L7.5 9H4z"/>
+                    <path d="M16 8.5a4.5 4.5 0 0 1 0 7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                    <path d="M18.5 6a8 8 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+                <svg class="pl-vol-off" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M4 9v6h3.5L13 19V5L7.5 9H4z"/>
+                    <path d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <input type="range" class="pl-vol-range" id="pl-volume"
+                   min="0" max="100" step="1" value="100" aria-label="Volume">
+            <span class="pl-time" id="pl-vol-readout">100</span>
+        </div>
+
+        <div class="pl-options">
+            <button type="button" class="pl-opt" id="pl-playall">Play All</button>
+            <button type="button" class="pl-opt" id="pl-autoplay" aria-pressed="true">
+                Autoplay <span class="pl-opt-state" id="pl-autoplay-state">On</span>
+            </button>
+            <button type="button" class="pl-opt" id="pl-skip-expanse" aria-pressed="false">
+                Skip Expanse <span class="pl-opt-state" id="pl-skip-expanse-state">Off</span>
+            </button>
+        </div>
+
+        <ol class="pl-list" id="pl-list"></ol>
+        <p class="pl-note" id="pl-note"></p>
+
+        <audio id="pl-audio" preload="none"></audio>
+    </div>
+</section>
 
 <div id="reset-modal" class="modal-overlay">
     <div class="modal-box">
@@ -2598,6 +3330,673 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+/* ================= THE SOUNDTRACK WINDOW ===================================
+
+   "Listen Again" on the end screen: every track the maze played, in the order
+   it played them, in a window inside the page.
+
+   THE PLAYLIST IS READ OUT OF THE ROOMS, not written down here. Each room
+   already carries its own <audio><source> and its own .room-title-text, and
+   MAZE_SEQUENCE above already states the order — so a second hand-kept list of
+   forty filenames would be a list that goes out of date the first time a room
+   is renamed or moved. Rooms off the sequence with no track of their own (the
+   two break rooms) drop out by themselves, because there is no <source> in
+   them to find.
+
+   ONE <audio> ELEMENT, NOT FORTY. The rooms each own theirs because each plays
+   exactly one thing on loop; a playlist moves between tracks, so it keeps a
+   single element and changes its src. It also means the page's existing rules
+   about what may sound at once still hold: toggleAudio() pauses every other
+   <audio> when a room's play button is pressed — this one included — and
+   goToRoom() fades out whatever is playing on the way to the next room. The
+   'pause' listener below is what keeps this window's button honest when either
+   of those reaches in and stops it.
+   =========================================================================== */
+(function () {
+    "use strict";
+
+    const windowEl = document.getElementById('playlist-window');
+    const openBtn = document.getElementById('listen-again-btn');
+    const listEl = document.getElementById('pl-list');
+    const audio = document.getElementById('pl-audio');
+    if (!windowEl || !openBtn || !listEl || !audio) return;
+
+    const titlebar = document.getElementById('pl-titlebar');
+    const closeBtn = document.getElementById('pl-close');
+    const prevBtn = document.getElementById('pl-prev');
+    const nextBtn = document.getElementById('pl-next');
+    const playBtn = document.getElementById('pl-play');
+    const playIcon = document.getElementById('pl-play-icon');
+    const seekEl = document.getElementById('pl-seek');
+    const seekFill = document.getElementById('pl-seek-fill');
+    const elapsedEl = document.getElementById('pl-elapsed');
+    const durationEl = document.getElementById('pl-duration');
+    const playAllBtn = document.getElementById('pl-playall');
+    const autoplayBtn = document.getElementById('pl-autoplay');
+    const autoplayStateEl = document.getElementById('pl-autoplay-state');
+    const skipBtn = document.getElementById('pl-skip-expanse');
+    const skipStateEl = document.getElementById('pl-skip-expanse-state');
+    const nowIndexEl = document.getElementById('pl-now-index');
+    const nowTitleEl = document.getElementById('pl-now-title');
+    const nowSubEl = document.getElementById('pl-now-sub');
+    const noteEl = document.getElementById('pl-note');
+    const muteBtn = document.getElementById('pl-mute');
+    const volRange = document.getElementById('pl-volume');
+    const volRow = document.querySelector('.pl-volume');
+    const volReadout = document.getElementById('pl-vol-readout');
+
+    const AUTOPLAY_KEY = 'playlistAutoplay';
+    const SKIP_EXPANSE_KEY = 'playlistSkipExpanse';
+    const VOLUME_KEY = 'playlistVolume';
+    const MUTED_KEY = 'playlistMuted';
+
+    /* localStorage throws rather than returning null in a locked-down private
+       window, and these two preferences are not worth a broken player. */
+    function readPref(key, fallback) {
+        try {
+            const raw = localStorage.getItem(key);
+            return raw === null ? fallback : raw === 'true';
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    function writePref(key, value) {
+        try { localStorage.setItem(key, String(value)); } catch (e) { /* no-op */ }
+    }
+
+    function readNumber(key, fallback, low, high) {
+        let value;
+        try { value = parseFloat(localStorage.getItem(key)); } catch (e) { return fallback; }
+        if (!isFinite(value)) return fallback;
+        return Math.min(high, Math.max(low, value));
+    }
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function clock(seconds) {
+        if (!isFinite(seconds) || seconds < 0) return '--:--';
+        return Math.floor(seconds / 60) + ':' + pad(Math.floor(seconds % 60));
+    }
+
+    // ---- the tracks ---------------------------------------------------------
+
+    const ROOM_ORDER = ['welcome'].concat(MAZE_SEQUENCE, ['youwon']);
+
+    // The two rooms whose heading is not the name of the track in them: the
+    // welcome screen's title is the site's, and the end screen has no
+    // .room-title-text at all.
+    const TITLES = { welcome: 'An Audio Experience', youwon: 'Process Complete' };
+    const SUBS = { welcome: 'Entrance', youwon: 'Exit' };
+
+    const tracks = [];
+
+    ROOM_ORDER.forEach(function (roomId) {
+        const room = document.getElementById(roomId);
+        const source = room ? room.querySelector('audio source') : null;
+        const src = source ? source.getAttribute('src') : '';
+        if (!src) return;
+
+        const titleEl = room.querySelector('.room-title-text');
+        const sysEl = room.querySelector('.expanse-blurb-text');
+        const step = MAZE_SEQUENCE.indexOf(roomId) + 1;
+        const isExpanse = /^exp\d+$/.test(roomId);
+
+        /* typeExpanseText() empties this element and types it back a character
+           at a time, parking the whole line in dataset.fullText — so a room the
+           visitor has actually walked through may be sitting mid-sentence right
+           now, and the stashed copy is the one to read. */
+        const sysLine = sysEl
+            ? (sysEl.dataset.fullText || sysEl.textContent.trim())
+            : '';
+
+        tracks.push({
+            src: src,
+            title: TITLES[roomId] || (titleEl ? titleEl.textContent.trim() : roomId),
+            sub: isExpanse && sysLine
+                ? sysLine
+                : (SUBS[roomId] || (step > 0 ? 'Sector ' + pad(step) + ' / ' + MAZE_SEQUENCE.length : '')),
+            expanse: isExpanse,
+            duration: 0,
+            hidden: false,
+            el: null,
+            numEl: null,
+            durEl: null
+        });
+    });
+
+    if (!tracks.length) return;
+
+    const expanseCount = tracks.filter(function (t) { return t.expanse; }).length;
+
+    let current = -1;          // index into tracks; -1 until something is chosen
+    let playable = tracks.length;
+    let autoplay = readPref(AUTOPLAY_KEY, true);
+    let skipExpanse = readPref(SKIP_EXPANSE_KEY, false);
+    let volume = readNumber(VOLUME_KEY, 1, 0, 1);
+    let muted = readPref(MUTED_KEY, false);
+    let probeStarted = false;
+    let dragging = false;    // the seek bar
+    let windowDrag = null;   // the window itself, by its grab bar
+    let placed = false;
+
+    tracks.forEach(function (track, i) {
+        const li = document.createElement('li');
+        li.className = 'pl-track';
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pl-track-btn';
+        btn.innerHTML = '<span class="pl-track-num"></span>' +
+                        '<span class="pl-track-title"></span>' +
+                        '<span class="pl-track-dur">--:--</span>';
+        btn.querySelector('.pl-track-title').textContent = track.title;
+
+        // Clicking the track already loaded is a play/pause, not a restart:
+        // the row is the most obvious thing to press twice.
+        btn.addEventListener('click', function () {
+            if (i === current) togglePlay();
+            else select(i, true);
+        });
+
+        li.appendChild(btn);
+        listEl.appendChild(li);
+
+        track.el = li;
+        track.numEl = btn.querySelector('.pl-track-num');
+        track.durEl = btn.querySelector('.pl-track-dur');
+    });
+
+    // ---- skip expanse -------------------------------------------------------
+
+    /* IT HIDES THE ROWS AND RENUMBERS WHAT IS LEFT, rather than greying twelve
+       of thirty-six in place. The option is there for someone who wants the
+       music without the interludes between it, and a list still carrying all
+       twelve, struck through, is not the thing they asked for. The numbers go
+       back to running 01, 02, 03 so the count under the title still matches
+       what they can actually press. */
+    function applyFilter() {
+        let n = 0;
+        tracks.forEach(function (track) {
+            track.hidden = skipExpanse && track.expanse;
+            track.el.hidden = track.hidden;
+            if (!track.hidden) {
+                n += 1;
+                track.position = n;
+                track.numEl.textContent = pad(n);
+            } else {
+                track.position = 0;
+            }
+        });
+        playable = n;
+        noteEl.textContent = skipExpanse
+            ? pad(expanseCount) + ' Expanse interludes hidden'
+            : '';
+        updateNow();
+    }
+
+    function neighbour(from, direction) {
+        for (let i = from + direction; i >= 0 && i < tracks.length; i += direction) {
+            if (!tracks[i].hidden) return i;
+        }
+        return -1;
+    }
+
+    // ---- playback -----------------------------------------------------------
+
+    function select(index, startPlaying) {
+        if (index < 0 || index >= tracks.length) return;
+        current = index;
+        audio.src = tracks[index].src;
+        durationEl.textContent = clock(tracks[index].duration);
+        elapsedEl.textContent = '0:00';
+        paintSeek();
+        markCurrent();
+        updateNow();
+        if (startPlaying) play();
+    }
+
+    function play() {
+        /* The rooms and this player are not meant to sound at once, and
+           toggleAudio() does exactly this in the other direction. */
+        document.querySelectorAll('audio').forEach(function (other) {
+            if (other !== audio && !other.paused) other.pause();
+        });
+        document.querySelectorAll('.audio-toggle-btn.playing').forEach(function (btn) {
+            btn.innerHTML = '<img class="audio-icon" src="' + PLAY_ICON_URL + '" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">';
+            btn.classList.remove('playing');
+        });
+
+        const started = audio.play();
+        // A browser that refuses to start (no gesture yet, track missing) hands
+        // back a rejected promise; the 'pause' and 'error' handlers below say so
+        // on screen, so there is nothing to add here but a catch.
+        if (started && started.catch) started.catch(function () { /* no-op */ });
+    }
+
+    function togglePlay() {
+        if (current < 0) {
+            const first = neighbour(-1, 1);
+            if (first >= 0) select(first, true);
+            return;
+        }
+        if (audio.paused) play();
+        else audio.pause();
+    }
+
+    function advance() {
+        const next = neighbour(current, 1);
+        if (next >= 0) select(next, true);
+    }
+
+    // ---- the readouts -------------------------------------------------------
+
+    function markCurrent() {
+        tracks.forEach(function (track, i) {
+            track.el.classList.toggle('is-current', i === current);
+        });
+
+        /* Nudged into view inside the list only. scrollIntoView() would walk
+           every ancestor, which on a track that is already visible still drags
+           the page about on the way to the one below. */
+        if (current < 0) return;
+        const li = tracks[current].el;
+        const top = li.offsetTop;
+        const bottom = top + li.offsetHeight;
+        if (top < listEl.scrollTop) listEl.scrollTop = top;
+        else if (bottom > listEl.scrollTop + listEl.clientHeight) {
+            listEl.scrollTop = bottom - listEl.clientHeight;
+        }
+    }
+
+    function updateNow() {
+        if (current < 0) {
+            nowIndexEl.textContent = 'Track -- / ' + pad(playable);
+            nowTitleEl.textContent = 'Nothing playing';
+            nowSubEl.textContent = 'Press Play All, or choose a track below.';
+        } else {
+            const track = tracks[current];
+            nowIndexEl.textContent = 'Track ' +
+                (track.position ? pad(track.position) : '--') + ' / ' + pad(playable);
+            nowTitleEl.textContent = track.title;
+            nowSubEl.textContent = track.sub;
+        }
+
+        prevBtn.disabled = current >= 0 && neighbour(current, -1) < 0;
+        nextBtn.disabled = current >= 0 && neighbour(current, 1) < 0;
+    }
+
+    function paintSeek() {
+        const total = audio.duration;
+        const ratio = isFinite(total) && total > 0
+            ? Math.min(1, audio.currentTime / total)
+            : 0;
+        seekFill.style.width = (ratio * 100).toFixed(2) + '%';
+        seekEl.setAttribute('aria-valuenow', Math.round(ratio * 100));
+        seekEl.setAttribute('aria-valuetext', clock(audio.currentTime));
+    }
+
+    function setPlayIcon(playing) {
+        playIcon.src = playing ? PAUSE_ICON_URL : PLAY_ICON_URL;
+        playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    }
+
+    function setDuration(track, seconds) {
+        if (!isFinite(seconds) || seconds <= 0) return;
+        track.duration = seconds;
+        track.durEl.textContent = clock(seconds);
+        if (tracks[current] === track) durationEl.textContent = clock(seconds);
+    }
+
+    // ---- the running times --------------------------------------------------
+
+    /* READ OFF THE FILES, ONE AT A TIME. There is no manifest to take them
+       from, and thirty-six <audio> elements all asking for headers at once on a
+       phone is a worse trade than a column that fills in over a few seconds.
+       preload="metadata" asks for the header rather than the track. The timeout
+       is there because a request that never answers must not hold up the queue
+       behind it, and the whole thing only runs once, the first time the window
+       is opened — not on page load, where nobody has asked for it yet. */
+    function probeDurations() {
+        if (probeStarted) return;
+        probeStarted = true;
+
+        let i = 0;
+        (function next() {
+            if (i >= tracks.length) return;
+            const track = tracks[i++];
+            if (track.duration) return next();
+
+            const probe = new Audio();
+            probe.preload = 'metadata';
+
+            let settled = false;
+            function finish() {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timer);
+                next();
+            }
+
+            const timer = setTimeout(finish, 8000);
+            probe.addEventListener('loadedmetadata', function () {
+                setDuration(track, probe.duration);
+                finish();
+            });
+            probe.addEventListener('error', finish);
+            probe.src = track.src;
+        }());
+    }
+
+    // ---- volume -------------------------------------------------------------
+
+    /* MUTE IS audio.muted, NOT A VOLUME OF ZERO. goToRoom() fades this element
+       out by walking its volume down and then putting back the value it
+       started from, so a mute written into volume would either be undone by
+       that or, worse, become the level it restores to. Muting the element
+       leaves volume alone and the two never meet. */
+    function applyVolume() {
+        const percent = Math.round(volume * 100);
+        audio.volume = volume;
+        audio.muted = muted;
+        volRange.value = percent;
+        volRange.style.setProperty('--pl-vol', percent + '%');
+        volReadout.textContent = muted ? 'Off' : String(percent);
+        muteBtn.setAttribute('aria-pressed', String(muted));
+        muteBtn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+        volRow.classList.toggle('is-muted', muted);
+    }
+
+    volRange.addEventListener('input', function () {
+        volume = Math.min(1, Math.max(0, Number(volRange.value) / 100));
+        // Pulling the slider up is the plainest unmute there is.
+        if (muted && volume > 0) {
+            muted = false;
+            writePref(MUTED_KEY, false);
+        }
+        applyVolume();
+        writePref(VOLUME_KEY, volume);
+    });
+
+    muteBtn.addEventListener('click', function () {
+        muted = !muted;
+        // Coming off mute at zero would be silent, and look broken rather than
+        // quiet, so it comes back at half.
+        if (!muted && volume === 0) {
+            volume = 0.5;
+            writePref(VOLUME_KEY, volume);
+        }
+        applyVolume();
+        writePref(MUTED_KEY, muted);
+    });
+
+    // ---- the window: where it sits, and being dragged -----------------------
+
+    /* The .ll-topbar is fixed and carries the wordmark; a window dragged over
+       it would be covering the site's own header, which no window on a desktop
+       is allowed to do to a menu bar. Read rather than hardcoded, because the
+       bar is shorter on a phone. */
+    function ceiling() {
+        const bar = document.querySelector('.ll-topbar');
+        return (bar ? Math.round(bar.getBoundingClientRect().height) : 0) + 8;
+    }
+
+    /* It is fixed, so it is placed in viewport coordinates and has to be kept
+       inside them: 8px of margin on every side, the bar's height at the top,
+       and never past the far edge. The maximum is applied last on purpose — on
+       a viewport too short to honour both, being on screen beats clearing the
+       bar. */
+    function placeAt(left, top) {
+        const box = windowEl.getBoundingClientRect();
+        const maxLeft = Math.max(8, window.innerWidth - box.width - 8);
+        const maxTop = Math.max(8, window.innerHeight - box.height - 8);
+        windowEl.style.left = Math.min(Math.max(8, left), maxLeft) + 'px';
+        windowEl.style.top = Math.min(Math.max(ceiling(), top), maxTop) + 'px';
+        // Hands positioning over from the stylesheet's centring transform,
+        // which cannot coexist with left/top written in pixels.
+        windowEl.classList.add('pl-placed');
+        placed = true;
+    }
+
+    function placeCentred() {
+        const box = windowEl.getBoundingClientRect();
+        placeAt((window.innerWidth - box.width) / 2, (window.innerHeight - box.height) / 2);
+    }
+
+    function currentLeft() { return parseFloat(windowEl.style.left) || 0; }
+    function currentTop() { return parseFloat(windowEl.style.top) || 0; }
+
+    titlebar.addEventListener('pointerdown', function (event) {
+        // The close box lives in the bar and is a button, not a handle.
+        if (event.target.closest('.pl-close')) return;
+
+        const box = windowEl.getBoundingClientRect();
+        windowDrag = {
+            id: event.pointerId,
+            dx: event.clientX - box.left,
+            dy: event.clientY - box.top
+        };
+        windowEl.classList.add('pl-dragging');
+        // Capture keeps the drag alive when the pointer outruns the bar. It
+        // throws if the pointer is already gone by the time we ask, and an
+        // uncaught throw here would leave the window stuck mid-drag.
+        if (titlebar.setPointerCapture) {
+            try { titlebar.setPointerCapture(event.pointerId); } catch (e) { /* no capture, still draggable */ }
+        }
+        event.preventDefault();
+    });
+
+    titlebar.addEventListener('pointermove', function (event) {
+        if (!windowDrag || event.pointerId !== windowDrag.id) return;
+        placeAt(event.clientX - windowDrag.dx, event.clientY - windowDrag.dy);
+    });
+
+    function endWindowDrag(event) {
+        if (!windowDrag) return;
+        if (titlebar.releasePointerCapture && event.pointerId !== undefined) {
+            try { titlebar.releasePointerCapture(event.pointerId); } catch (e) { /* already gone */ }
+        }
+        windowDrag = null;
+        windowEl.classList.remove('pl-dragging');
+    }
+
+    titlebar.addEventListener('pointerup', endWindowDrag);
+    titlebar.addEventListener('pointercancel', endWindowDrag);
+
+    // A window dragged to the right of a wide screen must not be left off the
+    // edge of a narrow one.
+    window.addEventListener('resize', function () {
+        if (!windowEl.hidden && placed) placeAt(currentLeft(), currentTop());
+    });
+
+    // ---- open and close -----------------------------------------------------
+
+    function openWindow() {
+        windowEl.hidden = false;
+        openBtn.setAttribute('aria-expanded', 'true');
+        probeDurations();
+        // Where it was last time, pulled back inside if the viewport has
+        // changed since; centred the first time.
+        if (placed) placeAt(currentLeft(), currentTop());
+        else placeCentred();
+    }
+
+    /* CLOSING STOPS IT. A player that keeps going with its controls put away
+       leaves the only way to silence it off screen, which on a page that also
+       has a room track of its own is a good way to end up hunting for which
+       thing is making the noise. */
+    function closeWindow(returnFocus) {
+        windowEl.hidden = true;
+        openBtn.setAttribute('aria-expanded', 'false');
+        audio.pause();
+        if (returnFocus === true) openBtn.focus();
+    }
+
+    openBtn.addEventListener('click', function () {
+        if (windowEl.hidden) openWindow();
+        else closeWindow(true);
+    });
+
+    closeBtn.addEventListener('click', function () { closeWindow(true); });
+
+    windowEl.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeWindow(true);
+    });
+
+    /* THE WINDOW BELONGS TO THE END SCREEN. Floating over the page rather than
+       sitting in it, nothing else would ever take it away — and a player left
+       hovering over room 12, with the button that opens it three rooms further
+       on and goToRoom() having already faded its track out, is a panel the
+       visitor has no way to account for. So it leaves when the room does.
+       Focus is deliberately not sent back to the button here: the button is in
+       a room that is no longer on screen. */
+    const endScreen = document.getElementById('youwon');
+    if (endScreen && window.MutationObserver) {
+        new MutationObserver(function () {
+            if (!windowEl.hidden && !endScreen.classList.contains('active')) {
+                closeWindow(false);
+            }
+        }).observe(endScreen, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // ---- the options --------------------------------------------------------
+
+    function setAutoplay(on) {
+        autoplay = on;
+        writePref(AUTOPLAY_KEY, on);
+        autoplayBtn.setAttribute('aria-pressed', String(on));
+        autoplayStateEl.textContent = on ? 'On' : 'Off';
+    }
+
+    function setSkipExpanse(on) {
+        skipExpanse = on;
+        writePref(SKIP_EXPANSE_KEY, on);
+        skipBtn.setAttribute('aria-pressed', String(on));
+        skipStateEl.textContent = on ? 'On' : 'Off';
+        applyFilter();
+
+        /* Turned on while an Expanse track is the one playing: a track that is
+           no longer in the list cannot go on being the one playing, so hand
+           over to the next one that is and keep doing whatever we were doing. */
+        if (on && current >= 0 && tracks[current].hidden) {
+            const wasPlaying = !audio.paused;
+            const next = neighbour(current, 1);
+            if (next >= 0) select(next, wasPlaying);
+            else audio.pause();
+        }
+    }
+
+    autoplayBtn.addEventListener('click', function () { setAutoplay(!autoplay); });
+    skipBtn.addEventListener('click', function () { setSkipExpanse(!skipExpanse); });
+
+    playAllBtn.addEventListener('click', function () {
+        // Play All means all of them, so it turns autoplay on: without that it
+        // would play exactly one track and stop, which is not what it says.
+        if (!autoplay) setAutoplay(true);
+        const first = neighbour(-1, 1);
+        if (first >= 0) select(first, true);
+    });
+
+    playBtn.addEventListener('click', togglePlay);
+    nextBtn.addEventListener('click', advance);
+
+    prevBtn.addEventListener('click', function () {
+        // Back to the top of this one if we are well into it, to the one before
+        // if we have only just started — which is what every other player does.
+        if (current >= 0 && audio.currentTime > 3) {
+            audio.currentTime = 0;
+            paintSeek();
+            return;
+        }
+        const previous = neighbour(current < 0 ? tracks.length : current, -1);
+        if (previous >= 0) select(previous, true);
+    });
+
+    // ---- the seek bar -------------------------------------------------------
+
+    function seekTo(clientX) {
+        const total = audio.duration;
+        if (!isFinite(total) || total <= 0) return;
+        const box = seekEl.getBoundingClientRect();
+        if (!box.width) return;
+        const ratio = Math.min(1, Math.max(0, (clientX - box.left) / box.width));
+        audio.currentTime = ratio * total;
+        paintSeek();
+    }
+
+    seekEl.addEventListener('pointerdown', function (event) {
+        dragging = true;
+        if (seekEl.setPointerCapture) {
+            try { seekEl.setPointerCapture(event.pointerId); } catch (e) { /* no capture, still seekable */ }
+        }
+        seekTo(event.clientX);
+    });
+
+    seekEl.addEventListener('pointermove', function (event) {
+        if (dragging) seekTo(event.clientX);
+    });
+
+    function endDrag(event) {
+        if (!dragging) return;
+        dragging = false;
+        if (seekEl.releasePointerCapture && event.pointerId !== undefined) {
+            try { seekEl.releasePointerCapture(event.pointerId); } catch (e) { /* already gone */ }
+        }
+    }
+
+    seekEl.addEventListener('pointerup', endDrag);
+    seekEl.addEventListener('pointercancel', endDrag);
+
+    seekEl.addEventListener('keydown', function (event) {
+        const jump = event.key === 'ArrowRight' ? 5 : event.key === 'ArrowLeft' ? -5 : 0;
+        if (!jump || !isFinite(audio.duration)) return;
+        event.preventDefault();
+        audio.currentTime = Math.min(audio.duration, Math.max(0, audio.currentTime + jump));
+        paintSeek();
+    });
+
+    // ---- the element's own events -------------------------------------------
+
+    audio.addEventListener('play', function () { setPlayIcon(true); });
+
+    // Fires for the window's own pause button and for the two places the rest
+    // of the page reaches in and stops this: toggleAudio() and goToRoom().
+    audio.addEventListener('pause', function () { setPlayIcon(false); });
+
+    audio.addEventListener('timeupdate', function () {
+        if (dragging) return;
+        elapsedEl.textContent = clock(audio.currentTime);
+        paintSeek();
+    });
+
+    audio.addEventListener('loadedmetadata', function () {
+        if (current >= 0) setDuration(tracks[current], audio.duration);
+        paintSeek();
+    });
+
+    audio.addEventListener('ended', function () {
+        setPlayIcon(false);
+        if (autoplay) advance();
+    });
+
+    audio.addEventListener('error', function () {
+        if (current < 0) return;
+        nowSubEl.textContent = '[ERR] Track unavailable';
+        tracks[current].durEl.textContent = '--:--';
+        // Walking on past a bad file is the point of autoplay; the walk always
+        // ends, because neighbour() runs out at the end of the list.
+        if (autoplay) advance();
+    });
+
+    // ---- go -----------------------------------------------------------------
+
+    setAutoplay(autoplay);
+    setSkipExpanse(skipExpanse);   // also numbers the list, through applyFilter()
+    setPlayIcon(false);
+    applyVolume();
+}());
+
 </script>
 </body>
 </html>
