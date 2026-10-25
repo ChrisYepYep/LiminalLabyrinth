@@ -14,10 +14,24 @@
     <meta property="og:description" content="An immersive Habbo Origins audio maze.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://liminallabyrinth.quest/">
-    <meta property="og:image" content="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/twitter-thumbnail.png?raw=true">
+    <!-- Same origin as the page. It pointed at a github.com /blob/ URL,
+         which serves an HTML page and only redirects to the picture for a
+         browser that follows ?raw=true — which scrapers frequently do not,
+         so the card came up blank. The file is right here, at the 1200x630
+         these want. -->
+    <meta property="og:image" content="https://liminallabyrinth.quest/images/twitter-thumbnail.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Liminal Labyrinth">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://github.com/ChrisYepYep/LiminalLabyrinth/blob/main/images/twitter-thumbnail.png?raw=true">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='44' font-family='Arial, sans-serif' font-size='28' font-weight='700' fill='%23fff8fa' text-anchor='middle'%3ELL%3C/text%3E%3C/svg%3E">
+    <meta name="twitter:image" content="https://liminallabyrinth.quest/images/twitter-thumbnail.png">
+    <!-- A labyrinth, drawn pixel by pixel in the window frame's violet by
+         scripts/favicon.js. It was "LL" set in Arial in an inline SVG — the
+         one piece of the site in a typeface the site does not use, and two
+         letters nobody can read at 16px. -->
+    <link rel="icon" type="image/png" sizes="64x64" href="images/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
     <style>
         body {
             margin: 0;
@@ -924,6 +938,270 @@
             --pl-accent-bright: #a6cfb6;
         }
 
+        /* THE BUTTON IN THE TOP BAR. .ll-powered's pill to the pixel —
+           3px/9px, 0.56rem, 10px radius — because the two sit on the same bar
+           and a second pill at a second size would read as a mistake. Only the
+           colour differs, and that is the point: violet goes to mazerats.net,
+           green opens the green window. margin-left: auto is what puts it at
+           the far end; the bar itself is flex-start so the credit pill stays
+           beside the wordmark where it belongs. */
+        .ll-soundtrack-btn {
+            flex: 0 0 auto;
+            margin-left: auto;
+            padding: 3px 9px;
+            border: 1px solid var(--pl-accent, #4b8b65);
+            border-radius: 10px;
+            background: rgba(75, 139, 101, 0.12);
+            color: var(--pl-accent-bright, #a6cfb6);
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.56rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease,
+                        background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ll-soundtrack-btn:hover,
+        .ll-soundtrack-btn:focus-visible {
+            color: var(--ll-ink, #fff8fa);
+            border-color: var(--pl-accent-bright, #a6cfb6);
+            background: rgba(75, 139, 101, 0.28);
+            box-shadow: 0 0 10px rgba(166, 207, 182, 0.35);
+        }
+
+        /* Held open. The window can be dragged anywhere, including behind the
+           edge of a laptop screen, so the button says whether the thing it
+           opens is already open rather than leaving that to be found. */
+        .ll-soundtrack-btn[aria-expanded="true"] {
+            color: var(--ll-ink, #fff8fa);
+            border-color: var(--pl-accent-bright, #a6cfb6);
+            background: rgba(75, 139, 101, 0.3);
+        }
+
+        /* ---- the mini player ----------------------------------------------
+
+           IN THE BAR, NOT UNDER IT. It hung below as a second little window,
+           which gave the page two floating things to account for when only
+           one of them was ever the point. Up here it reads as what it is —
+           the site's own controls, beside the button that opens them.
+
+           IT MUST NOT MAKE THE BAR TALLER, and nothing here is allowed to.
+           The bar's height comes from the wordmark and its tagline, about
+           26px of it; every piece of this is cut to sit inside that, which
+           is why the transport is 18px here against the window's 24 and the
+           plate is a 1px edge with 2px of padding rather than the window's 8.
+
+           ONE FLAT ROW OF CHILDREN. The seek bar is a sibling of the buttons
+           rather than a strip underneath them, so the same markup lies along
+           the bar on a wide screen and, below 700px, wraps onto a second
+           line while the whole thing drops under the bar and goes back to
+           being the panel it was. See the narrow-screen block below. */
+        .ll-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+            /* NO min-width: 0 HERE, deliberately. It reads like the right
+               thing — let the group give way on a narrow bar — but a flex
+               item allowed below its own min-content does not pass the
+               squeeze on to its children, it just overflows them: at 375px
+               the group shrank to 72px and the 84px pill inside it hung 12px
+               off the end of the bar. The default floor is the pill's own
+               width, which is exactly the floor wanted; the player inside is
+               where the give is, and it carries the min-width: 0 that lets
+               it give. */
+        }
+
+        .pl-mini {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            /* A STATED WIDTH, because the group it is in is pushed right and
+               therefore only as wide as its contents. With nothing but
+               content to go on, the seek bar's own basis and the name fight
+               over the same pixels and the name loses — "02 Stati…" on a bar
+               with four hundred spare pixels either side of it. Given a width
+               to fill, the two have something to share. */
+            width: clamp(260px, 30vw, 400px);
+            min-width: 0;
+            padding: 2px 6px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid var(--pl-edge, #304c3c);
+            border-radius: 8px;
+            animation: plFade 0.2s ease-out both;
+        }
+
+        .pl-mini[hidden] { display: none; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .pl-mini { animation: none; }
+        }
+
+        /* The window's transport, three quarters of the size. Same buttons,
+           same icons, same order — it is the same player, and a strip that
+           rearranged them would be a second thing to learn. */
+        .pl-mini .pl-icon-btn { width: 18px; height: 18px; }
+        .pl-mini .pl-icon-btn svg { width: 11px; height: 11px; }
+        .pl-mini-play img { display: block; width: 16px; height: 16px; }
+
+        /* THE FIRST THING TO GIVE. On a bar with room it shows the number and
+           the name; as the bar narrows it ellipses, and the seek bar and the
+           buttons — which do something — keep their size. */
+        .pl-mini-title {
+            flex: 1 1 auto;
+            /* Enough to be a name rather than a stub. Without a floor of its
+               own the name is the only thing with nothing to lose, so on a
+               tablet the seek bar kept its hundred pixels and the track was
+               called "02 St…". The seek gives way to its own minimum first
+               now, and the name keeps a readable piece of itself. */
+            min-width: 56px;
+            margin: 0 3px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: rgba(255, 248, 250, 0.85);
+        }
+
+        /* EXPAND and MINI PLAYER. The pill shape the rest of the site says
+           "control" in, at the smallest size it still reads at, in the
+           window's green so the pair belong to the player rather than to the
+           page behind it. */
+        .pl-chip {
+            flex: 0 0 auto;
+            padding: 2px 7px;
+            background: rgba(75, 139, 101, 0.14);
+            border: 1px solid var(--pl-edge, #304c3c);
+            border-radius: 7px;
+            color: var(--pl-accent-bright, #a6cfb6);
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.5rem;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease,
+                        background-color 0.3s ease;
+        }
+
+        .pl-chip:hover, .pl-chip:focus-visible {
+            color: #fff8fa;
+            border-color: var(--pl-accent-bright, #a6cfb6);
+            background: rgba(75, 139, 101, 0.3);
+        }
+
+        .pl-mini .pl-chip { padding: 1px 6px; }
+
+        /* The titlebar's own, which has a dot pattern behind it rather than
+           black: the plate has to hold its own against the dots the way the
+           close box beside it does. */
+        .pl-titlebar .pl-chip {
+            background: rgba(0, 0, 0, 0.6);
+            margin-right: 2px;
+        }
+
+        /* The same pixel X as the window's close box, a size down. */
+        .pl-mini-close {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: 0.85;
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+
+        .pl-mini-close img {
+            display: block;
+            width: 12px;
+            height: auto;
+            image-rendering: pixelated;
+        }
+
+        .pl-mini-close:hover, .pl-mini-close:focus-visible {
+            opacity: 1;
+            filter: drop-shadow(0 0 4px rgba(166, 207, 182, 0.55));
+        }
+
+        /* The window's seek bar, lying along the bar between the name and
+           the controls, and seekable in exactly the same way — a progress
+           line that looked like the one upstairs but could not be clicked
+           would be a lie. It is the one part allowed to grow into whatever
+           room the bar has left. */
+        .pl-mini-seek {
+            flex: 0 1 110px;
+            min-width: 44px;
+            padding: 5px 0;
+            cursor: pointer;
+            touch-action: none;
+        }
+
+        .pl-mini-seek:focus-visible {
+            outline: 1px solid rgba(0, 255, 102, 0.6);
+            outline-offset: 2px;
+        }
+
+        /* ---- too narrow for the bar ----------------------------------------
+
+           Under 700px the bar already holds the wordmark, the credit pill and
+           the Soundtrack button, and what is left will not take a player as
+           well. So it leaves: the same element drops out of the bar's flow to
+           hang under its right-hand end — which is where it lived before it
+           moved in — and the seek bar wraps onto a line of its own beneath
+           the controls.
+
+           The bar is fixed, so it is the containing block this is offset
+           from: top: 100% is the underside of the bar, wherever that is on
+           whatever screen, with nothing to measure. */
+        @media (max-width: 700px) {
+            .pl-mini {
+                position: absolute;
+                top: calc(100% + 8px);
+                /* An absolutely positioned child is offset from the bar's
+                   PADDING box, which runs the full width of the screen — so
+                   right: 0 put the panel against the glass rather than under
+                   the pill. These two numbers are the bar's own side padding
+                   at its two widths (see .ll-topbar in ll-chrome.css), which
+                   is what lines the panel up with everything above it. */
+                right: 20px;
+                z-index: 490;              /* under the full window */
+                flex-wrap: wrap;
+                width: min(300px, calc(100vw - 24px));
+                padding: 7px 8px 6px;
+                background: #000000;
+                box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8);
+                animation-name: plOpen;
+            }
+
+            /* A whole line of its own, under everything else. It sits before
+               the two chips in the markup — which is the right reading order,
+               and the right order along a bar — so it has to be sent to the
+               end here, or the chips wrap past it onto a third line of their
+               own and the panel grows by twenty pixels of nothing. */
+            .pl-mini-seek {
+                order: 1;
+                flex: 1 0 100%;
+                margin-top: 5px;
+                padding: 3px 0 1px;
+            }
+
+            /* A whole line to itself down here, so no floor is needed. */
+            .pl-mini-title { flex: 1 1 auto; min-width: 0; font-size: 0.66rem; }
+            .pl-mini .pl-icon-btn { width: 20px; height: 20px; }
+            .pl-mini .pl-icon-btn svg { width: 12px; height: 12px; }
+            .pl-mini-play img { width: 18px; height: 18px; }
+        }
+
         .pl-window {
             display: flex;
             flex-direction: column;
@@ -931,9 +1209,22 @@
             left: 50%;
             top: 12vh;
             z-index: 500;
-            width: min(420px, calc(100vw - 24px));
+            /* Ten pixels under what it was. The window got shorter rather than
+               narrower: the options are a quarter of the height they were and
+               sit on one row, which is the width they need — take any more off
+               and Skip Expanse wraps onto a second row and gives the height
+               straight back. */
+            width: min(400px, calc(100vw - 24px));
             max-height: calc(100vh - 32px);
-            padding: 8px;
+            /* The page's own windows' edge, to the pixel: 1px of outline, 12px
+               of clear chrome, then the panel, which reaches 1px back into the
+               plain fill of the 14px border. See --window-edge-gap in
+               ll-chrome.css for why the border itself does not move. Ten
+               pixels narrower than it was, because the gap gave back more
+               than that. */
+            --window-edge-gap: 13px;
+            --window-inset: calc(var(--window-edge-gap) - 14px);
+            padding: 0;
             box-sizing: border-box;
             text-align: left;
             border-style: solid;
@@ -986,23 +1277,37 @@
             .pl-window { animation: none; }
         }
 
-        /* The grab bar, doing one job more than the page's own: it carries a
-           name. Same tile at the same pixel scale, recoloured with the frame.
-           Reaches out over the frame by 18px — 8px of padding plus 10px of the
-           14px border — which is .ll-titlebar's own trick scaled to this
-           window's smaller padding, leaving the outer 4px of frame showing. */
+        /* THE GRAB BAR, BUILT THE ARCHIVE'S WAY: two runs of dots with the
+           title centred in the gap between them, rather than one continuous
+           pattern with the title laid on top at the left.
+
+           The difference is what the dots are. Behind the text they are a
+           texture the title has to survive — which is why it needed three
+           stacked shadows to stay legible. Stopped either side of it they are
+           a rule the title interrupts, which is what a grab bar on this kind
+           of window has always been, and the letters can then simply be
+           letters. The pattern is the ::before and ::after, each taking half
+           the room the title leaves.
+
+           The bar reaches out over the frame by 10px, leaving the outer 4px
+           showing — .ll-titlebar's own number, now that this window's padding
+           matches the page's. */
         .pl-titlebar {
+            position: relative;
             flex: 0 0 auto;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 10px;
             height: 22px;
-            margin: -18px -18px 10px;
-            padding: 0 6px;
+            margin: -10px -10px 10px;
+            /* The room kept clear at each end for the title, taken back by
+               the grips' own negative margins so they still reach the
+               corners. Equal and opposite on the two sides, which matters:
+               any difference between them moves the title off centre by half
+               of it. */
+            padding: 0 34px;
             box-sizing: border-box;
-            background-image: url('images/ll_title_pattern_green.png');
-            background-repeat: repeat;
-            image-rendering: pixelated;
             border-radius: 8px 8px 0 0;
             /* It is called a grab bar on the archive this art came from, and
                here it is one. touch-action: none so a drag on a phone moves the
@@ -1011,58 +1316,99 @@
             touch-action: none;
         }
 
+        .pl-titlebar::before,
+        .pl-titlebar::after {
+            content: "";
+            flex: 1 1 0;
+            /* Without this a flex item refuses to shrink below its content,
+               and the grips would push the title out of the bar instead of
+               giving way to it. */
+            min-width: 0;
+            align-self: stretch;
+            background-image: url('images/ll_title_pattern_green.png');
+            background-repeat: repeat;
+            image-rendering: pixelated;
+        }
+
+        .pl-titlebar::before {
+            margin-left: -34px;
+            border-top-left-radius: 8px;
+        }
+
+        .pl-titlebar::after {
+            margin-right: -34px;
+            border-top-right-radius: 8px;
+        }
+
         .pl-window.pl-dragging .pl-titlebar { cursor: grabbing; }
 
-        /* NO PLATE BEHIND IT. It had a black one, which made the title look
-           like a separate thing dropped onto the bar rather than the bar's own
-           label. The dots it sits on are 1px on, 1px off at a quarter
-           coverage, so a shadow in the same black does the whole job of
-           keeping the letters legible, and the pattern runs on behind them. */
+        /* NOTHING IS PAINTED BEHIND IT and nothing needs to be: the dots stop
+           where it starts. The three stacked black shadows it used to carry
+           were there to hold the letters against a texture that is no longer
+           under them. */
         .pl-title {
-            flex: 1 1 auto;
+            flex: 0 0 auto;
             min-width: 0;
-            padding: 0 2px;
             font-family: 'Oswald', sans-serif;
             font-size: 0.58rem;
             font-weight: 600;
             letter-spacing: 2px;
             text-transform: uppercase;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
             color: var(--ll-ink, #fff8fa);
-            text-shadow:
-                0 0 3px #000,
-                0 1px 2px rgba(0, 0, 0, 0.95),
-                0 0 6px rgba(0, 0, 0, 0.8);
         }
 
+        /* Over the right-hand grip, on the bar's own centre line, the way
+           every close box on the archive sits. Out of the flex flow entirely,
+           so the two runs of dots stay equal and the title stays in the
+           middle of the window rather than in the middle of what is left
+           over after the buttons. */
+        .pl-titlebar-actions {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* THE ARCHIVE'S CLOSE BOX, which is the sprite and nothing else — no
+           plate, no border, no radius. This was a typed &times; on a black
+           plate with a green edge, on the reasoning that a bare character on
+           a dotted bar reads as a stray character. True of a character;
+           untrue of artwork. modal_topclose_x.png is an opaque drawn box with
+           an X in it, recoloured here by the same recipe as the frame and the
+           scrollbar, and it covers the dots where it sits while the padding
+           around it lets them run on either side — which is how every close
+           box on mazerats.net, and on the hotel this all comes from, sits on
+           its bar. 4px of padding rather than the archive's 6px: this grab
+           bar is 22px where theirs is taller. */
         .pl-close {
             flex: 0 0 auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 19px;
-            height: 19px;
-            padding: 0;
-            /* This one KEEPS its plate: unlike the title it is a control, and
-               a close box with nothing behind it on a dotted bar reads as a
-               stray character. Its edge is the frame's highlight, so it sits
-               in the bar rather than on it. */
-            background: rgba(0, 0, 0, 0.78);
-            border: 1px solid var(--pl-edge, #304c3c);
-            border-radius: 4px;
-            color: rgba(255, 248, 250, 0.75);
-            font-family: 'Oswald', sans-serif;
-            font-size: 0.8rem;
-            line-height: 1;
+            padding: 4px;
+            background: none;
+            border: none;
             cursor: pointer;
-            transition: color 0.3s ease, border-color 0.3s ease;
+            opacity: 0.85;
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+
+        .pl-close img {
+            display: block;
+            width: 14px;
+            height: auto;
+            image-rendering: pixelated;
         }
 
         .pl-close:hover, .pl-close:focus-visible {
-            color: #fff8fa;
-            border-color: rgba(255, 248, 250, 0.7);
+            opacity: 1;
+            /* The sprite is one flat colour, so there is no hover state to
+               draw — it is lifted instead, the way the pills beside it are. */
+            filter: drop-shadow(0 0 4px rgba(166, 207, 182, 0.55));
         }
 
         /* The sunk black field: .ll-window-inner in miniature, including the
@@ -1071,12 +1417,13 @@
         .pl-inner {
             flex: 1 1 auto;
             min-height: 0;
+            margin: var(--window-inset);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             background: #000000;
             border-radius: 8px;
-            padding: 12px 12px 10px;
+            padding: 10px 10px 8px;
             box-sizing: border-box;
             box-shadow:
                 inset 0 1px 0 var(--pl-edge, #304c3c),
@@ -1085,7 +1432,7 @@
 
         .pl-now, .pl-transport, .pl-volume, .pl-options, .pl-note { flex: 0 0 auto; }
 
-        .pl-now { text-align: center; margin: 2px 0 10px; }
+        .pl-now { text-align: center; margin: 0 0 8px; }
 
         .pl-now-index {
             font-family: 'Courier New', Courier, monospace;
@@ -1098,7 +1445,7 @@
 
         .pl-now-title {
             font-family: 'Oswald', sans-serif;
-            font-size: 1rem;
+            font-size: 0.92rem;
             font-weight: 600;
             letter-spacing: 1px;
             margin: 2px 0 0;
@@ -1122,7 +1469,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin: 0 0 10px;
+            margin: 0 0 8px;
         }
 
         .pl-buttons {
@@ -1145,8 +1492,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             padding: 0;
             background: none;
             border: none;
@@ -1208,7 +1555,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin: 0 0 10px;
+            margin: 0 0 8px;
         }
 
         .pl-mute { width: 22px; height: 22px; }
@@ -1298,25 +1645,83 @@
         #pl-vol-readout { width: 1.6rem; text-align: right; }
 
         .pl-options {
+            /* What the tip is placed against: it is pulled back inside this
+               box rather than the window's, so it never reaches the edge the
+               panel clips at. */
+            position: relative;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 6px;
-            margin: 0 0 10px;
+            gap: 5px;
+            margin: 0 0 8px;
         }
 
-        /* The end screen's own pill — .btn-end a — as a button. */
+        /* THE TIP. The window's own sunk black field in miniature — black
+           plate, the frame's highlight as its edge — with the text in the
+           Courier the player says everything else in. Deliberately not in
+           phosphor green: on this row green means a state readout, and a
+           sentence in it would read as the machine reporting rather than as
+           a label explaining.
+
+           Raised over the volume row above, which is the one place in the
+           panel with room for it. pointer-events: none so it can never eat
+           the hover that put it there, or stand between the pointer and the
+           button underneath. */
+        .pl-tip {
+            position: absolute;
+            left: 0;
+            bottom: calc(100% + 7px);
+            z-index: 2;
+            width: max-content;
+            max-width: 100%;
+            padding: 5px 8px;
+            box-sizing: border-box;
+            background: #000000;
+            border: 1px solid var(--pl-edge, #304c3c);
+            border-radius: 7px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.6px;
+            line-height: 1.5;
+            text-align: center;
+            color: rgba(255, 248, 250, 0.82);
+            pointer-events: none;
+            animation: plTipIn 0.18s ease-out both;
+        }
+
+        .pl-tip[hidden] { display: none; }
+
+        @keyframes plTipIn {
+            from { opacity: 0; transform: translateY(3px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .pl-tip { animation: none; }
+        }
+
+        /* THE TOP BAR'S PILL, NOT THE END SCREEN'S. These were .btn-end a —
+           6px/13px at 0.65rem — which made four of them the widest thing in
+           the window and wrapped them onto two rows. Taken down to .ll-powered
+           and .ll-soundtrack-btn's exact measurements instead: the bar is
+           where this site states what a small pill looks like, and four of
+           them at that size sit on one row with the window narrower for it.
+           The one thing not borrowed is uppercase — these carry an On/Off
+           readout beside the word, and shouting both halves made a toggle look
+           like a heading. */
         .pl-opt {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 6px 13px;
+            gap: 4px;
+            padding: 3px 9px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 248, 250, 0.2);
-            border-radius: 20px;
+            border-radius: 10px;
             color: #fff8fa;
             font-family: 'Roboto', sans-serif;
-            font-size: 0.65rem;
+            font-weight: 700;
+            font-size: 0.56rem;
             letter-spacing: 0.5px;
             cursor: pointer;
             opacity: 0.85;
@@ -1334,23 +1739,58 @@
            other state readout on this site — the sector counter, the expanse
            logs, the typed opening — is Courier in phosphor green, and a toggle
            is a state readout. The pill itself only brightens. */
+        /* WIDE ENOUGH FOR THE LONGEST THING IT EVER SAYS, and never any
+           narrower. ON is two characters where OFF, ALL and ONE are three,
+           so the pill used to shrink and grow as it was pressed — and the row
+           is centre-justified, so one pill changing width slid all four
+           sideways under the pointer that had just pressed one of them.
+           3ch is exact rather than estimated: the readout is monospaced, so
+           a character is a known width, and the 3px is the letter-spacing
+           those three characters carry. */
         .pl-opt-state {
+            flex: 0 0 auto;
+            min-width: calc(3ch + 3px);
+            text-align: center;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.6rem;
+            font-size: 0.54rem;
             letter-spacing: 1px;
             text-transform: uppercase;
             color: rgba(255, 248, 250, 0.4);
         }
 
-        .pl-opt[aria-pressed="true"] {
+        /* .is-on is Repeat's version of aria-pressed. That attribute is for a
+           thing with two states, and Repeat has three, so it carries a
+           data-repeat and an aria-label that names the state in words
+           instead — but it should still look like the toggles either side of
+           it, so the two selectors are kept together here rather than the
+           rules being written twice. */
+        .pl-opt[aria-pressed="true"],
+        .pl-opt.is-on {
             opacity: 1;
             border-color: rgba(0, 255, 102, 0.45);
         }
 
-        .pl-opt[aria-pressed="true"] .pl-opt-state {
+        .pl-opt[aria-pressed="true"] .pl-opt-state,
+        .pl-opt.is-on .pl-opt-state {
             color: #00ff66;
             text-shadow: 0 0 6px rgba(0, 255, 102, 0.5);
         }
+
+        /* The icon stays ink whichever way Repeat is set, the same way
+           Autoplay's own word does. Green on this row means a state readout
+           and nothing else; an icon that changed colour too would be saying
+           what the three letters beside it already say. */
+        .pl-opt-icon { padding-left: 7px; }
+
+        .pl-opt-icon svg {
+            display: block;
+            width: 13px;
+            height: 13px;
+        }
+
+        .pl-opt-icon .pl-rep-one { display: none; }
+        .pl-opt-icon[data-repeat="one"] .pl-rep-all { display: none; }
+        .pl-opt-icon[data-repeat="one"] .pl-rep-one { display: block; }
 
         .pl-list {
             list-style: none;
@@ -1363,34 +1803,173 @@
                scrolled to an arbitrary place every time the track changed. */
             position: relative;
             /* Allowed to shrink inside a short window (see .pl-window), capped
-               so it does not run away on a tall one. */
+               so it does not run away on a tall one. These four are repeated on
+               .pl-list-wrap below and overridden here once the wrap exists:
+               the bar is built by script, and a list that only sized itself
+               correctly after that script ran would be a list with no height at
+               all if it ever did not. */
             flex: 1 1 auto;
             min-height: 56px;
-            max-height: 208px;
+            max-height: 182px;
             overflow-y: auto;
             overscroll-behavior: contain;
             border-top: 1px solid rgba(255, 248, 250, 0.08);
-            scrollbar-width: thin;
-            scrollbar-color: var(--pl-moss, #2d4336) rgba(255, 248, 250, 0.05);
         }
 
-        .pl-list::-webkit-scrollbar { width: 6px; }
-        .pl-list::-webkit-scrollbar-track { background: rgba(255, 248, 250, 0.05); }
-        .pl-list::-webkit-scrollbar-thumb {
-            background: var(--pl-moss, #2d4336);
-            border-radius: 3px;
+        /* ---- the pixel scrollbar ------------------------------------------
+
+           mazerats.net's own bar, brought across and recoloured. It is built
+           out of real elements rather than ::-webkit-scrollbar-thumb and its
+           siblings, which is the archive's finding and not a preference: those
+           pseudo-elements did not reliably paint their background-images in
+           testing, Chrome included, and are WebKit-only regardless. Ordinary
+           divs with an ordinary background-image behave the same everywhere.
+
+           initListScrollbar() at the foot of the page's script wraps .pl-list
+           at runtime and hangs the bar beside it as a sibling, so the markup
+           above stays a plain <ol>. The list goes on scrolling exactly as it
+           did — wheel, touch, keyboard, and markCurrent() writing scrollTop —
+           and the bar only mirrors that and offers a drag, a page and a pair
+           of arrows of its own.
+
+           THE SPRITES ARE THE ARCHIVE'S, RECOLOURED by the recipe the window
+           frame already uses: hue moved to #00ff66's, saturation scaled up and
+           capped so the browns do not come through as grey-greens, lightness
+           lifted an eighth. Black outline pixels have no hue and no lightness,
+           so they survive untouched and the bar keeps its drawn edge against
+           the window's black field.
+
+           The two track sprites are the exception, taken down to about a
+           fifth lightness on top of that. mazerats.net's track is light wood
+           against a cream frame; the same value against this window's black
+           was a bright green channel running the full height of the list with
+           a thumb on it almost as bright, and the thumb is the part that has
+           to be found. Sunk back toward the field, the track reads as the
+           groove it is drawn as. */
+        .pl-list-wrap {
+            display: flex;
+            gap: 4px;
+            /* The sizing .pl-list carried before the wrap existed: allowed to
+               shrink inside a short window down to a couple of rows, capped so
+               it does not run away on a tall one. */
+            flex: 1 1 auto;
+            min-height: 56px;
+            max-height: 182px;
+            /* The rule moves up here with the bar, so it runs the full width
+               of the list AND the bar rather than stopping short of it. */
+            border-top: 1px solid rgba(255, 248, 250, 0.08);
         }
+
+        .pl-list-wrap .pl-list {
+            flex: 1 1 auto;
+            min-width: 0;
+            min-height: 0;
+            max-height: none;
+            border-top: 0;
+            /* The native bar goes; this one replaces it. Set in both engines'
+               spellings here as well as on the element in script, because
+               overflow can repaint after the script has run. */
+            scrollbar-width: none;
+        }
+
+        .pl-list-wrap .pl-list::-webkit-scrollbar { display: none; }
+
+        .pl-sb {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            flex: 0 0 auto;
+            width: 15px;
+            /* A press on the bar must not be taken as a scroll or a pinch of
+               the page underneath it. The list itself is untouched and still
+               swipes. */
+            touch-action: none;
+        }
+
+        /* Nothing to scroll, nothing to show — but it keeps its 15px, so the
+           list does not change width as tracks are hidden and shown by Skip
+           Expanse. */
+        .pl-sb.is-unscrollable { visibility: hidden; }
+
+        .pl-sb-track {
+            position: relative;
+            flex: 1;
+            min-height: 15px;
+            width: 15px;
+            cursor: pointer;
+        }
+
+        /* TWO SEGMENTS, ONE ABOVE THE THUMB AND ONE BELOW, rather than one
+           background on the track — so a click lights up only the half that
+           was actually pressed. Their background-position is phased to each
+           one's own offset in script, so the tiling still reads as a single
+           texture running behind the thumb. */
+        .pl-sb-seg {
+            position: absolute;
+            left: 0;
+            width: 15px;
+            background-image: url('images/ll_sb_track.png');
+            background-repeat: repeat-y;
+            image-rendering: pixelated;
+        }
+
+        .pl-sb-seg.is-active { background-image: url('images/ll_sb_track_active.png'); }
+
+        .pl-sb-thumb {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 15px;
+            /* The sprite's own size, not stretched to stand for how much of
+               the list is in view: it is a grab handle, and the archive's is
+               drawn to be one. */
+            height: 15px;
+            background-image: url('images/ll_sb_thumb.png');
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
+            cursor: grab;
+        }
+
+        .pl-sb-thumb:hover,
+        .pl-sb-thumb.is-dragging { background-image: url('images/ll_sb_thumb_active.png'); }
+        .pl-sb-thumb.is-dragging { cursor: grabbing; }
+
+        .pl-sb-arrow {
+            display: block;
+            flex: 0 0 auto;
+            width: 15px;
+            height: 14px;
+            padding: 0;
+            border: none;
+            background-color: transparent;
+            background-repeat: no-repeat;
+            background-position: center;
+            image-rendering: pixelated;
+            cursor: pointer;
+        }
+
+        .pl-sb-up { background-image: url('images/ll_sb_up.png'); }
+        .pl-sb-up:hover { background-image: url('images/ll_sb_up_active.png'); }
+        .pl-sb-down { background-image: url('images/ll_sb_down.png'); }
+        .pl-sb-down:hover { background-image: url('images/ll_sb_down_active.png'); }
+
+        .pl-sb-arrow.is-disabled,
+        .pl-sb-arrow.is-disabled:hover { cursor: default; pointer-events: none; }
+        .pl-sb-up.is-disabled,
+        .pl-sb-up.is-disabled:hover { background-image: url('images/ll_sb_up_disabled.png'); }
+        .pl-sb-down.is-disabled,
+        .pl-sb-down.is-disabled:hover { background-image: url('images/ll_sb_down_disabled.png'); }
 
         .pl-track { margin: 0; }
         .pl-track[hidden] { display: none; }
 
         .pl-track-btn {
             display: grid;
-            grid-template-columns: 1.9rem 1fr auto;
+            grid-template-columns: 12px 1.9rem 1fr auto;
             align-items: center;
             gap: 8px;
             width: 100%;
-            padding: 7px 8px;
+            padding: 5px 8px;
             box-sizing: border-box;
             background: none;
             border: 0;
@@ -1403,6 +1982,41 @@
 
         .pl-track-btn:hover, .pl-track-btn:focus-visible {
             background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* THE BEAD: the room's own colours, as a bead.
+
+           Artwork was the obvious idea and the wrong one. A room on this site
+           is two layers — the photograph and the overlay drawn on top of it —
+           so a thumbnail would mean compositing the pair and cropping them,
+           and at twelve pixels the detail that makes one room different from
+           another is the first thing to go. Its COLOUR is not: these rooms
+           are amber, or deep blue, or washed-out bone, and that survives
+           being made tiny.
+
+           Three colours each, sampled from the room's own image and kept in
+           ROOM_PALETTE below. Lightest first, every bead the same way round,
+           so a column of them reads as a gradient down the list rather than
+           as thirty-six unrelated dots. */
+        .pl-bead {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            /* A hairline of the row's own ink, so a bead whose colours are
+               nearly black still reads as a bead and not as a hole. */
+            box-shadow: inset 0 0 0 1px rgba(255, 248, 250, 0.18);
+            opacity: 0.75;
+            transition: opacity 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .pl-track-btn:hover .pl-bead { opacity: 1; }
+
+        /* The playing one lights, like its number beside it. */
+        .pl-track.is-current .pl-bead {
+            opacity: 1;
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 248, 250, 0.35),
+                0 0 7px rgba(0, 255, 102, 0.45);
         }
 
         .pl-track-num {
@@ -1446,7 +2060,7 @@
             font-size: 0.55rem;
             letter-spacing: 1px;
             text-align: center;
-            margin: 8px 0 0;
+            margin: 6px 0 0;
             min-height: 0.7rem;
             color: rgba(255, 248, 250, 0.3);
         }
@@ -1483,10 +2097,15 @@
         }
 
         @media (max-width: 480px) {
-            .pl-window { padding: 6px; }
-            .pl-titlebar { margin: -16px -16px 10px; }
-            .pl-inner { padding: 10px 8px 8px; }
-            .pl-list { max-height: 170px; }
+            /* The window's edge is 12px at every width now, so there is no
+               padding here to claw back — the phone already gained it. */
+            .pl-inner { padding: 9px 8px 8px; }
+            /* Less room kept for the title, so the grips still have somewhere
+               to run on a 350px window. */
+            .pl-titlebar { padding: 0 26px; }
+            .pl-titlebar::before { margin-left: -26px; }
+            .pl-titlebar::after { margin-right: -26px; }
+            .pl-list, .pl-list-wrap { max-height: 150px; }
             .pl-track-title { font-size: 0.68rem; }
 
             /* The title plate is the first thing to run out of room: the
@@ -1497,9 +2116,62 @@
                the ~20px the two clocks and three buttons left it. */
             .pl-transport { flex-direction: column; gap: 2px; }
             .pl-scrub { width: 100%; }
+
+            /* The bar's own side padding drops to 12px here, so the hanging
+               mini player follows it in and stays under the pill. */
+            .pl-mini { right: 12px; }
         }
 
 
+
+        /* ---- for anyone who has asked their system to stop things moving ----
+
+           "Reduce motion" is an accessibility setting on every OS: people who
+           get motion sickness, migraine or vestibular symptoms from drifting,
+           pulsing and sliding things turn it on, and a browser passes it to
+           the page. The soundtrack window already listened; the maze did not,
+           so the one place on this site with a constantly breathing glow, a
+           tumbling entrance and a room that cross-fades every time you press
+           Progress was ignoring the request entirely.
+
+           NOTHING IS REMOVED, only stilled. Every room still arrives, the
+           entrance still gives way, the text still appears — they simply do
+           it at once instead of travelling. The CRT flicker and the phosphor
+           colour stay: they are the look of the thing, not movement.
+
+           typeExpanseText() reads the same preference in script and writes
+           its line out whole rather than a character at a time. */
+        @media (prefers-reduced-motion: reduce) {
+            /* The room cross-fade, the entrance tumble, the resting glow,
+               the opening pulse. */
+            .room.active,
+            .room.leaving,
+            .room-image-bg,
+            .room-image-crt,
+            body,
+            .landing-rest,
+            .landing-tumble {
+                animation: none !important;
+            }
+
+            /* The panel easing its height between rooms of different
+               lengths, and every hover lift on a button or a pill. */
+            .ll-window-inner--room,
+            .nav-btn,
+            .audio-toggle-btn,
+            .pl-opt,
+            .pl-chip,
+            .listen-again-btn,
+            .btn-end a,
+            .ll-powered,
+            .ll-soundtrack-btn {
+                transition: none !important;
+            }
+
+            /* The blinking cursor on the Expanse lines is deliberately left
+               alone: it is the site's own voice rather than something moving
+               across the screen, and it has been asked for by name. */
+        }
     </style>
     <link rel="stylesheet" href="ll-chrome.css">
 </head>
@@ -1529,6 +2201,67 @@
              belongs to the name it qualifies, and a pill alone at the far
              end of a wide bar reads as a control rather than as a credit. -->
         <a class="ll-powered" href="https://mazerats.net" target="_blank" rel="noopener noreferrer">Powered by mazerats.net</a>
+    </div>
+
+    <!-- THE BAR'S OWN END. The two go in a group of their own so the pill
+         never moves: the group is what the bar pushes right, and the player
+         appearing and disappearing inside it grows and shrinks leftward.
+         With margin-left: auto on each of them instead, the free space would
+         be split between the two and the pill would slide every time the
+         music started. -->
+    <div class="ll-bar-right">
+
+        <!-- THE MINI PLAYER, IN THE BAR ITSELF.
+
+             It used to hang under the bar as a second little window, which
+             made two floating things to account for when only one of them
+             was ever the point. In the bar it is what it actually is: the
+             site's own controls, next to the button that opens them, taking
+             no room that was not already there — every piece of it is sized
+             to sit inside the height the wordmark already sets, so the bar
+             does not grow by a pixel.
+
+             ONE ROW OF CHILDREN, not a row and a bar under it. Laid out
+             along the bar on a wide screen and wrapped onto two lines on a
+             narrow one, where the whole thing drops below the bar and goes
+             back to being the panel it was — same markup, same order, see
+             the .pl-mini rules and the mobile block at the end of them. -->
+        <section id="playlist-mini" class="pl-mini" hidden aria-label="Soundtrack player, compact">
+            <button type="button" class="pl-icon-btn" id="pl-mini-prev" aria-label="Previous track">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2.5v14H6zM20 5v14l-11-7z"/></svg>
+            </button>
+            <button type="button" class="pl-icon-btn pl-mini-play" id="pl-mini-play" aria-label="Play">
+                <img id="pl-mini-play-icon" src="images/playicon.png?raw=true" alt="">
+            </button>
+            <button type="button" class="pl-icon-btn" id="pl-mini-next" aria-label="Next track">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.5 5H18v14h-2.5zM4 5v14l11-7z"/></svg>
+            </button>
+            <span class="pl-mini-title" id="pl-mini-title">Nothing playing</span>
+            <div class="pl-mini-seek" id="pl-mini-seek" role="slider" tabindex="0" aria-label="Seek"
+                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00">
+                <div class="pl-seek-track"><div class="pl-seek-fill" id="pl-mini-seek-fill"></div></div>
+            </div>
+            <!-- SAID IN WORDS, not in a glyph. ⤢ and ⤡ are the pair a desktop
+                 would use, and at this size they read as decoration; the
+                 button that moves between the halves of this player is one it
+                 must be impossible to get wrong. -->
+            <button type="button" class="pl-chip" id="pl-mini-expand"
+                    aria-label="Expand the soundtrack player">Expand</button>
+            <button type="button" class="pl-mini-close" id="pl-mini-close"
+                    aria-label="Close the soundtrack player"><img
+                    src="images/ll_close_x.png" alt="" aria-hidden="true"></button>
+        </section>
+
+        <!-- THE SOUNDTRACK BUTTON. The window it opens used to be reachable
+             only from the end screen, which meant the music was a reward for
+             finishing rather than a part of the site. Up here it is reachable
+             from every room, so it sits where a site's own controls sit: the
+             far end of the bar, away from the credit pill, which is a link
+             out rather than a control. Same pill shape and size as
+             .ll-powered beside it, in the window's green rather than the
+             page's violet — the same rule the window's own options follow. -->
+        <button type="button" id="soundtrack-btn" class="ll-soundtrack-btn"
+                aria-expanded="false" aria-controls="playlist-window">Soundtrack</button>
     </div>
 </header>
 
@@ -1601,8 +2334,8 @@
                 <h2>Liminal Labyrinth</h2>
                 <h3>An Audio Experience</h3>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1630,8 +2363,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/room1staticvoid1.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/room1staticvoid1.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1660,8 +2393,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1690,8 +2423,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/apprehensive.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/apprehensive.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1720,8 +2453,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1750,8 +2483,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/visional.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/visional.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1780,8 +2513,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1810,8 +2543,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/neglected.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/neglected.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1840,8 +2573,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1870,8 +2603,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/optical.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/optical.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1900,8 +2633,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1954,8 +2687,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/dream.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/dream.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -1984,8 +2717,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2014,8 +2747,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/umbra.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/umbra.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2044,8 +2777,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2074,8 +2807,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/appointed.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/appointed.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2106,8 +2839,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2136,8 +2869,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/amber.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/amber.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2167,8 +2900,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2197,8 +2930,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/lostconnection.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/lostconnection.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2227,8 +2960,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2281,8 +3014,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/celestial.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/celestial.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2312,8 +3045,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2342,8 +3075,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/neweden.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/neweden.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2372,8 +3105,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse01.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse01.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2402,8 +3135,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/approximation.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/approximation.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2432,8 +3165,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/Figment.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2462,8 +3195,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/utopia.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/utopia.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2492,8 +3225,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/Figment.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2522,8 +3255,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/monotonous.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/monotonous.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2554,8 +3287,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/Figment.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/Figment.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2584,8 +3317,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/postponement.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/postponement.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2614,8 +3347,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/spareoom.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/spareoom.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2644,8 +3377,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanseproject.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanseproject.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2674,8 +3407,8 @@
             <div class="room-header-group">
                 <h4>Liminal Labyrinth</h4>
             </div>
-            <img class="room-image-bg" src="roomassets/expanded.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanded.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
 
         <div class="overlay-content-wrapper">
@@ -2705,8 +3438,8 @@
                 <h4>Liminal Labyrinth</h4>
                 <p id="youwontext" class="expanse-blurb-text">Process Complete</p>
             </div>
-            <img class="room-image-bg" src="roomassets/expanse.png?raw=true" alt="">
-            <img class="room-image-mask" src="roomassets/room_mask2.png?raw=true" alt="">
+            <img class="room-image-bg" data-src="roomassets/expanse.png?raw=true" alt="">
+            <img class="room-image-mask" data-src="roomassets/room_mask2.png?raw=true" alt="">
         </div>
         
         <div class="button-group">
@@ -2721,7 +3454,7 @@
             <p class="figment-blurb-text">Well, you made it out of Liminal Labyrinth.</p>
             <p class="figment-blurb-text">How do you feel?</p>
             <p class="figment-blurb-text">Deflated? Cold? Sad?</p>
-            <p class="youwon-text">The launch event has now ended, submissions are closed, but we hope you enjoyed you experience!</p>
+            <p class="youwon-text">No exit was ever promised. You found one anyway. Let that be enough. Headphones off, lights up &mdash; you're through.</p>
         </div>
 
         <div class="audio-player-container">
@@ -2765,16 +3498,26 @@
 <section id="playlist-window" class="pl-window" hidden
          aria-label="Liminal Labyrinth soundtrack">
     <div class="pl-titlebar" id="pl-titlebar">
-        <span class="pl-title">Liminal Labyrinth &mdash; Soundtrack</span>
-        <button type="button" class="pl-close" id="pl-close"
-                aria-label="Close the soundtrack window">&times;</button>
+        <!-- JUST "SOUNDTRACK". The window is opened from a pill marked
+             Soundtrack, on a site whose name is across the top bar and
+             across the room behind it; saying Liminal Labyrinth again here
+             was the third time in one screen, and it cost the title the
+             middle of its own bar. -->
+        <span class="pl-title">Soundtrack</span>
+        <div class="pl-titlebar-actions">
+            <button type="button" class="pl-chip" id="pl-collapse"
+                    aria-label="Collapse to the mini player">Mini Player</button>
+            <button type="button" class="pl-close" id="pl-close"
+                    aria-label="Close the soundtrack window"><img
+                    src="images/ll_close_x.png" alt="" aria-hidden="true"></button>
+        </div>
     </div>
 
     <div class="pl-inner">
         <div class="pl-now">
             <p class="pl-now-index" id="pl-now-index">Track &ndash;&ndash;</p>
             <p class="pl-now-title" id="pl-now-title">Nothing playing</p>
-            <p class="pl-now-sub" id="pl-now-sub">Press Play All, or choose a track below.</p>
+            <p class="pl-now-sub" id="pl-now-sub">Press play, or choose a track below.</p>
         </div>
 
         <!-- Two groups rather than six children in a row: on a phone the whole
@@ -2830,26 +3573,74 @@
         </div>
 
         <div class="pl-options">
-            <button type="button" class="pl-opt" id="pl-playall">Play All</button>
             <button type="button" class="pl-opt" id="pl-autoplay" aria-pressed="true">
                 Autoplay <span class="pl-opt-state" id="pl-autoplay-state">On</span>
+            </button>
+            <!-- REPEAT, THREE WAYS ROUND: Off, All, One, and back to Off.
+                 Beside Autoplay because the two together are the whole of
+                 what happens when a track runs out — Autoplay says whether to
+                 move on, Repeat says what to do once there is nowhere left to
+                 move to.
+
+                 DRAWN RATHER THAN NAMED, and not for want of room: three
+                 states cannot be said by one word, and "Repeat All" beside a
+                 readout saying ALL is the same thing twice. The glyph is the
+                 one every player uses, so the pill reads as the icon for what
+                 it is and the readout for which way it is set. The second
+                 SVG is the same loop with a 1 in it; only one of the two is
+                 ever shown. -->
+            <button type="button" class="pl-opt pl-opt-icon" id="pl-repeat"
+                    data-repeat="off" aria-label="Repeat off. Press to repeat all tracks.">
+                <svg class="pl-rep-all" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+                <svg class="pl-rep-one" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zM13 15.5V8.8h-1l-2.1 1v1.1h1.6v4.6H13z"/></svg>
+                <span class="pl-opt-state" id="pl-repeat-state">Off</span>
+            </button>
+            <!-- AUTO-ROOM. Beside Autoplay because it is the same idea applied
+                 to the page: with it on, the track the player moves to takes
+                 the maze to the room that track belongs to, so the pictures
+                 and the words follow the music. Default On for somebody who
+                 has not finished yet and Off for somebody who has — see
+                 setAutoRoom() and the comment above mazeCompleted. -->
+            <button type="button" class="pl-opt" id="pl-autoroom" aria-pressed="false">
+                Auto-Room <span class="pl-opt-state" id="pl-autoroom-state">Off</span>
             </button>
             <button type="button" class="pl-opt" id="pl-skip-expanse" aria-pressed="false">
                 Skip Expanse <span class="pl-opt-state" id="pl-skip-expanse-state">Off</span>
             </button>
+
+            <!-- ONE PLATE, MOVED, rather than one hidden inside each pill.
+                 The panel it lives in clips anything that leaves it, so the
+                 tip has to be pulled back inside the row when it is raised
+                 over the pill at either end — and that is a measurement, done
+                 once in script, against a single element whose width is known
+                 at the moment it is shown. Four of them would be the same
+                 sum four times over, on elements that are never both up. -->
+            <span class="pl-tip" id="pl-tip" role="tooltip" hidden></span>
         </div>
 
         <ol class="pl-list" id="pl-list"></ol>
         <p class="pl-note" id="pl-note"></p>
 
-        <audio id="pl-audio" preload="none"></audio>
+        <!-- TWO DECKS, because a crossfade is two tracks sounding at once and
+             one element can only hold one. They are identical and
+             interchangeable: whichever is playing is the one the window is
+             wired to, the other is the one the next track is cued on, and
+             they swap at the end of every fade. .pl-deck is how the rest of
+             the page tells them from the rooms' own <audio> elements — see
+             goToRoom() and play(). -->
+        <audio id="pl-audio" class="pl-deck" preload="none"></audio>
+        <audio id="pl-audio-b" class="pl-deck" preload="none"></audio>
     </div>
 </section>
 
 <div id="reset-modal" class="modal-overlay">
     <div class="modal-box">
         <h3 class="modal-title">Are you sure?</h3>
-        <p class="modal-subtext">This will clear your saved progress and return you to the entrance.</p>
+        <!-- IT SAYS BOTH THINGS IT DOES. Reset clears the soundtrack player's
+             settings along with the walk — they are kept in the same place —
+             and a dialog that only mentions the walk would be quietly taking
+             something the visitor had not been told about. -->
+        <p class="modal-subtext">This will clear your saved progress and return you to the entrance. The soundtrack player stops, and its options go back to their defaults.</p>
         <div class="modal-actions">
             <button class="nav-btn modal-action-btn" onclick="confirmReset(true)">Yes</button>
             <button class="nav-btn modal-action-btn" onclick="confirmReset(false)">No</button>
@@ -2986,6 +3777,10 @@
 const PLAY_ICON_URL = "images/playicon.png?raw=true";
 const PAUSE_ICON_URL = "images/pauseicon.png?raw=true";
 
+/* FOR ROOM TRACKS ONLY, which is why it ends at zero rather than where it
+   stopped: a room walked back into starts again from the top, and that is
+   what a room sounds like. The soundtrack window's element is never handed
+   to this — see the pl-audio line in goToRoom(). */
 function fadeAudioOut(audio, duration = 1500) {
     return new Promise((resolve) => {
         if (!audio || audio.paused || audio.volume === 0) {
@@ -3007,7 +3802,7 @@ function fadeAudioOut(audio, duration = 1500) {
                 audio.volume = 0;
                 audio.pause();
                 audio.currentTime = 0;
-                audio.volume = startVolume; 
+                audio.volume = startVolume;
                 clearInterval(fadeInterval);
                 resolve();
             }
@@ -3176,6 +3971,15 @@ function typeExpanseText(roomElement) {
     textEl.textContent = '';
     textEl.classList.add('typing');
 
+    /* Typed out a character at a time is movement, and somebody who has
+       asked their system to stop things moving has asked for this too. The
+       line still arrives and the cursor still sits after it — it simply
+       arrives whole. */
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        textEl.textContent = fullText;
+        return;
+    }
+
     let index = 0;
     const typingSpeed = 50;
 
@@ -3223,6 +4027,15 @@ function confirmReset(shouldReset) {
 
     if (shouldReset) {
         localStorage.clear();
+        /* localStorage.clear() takes the soundtrack player's preferences with
+           it but not the copies it is holding in memory, so without this the
+           visitor who had just wiped their progress carried the settings of
+           the run they wiped until they next reloaded. The player puts itself
+           back to new — see resetSoundtrackPlayer() at the foot of this file,
+           and the dialog that says so. */
+        if (typeof window.resetSoundtrackPlayer === 'function') {
+            window.resetSoundtrackPlayer();
+        }
         resetLandingScreen();
         goToRoom('landing');
     }
@@ -3230,6 +4043,21 @@ function confirmReset(shouldReset) {
 
 function goToRoom(roomId) {
     document.querySelectorAll('audio').forEach(audio => {
+        /* THE SOUNDTRACK WINDOW'S ELEMENT IS NOT A ROOM'S TRACK, so moving
+           rooms does not touch it. Everything else in here is faded out
+           because the room being left should not follow the visitor into the
+           next one — but the player is the whole site's now, reachable from
+           the top bar in every room, and music somebody deliberately put on
+           is not something walking through a door should end. Auto-Room
+           depends on this too: it moves rooms BY playing, and a loop that
+           stopped this element would have the player silencing itself on
+           every track change.
+
+           The one-thing-at-a-time rule still holds, because it is kept in the
+           two places that actually start something: toggleAudio() pauses this
+           when a room's play button is pressed, and the window's own play()
+           pauses the rooms. Arriving in a room sounds nothing by itself. */
+        if (audio.classList.contains('pl-deck')) return;
         if (!audio.paused) {
             const room = audio.closest('.room');
             const btn = room ? room.querySelector('.audio-toggle-btn.playing') : null;
@@ -3257,8 +4085,23 @@ function goToRoom(roomId) {
             activeRoom = document.getElementById('landing');
         }
         if (activeRoom) {
+            // Before it is shown, so the fetch starts with the room rather
+            // than after it — for a room reached ahead of the warmer.
+            hydrateRoomImages(activeRoom);
             activeRoom.classList.add('active');
             localStorage.setItem('currentRoom', roomId);
+
+            /* REACHING THE END SCREEN IS THE ONLY RECORD THAT ANY OF THIS WAS
+               FINISHED, and the soundtrack window needs it: Auto-Room starts
+               On for somebody still walking the maze, where the player is a
+               way through it, and Off for somebody who has already been all
+               the way round, where it would be yanking them out of whatever
+               room they were sitting in. currentRoom alone cannot answer that
+               — it is overwritten by the next Return — so the fact is kept on
+               its own and never cleared except by a reset. */
+            if (roomId === 'youwon') {
+                try { localStorage.setItem('mazeCompleted', 'true'); } catch (e) { /* no-op */ }
+            }
 
             if (activeRoom.querySelector('.expanse-blurb-text')) {
                 typeExpanseText(activeRoom);
@@ -3290,6 +4133,59 @@ function preloadRoomAudio(roomId) {
     audio.load();
 }
 
+/* ---- the room pictures ------------------------------------------------
+
+   Twenty-four room backgrounds, 4.5MB of them, used to be fetched before the
+   landing screen could finish painting — for rooms nobody sees for several
+   minutes.
+
+   loading="lazy" was the obvious fix and it is the wrong one here: a lazy
+   image inside a display:none element is loaded immediately, by design. The
+   attribute is skipped for images with no box at all, so that it cannot be
+   used to hide a tracking pixel from the network — and every room but the
+   one on screen is display:none. Measured: the tags fetched the lot anyway.
+
+   So the address is kept in data-src and the tag ships with no src. Nothing
+   can be fetched until something asks for it, and two things do: the room
+   being walked into, and the warmer below. The frame is 400px tall with its
+   images absolutely positioned inside it, so a tag with no src costs no
+   layout — nothing moves when the picture arrives. */
+function hydrateRoomImages(room) {
+    if (!room) return;
+    room.querySelectorAll('img[data-src]').forEach(function (img) {
+        img.src = img.dataset.src;
+        // Once it has a real src it is an ordinary image; the attribute going
+        // is what keeps the warmer and goToRoom() from doing this twice.
+        delete img.dataset.src;
+    });
+}
+
+/* Quietly, once the landing screen is up and the browser has gone quiet, in
+   the order the maze visits them — so the warmer is always ahead of the
+   visitor and the next room's picture is in the cache before they open the
+   door. One room at a time, each waiting for the last, so the queue never
+   competes with a room's audio or with the soundtrack window. */
+function warmRoomImages() {
+    const order = ['welcome'].concat(MAZE_SEQUENCE, ['break1', 'break2', 'youwon']);
+    const idle = window.requestIdleCallback || function (fn) { return setTimeout(fn, 150); };
+    let i = 0;
+    (function next() {
+        if (i >= order.length) return;
+        const room = document.getElementById(order[i++]);
+        const pending = room ? [...room.querySelectorAll('img[data-src]')] : [];
+        hydrateRoomImages(room);
+        if (!pending.length) return next();
+        let waiting = pending.length;
+        const done = function () { if (--waiting <= 0) idle(next); };
+        pending.forEach(function (img) {
+            if (img.complete) return done();
+            img.addEventListener('load', done, { once: true });
+            // A picture that will not load must not stall the queue behind it.
+            img.addEventListener('error', done, { once: true });
+        });
+    }());
+}
+
 function initAudioPreloading() {
     document.querySelectorAll('.nav-btn[onclick*="goToRoom("]').forEach(btn => {
         const match = btn.getAttribute('onclick').match(/goToRoom\('([^']+)'\)/);
@@ -3308,6 +4204,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initProgressBreadcrumbs();
     initAudioPreloading();
 
+    /* After load, not during it: the whole point is to be out of the way of
+       the first screen. */
+    if (document.readyState === 'complete') warmRoomImages();
+    else window.addEventListener('load', warmRoomImages, { once: true });
+
     const savedRoom = localStorage.getItem('currentRoom');
     if (savedRoom) {
         goToRoom(savedRoom);
@@ -3316,17 +4217,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    const welcomeAudio = document.getElementById('welcome-audio');
+    /* THE DOOR OUT OF THE WELCOME ROOM opens once its track has been heard
+       for 53 seconds — and it did not care WHERE it was heard, which became a
+       trap the day the soundtrack window could play the same file. A new
+       visitor opens the player, Auto-Room walks them into the welcome room,
+       welcometrack plays, and Progress stays grey: they are listening to
+       exactly the right thing and the door will not open, because this was
+       watching one particular <audio> element rather than the track.
+
+       Hung on the window instead, so both the room's own player and the
+       soundtrack window can reach it — see the deck timeupdate handler, which
+       calls this once the welcome room's track passes the same mark. */
     const welcomeProgressBtn = document.getElementById('welcome-progress-btn');
 
+    window.unlockWelcomeProgress = function () {
+        if (!welcomeProgressBtn || !welcomeProgressBtn.disabled) return;
+        welcomeProgressBtn.disabled = false;
+        welcomeProgressBtn.style.opacity = '1';
+        welcomeProgressBtn.style.cursor = 'pointer';
+        welcomeProgressBtn.style.pointerEvents = 'auto';
+    };
+
+    const welcomeAudio = document.getElementById('welcome-audio');
     if (welcomeAudio && welcomeProgressBtn) {
         welcomeAudio.addEventListener('timeupdate', () => {
-            if (welcomeAudio.currentTime >= 53) {
-                welcomeProgressBtn.disabled = false;
-                welcomeProgressBtn.style.opacity = '1';
-                welcomeProgressBtn.style.cursor = 'pointer';
-                welcomeProgressBtn.style.pointerEvents = 'auto';
-            }
+            if (welcomeAudio.currentTime >= 53) window.unlockWelcomeProgress();
         });
     }
 });
@@ -3357,10 +4272,42 @@ document.addEventListener('DOMContentLoaded', () => {
     "use strict";
 
     const windowEl = document.getElementById('playlist-window');
-    const openBtn = document.getElementById('listen-again-btn');
+    /* TWO BUTTONS OPEN THIS, and they are not alternatives. The one in the top
+       bar is the site's, reachable from any room; the one on the end screen is
+       that screen's own closing gesture, and it keeps its place and its size
+       there. They share every scrap of behaviour, the aria-expanded that says
+       whether the window is already up included, so they are held as a list
+       rather than as two names that would have to be kept in step by hand. */
+    const openBtns = Array.prototype.slice.call(
+        document.querySelectorAll('#soundtrack-btn, #listen-again-btn'));
     const listEl = document.getElementById('pl-list');
-    const audio = document.getElementById('pl-audio');
-    if (!windowEl || !openBtn || !listEl || !audio) return;
+    /* THE DECKS. "audio" is whichever of the two is the one playing — a let
+       rather than a const, reassigned by commitFade() at the end of every
+       crossfade. Everything else in this file goes on reading "audio" and
+       never has to care which element it currently is; only the fade engine
+       and the event wiring below know there are two at all. */
+    const decks = [
+        document.getElementById('pl-audio'),
+        document.getElementById('pl-audio-b')
+    ];
+    let audio = decks[0];
+    const otherDeck = function () { return audio === decks[0] ? decks[1] : decks[0]; };
+    if (!windowEl || !openBtns.length || !listEl || !audio) return;
+
+    // The one last pressed, so closing with Escape or the close box hands
+    // focus back to the button the visitor actually came in by.
+    let lastOpener = openBtns[0];
+
+    function setExpanded(open) {
+        openBtns.forEach(function (btn) {
+            btn.setAttribute('aria-expanded', String(open));
+        });
+    }
+
+    /* Which half the pill brings back — not whether anything is showing. The
+       player no longer reopens itself on a revisit (see restore()), so this
+       is only ever read when somebody presses the pill. */
+    let mode = 'full';
 
     const titlebar = document.getElementById('pl-titlebar');
     const closeBtn = document.getElementById('pl-close');
@@ -3372,24 +4319,57 @@ document.addEventListener('DOMContentLoaded', () => {
     const seekFill = document.getElementById('pl-seek-fill');
     const elapsedEl = document.getElementById('pl-elapsed');
     const durationEl = document.getElementById('pl-duration');
-    const playAllBtn = document.getElementById('pl-playall');
+    const optionsRow = document.querySelector('.pl-options');
+    const tipEl = document.getElementById('pl-tip');
+    const repeatBtn = document.getElementById('pl-repeat');
+    const repeatStateEl = document.getElementById('pl-repeat-state');
     const autoplayBtn = document.getElementById('pl-autoplay');
     const autoplayStateEl = document.getElementById('pl-autoplay-state');
+    const autoRoomBtn = document.getElementById('pl-autoroom');
+    const autoRoomStateEl = document.getElementById('pl-autoroom-state');
     const skipBtn = document.getElementById('pl-skip-expanse');
     const skipStateEl = document.getElementById('pl-skip-expanse-state');
     const nowIndexEl = document.getElementById('pl-now-index');
     const nowTitleEl = document.getElementById('pl-now-title');
     const nowSubEl = document.getElementById('pl-now-sub');
     const noteEl = document.getElementById('pl-note');
+    // ---- the mini player's half of the same controls ----
+    const miniEl = document.getElementById('playlist-mini');
+    const miniTitleEl = document.getElementById('pl-mini-title');
+    const miniPlayBtn = document.getElementById('pl-mini-play');
+    const miniPlayIcon = document.getElementById('pl-mini-play-icon');
+    const miniPrevBtn = document.getElementById('pl-mini-prev');
+    const miniNextBtn = document.getElementById('pl-mini-next');
+    const miniSeekEl = document.getElementById('pl-mini-seek');
+    const miniSeekFill = document.getElementById('pl-mini-seek-fill');
+    const miniCloseBtn = document.getElementById('pl-mini-close');
+    const expandBtn = document.getElementById('pl-mini-expand');
+    const collapseBtn = document.getElementById('pl-collapse');
+
     const muteBtn = document.getElementById('pl-mute');
     const volRange = document.getElementById('pl-volume');
     const volRow = document.querySelector('.pl-volume');
     const volReadout = document.getElementById('pl-vol-readout');
 
     const AUTOPLAY_KEY = 'playlistAutoplay';
+    const REPEAT_KEY = 'playlistRepeat';
+    const AUTOROOM_KEY = 'playlistAutoRoom';
     const SKIP_EXPANSE_KEY = 'playlistSkipExpanse';
     const VOLUME_KEY = 'playlistVolume';
     const MUTED_KEY = 'playlistMuted';
+    /* Where the window was when the page last went away: which track, how far
+       into it, and whether it was open at all. The window is in the top bar
+       now, so a reload — or the Privacy link, or the wordmark — is no longer
+       the end of whatever was playing. */
+    const TRACK_KEY = 'playlistTrack';
+    const TIME_KEY = 'playlistTime';
+    // Mini or full: which of the two the Soundtrack pill brings back. NOT
+    // whether the player was open — see restore().
+    const MODE_KEY = 'playlistMode';
+    /* THE RUNNING TIMES, KEPT. Filling that column means asking all
+       thirty-six files for their headers, and it used to happen on every
+       first open. Written down here, it happens once ever. */
+    const DURATIONS_KEY = 'playlistDurations';
 
     /* localStorage throws rather than returning null in a locked-down private
        window, and these two preferences are not worth a broken player. */
@@ -3413,6 +4393,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return Math.min(high, Math.max(low, value));
     }
 
+    function readString(key) {
+        try { return localStorage.getItem(key) || ''; } catch (e) { return ''; }
+    }
+
+    function writeString(key, value) {
+        try { localStorage.setItem(key, value); } catch (e) { /* no-op */ }
+    }
+
     function pad(n) { return String(n).padStart(2, '0'); }
 
     function clock(seconds) {
@@ -3429,6 +4417,82 @@ document.addEventListener('DOMContentLoaded', () => {
     // .room-title-text at all.
     const TITLES = { welcome: 'An Audio Experience', youwon: 'Process Complete' };
     const SUBS = { welcome: 'Entrance', youwon: 'Exit' };
+
+    /* ---- each room's own three colours ------------------------------------
+
+       Sampled off the room images themselves rather than picked by eye, and
+       baked in here rather than read at runtime: a canvas would have to
+       decode twenty-two full-size photographs on the first open to learn
+       something that cannot change between visits. Pixels under 7% and over
+       93% lightness are skipped — near-black and blown-out white say that a
+       room is a lit interior, not what colour it is — and the rest are
+       weighted by saturation, so a thousand grey pixels do not outvote the
+       hundred that carry the room's hue. Lightest of the three first.
+
+       THE HUE IS THE ROOM'S; THE OTHER TWO ARE NOT. A straight average of a
+       dim interior is a brown, and at ten pixels a brown is grit rather than
+       a colour. So saturation is lifted and floored and lightness is pulled
+       most of the way onto a fixed three-step ramp, which leaves a bright
+       room brighter than a dark one without letting any room be invisible.
+       A sampled colour that is genuinely near-grey keeps no hue of its own —
+       zero hue is red, and forcing saturation onto concrete turns it into
+       rust — so it borrows the bead's dominant hue at a third of the
+       strength and reads as a tint of the room.
+
+       The twelve Expanse interludes share one image, so they share one bead,
+       which is the truth about them: they are the same corridor twelve
+       times. Regenerate with scripts/room-palettes.js if a room's art
+       changes. */
+    const ROOM_PALETTE = {
+        landing: ['#fab94c', '#f18006', '#985304'],
+        welcome: ['#7153fb', '#3006e8', '#830494'],
+        room1: ['#73caf9', '#dca64d', '#3e6073'],
+        exp1: ['#fab34c', '#e98c06', '#725c3d'],
+        room2: ['#f8b769', '#ed9922', '#af6d04'],
+        exp2: ['#fab34c', '#e98c06', '#725c3d'],
+        room3: ['#fce986', '#3bb4f7', '#cdb220'],
+        exp3: ['#fab34c', '#e98c06', '#725c3d'],
+        room4: ['#4b4bfa', '#061de8', '#040495'],
+        exp4: ['#fab34c', '#e98c06', '#725c3d'],
+        room5: ['#fb6d6d', '#d93d6e', '#b11f05'],
+        exp5: ['#fab34c', '#e98c06', '#725c3d'],
+        room6: ['#f59b53', '#54809c', '#045c93'],
+        exp6: ['#fab34c', '#e98c06', '#725c3d'],
+        room7: ['#4a8afa', '#0653ed', '#040498'],
+        exp7: ['#fab34c', '#e98c06', '#725c3d'],
+        room8: ['#efca79', '#d79632', '#986619'],
+        exp8: ['#fab34c', '#e98c06', '#725c3d'],
+        room9: ['#fbce67', '#f9c60b', '#a61e04'],
+        exp9: ['#fab34c', '#e98c06', '#725c3d'],
+        room10: ['#1c5cf9', '#a63e32', '#94042f'],
+        exp10: ['#fab34c', '#e98c06', '#725c3d'],
+        room11: ['#73c9f9', '#dda74c', '#048c96'],
+        exp11: ['#fab34c', '#e98c06', '#725c3d'],
+        room12: ['#fbab6e', '#d2361c', '#971504'],
+        exp12: ['#fab34c', '#e98c06', '#725c3d'],
+        room13: ['#f5974e', '#e96706', '#043e98'],
+        fig1: ['#fab94c', '#f18006', '#985304'],
+        room14: ['#fbd961', '#73ea06', '#95aa04'],
+        fig2: ['#fab94c', '#f18006', '#985304'],
+        room15: ['#acc5d2', '#3bb4f7', '#bf7c12'],
+        fig3: ['#fab94c', '#f18006', '#985304'],
+        room16: ['#f7c070', '#f96f19', '#a04d12'],
+        spareoom: ['#fa7e34', '#69e406', '#12975d'],
+        room17: ['#be9287', '#b7563d', '#73493e'],
+        room18: ['#6299fb', '#0655ef', '#040498'],
+        youwon: ['#7153fb', '#3006e8', '#830494']
+    };
+
+    /* An angled sweep rather than a pie: three hard wedges at ten pixels is
+       a bead that looks broken, where a blend reads as one object that
+       happens to carry a room's colours. */
+    function paintBead(el, roomId) {
+        const colours = ROOM_PALETTE[roomId];
+        if (!el || !colours) return;
+        el.style.backgroundImage =
+            'linear-gradient(135deg, ' + colours[0] + ' 0%, ' +
+            colours[1] + ' 52%, ' + colours[2] + ' 100%)';
+    }
 
     const tracks = [];
 
@@ -3453,6 +4517,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tracks.push({
             src: src,
+            // What Auto-Room steers by. It is the room the track was lifted
+            // out of, so the mapping cannot drift from the playlist.
+            room: roomId,
             title: TITLES[roomId] || (titleEl ? titleEl.textContent.trim() : roomId),
             sub: isExpanse && sysLine
                 ? sysLine
@@ -3470,9 +4537,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const expanseCount = tracks.filter(function (t) { return t.expanse; }).length;
 
+    /* WHETHER THEY HAVE BEEN ALL THE WAY ROUND ONCE, which is the whole
+       question Auto-Room's default turns on. Somebody still walking the maze
+       has the player as another way through it, so the rooms following the
+       music is the point; somebody who has finished is listening, and being
+       marched out of the end screen and back to sector 01 is not. Both the
+       flag goToRoom() writes and a saved room of 'youwon' count, so a visitor
+       who finished before this existed is not treated as new. */
+    const completed = readPref('mazeCompleted', false) ||
+        readString('currentRoom') === 'youwon';
+
     let current = -1;          // index into tracks; -1 until something is chosen
     let playable = tracks.length;
     let autoplay = readPref(AUTOPLAY_KEY, true);
+    /* 'off', 'all' or 'one'. Anything else in the store — an older value, a
+       hand-edited one — comes back as off rather than as a fourth state
+       nothing knows how to draw. */
+    const REPEAT_STATES = ['off', 'all', 'one'];
+    let repeat = REPEAT_STATES.indexOf(readString(REPEAT_KEY)) > 0
+        ? readString(REPEAT_KEY) : 'off';
+    let autoRoom = readPref(AUTOROOM_KEY, !completed);
     let skipExpanse = readPref(SKIP_EXPANSE_KEY, false);
     let volume = readNumber(VOLUME_KEY, 1, 0, 1);
     let muted = readPref(MUTED_KEY, false);
@@ -3480,6 +4564,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let dragging = false;    // the seek bar
     let windowDrag = null;   // the window itself, by its grab bar
     let placed = false;
+    /* Set the first time the window is actually MOVED by its grab bar, not
+       merely pressed on — a click that lands on the bar and goes nowhere is
+       not somebody choosing a place for it. Until then the window opens
+       where placeDefault() says, and follows the frame on a resize. */
+    let dragged = false;
+    /* Where a restored track has to be put back to. It cannot be written
+       straight into audio.currentTime: an element that has only just been
+       given a src has no duration yet and refuses the seek, so it waits here
+       for 'loadedmetadata' to collect it. */
+    let pendingSeek = 0;
+    let lastSave = 0;
+    let restoring = false;
 
     tracks.forEach(function (track, i) {
         const li = document.createElement('li');
@@ -3488,10 +4584,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'pl-track-btn';
-        btn.innerHTML = '<span class="pl-track-num"></span>' +
+        btn.innerHTML = '<span class="pl-bead"></span>' +
+                        '<span class="pl-track-num"></span>' +
                         '<span class="pl-track-title"></span>' +
                         '<span class="pl-track-dur">--:--</span>';
         btn.querySelector('.pl-track-title').textContent = track.title;
+        paintBead(btn.querySelector('.pl-bead'), track.room);
 
         // Clicking the track already loaded is a play/pause, not a restart:
         // the row is the most obvious thing to press twice.
@@ -3543,10 +4641,58 @@ document.addEventListener('DOMContentLoaded', () => {
         return -1;
     }
 
+    // ---- remembering where we got to ----------------------------------------
+
+    /* BY src, NOT BY INDEX. A track's number in the list moves the moment a
+       room is added, removed or reordered, and a stored 14 would then come
+       back as somebody else's track; the filename is the one thing about a
+       track that identifies it. A src no longer in the list simply finds
+       nothing on the way back, which is the right answer. */
+    function saveState() {
+        /* RESTORE MUST NOT SAVE OVER WHAT IT IS READING. Putting the last
+           track back goes through select(), which saves — and at that moment
+           the element is still at zero, so the position was written away as
+           0:00 a line before it was read. */
+        if (restoring) return;
+        try {
+            if (current >= 0) {
+                localStorage.setItem(TRACK_KEY, tracks[current].src);
+                localStorage.setItem(TIME_KEY, String(Math.floor(audio.currentTime) || 0));
+            } else {
+                localStorage.removeItem(TRACK_KEY);
+                localStorage.removeItem(TIME_KEY);
+            }
+        } catch (e) { /* no-op */ }
+        lastSave = Date.now();
+    }
+
     // ---- playback -----------------------------------------------------------
 
-    function select(index, startPlaying) {
+    /* AUTO-ROOM. The maze goes where the music goes: the room a track was
+       lifted out of becomes the room on screen when that track is the one
+       playing. goToRoom() leaves this element alone — see the pl-audio line
+       at the top of it — so the music carries on across the move. A room
+       already on screen is left alone too, so pausing and pressing play again
+       does not re-run the room's own entrance. */
+    function followToRoom(roomId) {
+        if (!autoRoom || !roomId) return;
+        if (typeof goToRoom !== 'function') return;
+        const room = document.getElementById(roomId);
+        if (!room || room.classList.contains('active')) return;
+        goToRoom(roomId);
+    }
+
+    /* `quiet` is for the one call that is not somebody choosing a track: the
+       restore at the foot of this file, putting back what was playing when
+       the page last went away. That must not move the maze — the visitor has
+       only reloaded, and being thrown into room 09 by a refresh would be the
+       page losing their place rather than keeping it. */
+    function select(index, startPlaying, quiet) {
         if (index < 0 || index >= tracks.length) return;
+        // Somebody has asked for a particular track, which answers whatever
+        // the tail of the last one was in the middle of doing.
+        cancelFade();
+        pendingSeek = 0;
         current = index;
         audio.src = tracks[index].src;
         durationEl.textContent = clock(tracks[index].duration);
@@ -3554,6 +4700,9 @@ document.addEventListener('DOMContentLoaded', () => {
         paintSeek();
         markCurrent();
         updateNow();
+        if (!quiet) followToRoom(tracks[index].room);
+        updateMediaSession();
+        saveState();
         if (startPlaying) play();
     }
 
@@ -3561,7 +4710,7 @@ document.addEventListener('DOMContentLoaded', () => {
         /* The rooms and this player are not meant to sound at once, and
            toggleAudio() does exactly this in the other direction. */
         document.querySelectorAll('audio').forEach(function (other) {
-            if (other !== audio && !other.paused) other.pause();
+            if (other !== audio && other !== fadeInto() && !other.paused) other.pause();
         });
         document.querySelectorAll('.audio-toggle-btn.playing').forEach(function (btn) {
             btn.innerHTML = '<img class="audio-icon" src="' + PLAY_ICON_URL + '" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">';
@@ -3585,9 +4734,17 @@ document.addEventListener('DOMContentLoaded', () => {
         else audio.pause();
     }
 
-    function advance() {
+    /* `wrap` is true only for a track that reached its own end. Repeat All
+       starting the list again is a thing the music does, not a thing a button
+       does — and the error handler walks the list with advance() too, so
+       without the distinction a playlist of thirty-six missing files would go
+       round for ever instead of stopping at the end. */
+    function advance(wrap) {
         const next = neighbour(current, 1);
-        if (next >= 0) select(next, true);
+        if (next >= 0) { select(next, true); return; }
+        if (!wrap || repeat !== 'all') return;
+        const first = neighbour(-1, 1);
+        if (first >= 0) select(first, true);
     }
 
     // ---- the readouts -------------------------------------------------------
@@ -3608,38 +4765,67 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (bottom > listEl.scrollTop + listEl.clientHeight) {
             listEl.scrollTop = bottom - listEl.clientHeight;
         }
+        // scrollTop written in script does not reliably raise a 'scroll'
+        // event, so the bar beside the list is told by hand.
+        refreshListScrollbar();
     }
 
     function updateNow() {
         if (current < 0) {
             nowIndexEl.textContent = 'Track -- / ' + pad(playable);
             nowTitleEl.textContent = 'Nothing playing';
-            nowSubEl.textContent = 'Press Play All, or choose a track below.';
+            nowSubEl.textContent = 'Press play, or choose a track below.';
+            miniTitleEl.textContent = 'Nothing playing';
         } else {
             const track = tracks[current];
             nowIndexEl.textContent = 'Track ' +
                 (track.position ? pad(track.position) : '--') + ' / ' + pad(playable);
             nowTitleEl.textContent = track.title;
             nowSubEl.textContent = track.sub;
+            /* The strip has one line to say where you are, so it carries the
+               number as well as the name — the window has a whole row for
+               each and does not need to crowd them together. */
+            miniTitleEl.textContent = (track.position ? pad(track.position) + '  ' : '') + track.title;
         }
 
-        prevBtn.disabled = current >= 0 && neighbour(current, -1) < 0;
-        nextBtn.disabled = current >= 0 && neighbour(current, 1) < 0;
+        // On Repeat All the list has no ends to run out of, so neither
+        // button is ever the one that cannot be pressed.
+        const looping = repeat === 'all';
+        const atStart = current >= 0 && !looping && neighbour(current, -1) < 0;
+        const atEnd = current >= 0 && !looping && neighbour(current, 1) < 0;
+        prevBtn.disabled = atStart;
+        miniPrevBtn.disabled = atStart;
+        nextBtn.disabled = atEnd;
+        miniNextBtn.disabled = atEnd;
     }
 
+    /* BOTH BARS, ALWAYS, whichever half is on screen. Painting only the
+       visible one would mean the other was wrong the instant it appeared,
+       and these are two readouts of one element, not two players. The same
+       goes for the play icon and the title below. */
     function paintSeek() {
         const total = audio.duration;
         const ratio = isFinite(total) && total > 0
             ? Math.min(1, audio.currentTime / total)
             : 0;
-        seekFill.style.width = (ratio * 100).toFixed(2) + '%';
-        seekEl.setAttribute('aria-valuenow', Math.round(ratio * 100));
-        seekEl.setAttribute('aria-valuetext', clock(audio.currentTime));
+        const percent = (ratio * 100).toFixed(2) + '%';
+        const now = Math.round(ratio * 100);
+        const text = clock(audio.currentTime);
+        seekFill.style.width = percent;
+        miniSeekFill.style.width = percent;
+        [seekEl, miniSeekEl].forEach(function (el) {
+            el.setAttribute('aria-valuenow', now);
+            el.setAttribute('aria-valuetext', text);
+        });
     }
 
     function setPlayIcon(playing) {
-        playIcon.src = playing ? PAUSE_ICON_URL : PLAY_ICON_URL;
-        playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+        const src = playing ? PAUSE_ICON_URL : PLAY_ICON_URL;
+        const label = playing ? 'Pause' : 'Play';
+        playIcon.src = src;
+        miniPlayIcon.src = src;
+        playBtn.setAttribute('aria-label', label);
+        miniPlayBtn.setAttribute('aria-label', label);
     }
 
     function setDuration(track, seconds) {
@@ -3647,6 +4833,7 @@ document.addEventListener('DOMContentLoaded', () => {
         track.duration = seconds;
         track.durEl.textContent = clock(seconds);
         if (tracks[current] === track) durationEl.textContent = clock(seconds);
+        saveDurations();
     }
 
     // ---- the running times --------------------------------------------------
@@ -3656,8 +4843,37 @@ document.addEventListener('DOMContentLoaded', () => {
        phone is a worse trade than a column that fills in over a few seconds.
        preload="metadata" asks for the header rather than the track. The timeout
        is there because a request that never answers must not hold up the queue
-       behind it, and the whole thing only runs once, the first time the window
-       is opened — not on page load, where nobody has asked for it yet. */
+       behind it, and it only runs when somebody opens the player — not on page
+       load, where nobody has asked for it yet.
+
+       AND ONLY EVER ONCE, because what it learns is written down. A track's
+       running time is a fact about a file that does not change, so thirty-six
+       header requests to re-learn it every visit were thirty-six requests for
+       nothing. loadDurations() seeds the column from what is stored before a
+       single request goes out, and probeDurations() then has nothing left to
+       ask for; a track added or re-cut later is simply one that is not in the
+       store yet, and it is the only one fetched. */
+    function saveDurations() {
+        const map = {};
+        tracks.forEach(function (t) { if (t.duration) map[t.src] = Math.round(t.duration); });
+        try { localStorage.setItem(DURATIONS_KEY, JSON.stringify(map)); } catch (e) { /* no-op */ }
+    }
+
+    function loadDurations() {
+        let map;
+        // Anything at all wrong with it — not JSON, not an object, written by
+        // something else — and it is ignored rather than trusted.
+        try { map = JSON.parse(localStorage.getItem(DURATIONS_KEY)); } catch (e) { return; }
+        if (!map || typeof map !== 'object') return;
+        tracks.forEach(function (track) {
+            const seconds = map[track.src];
+            if (typeof seconds === 'number' && isFinite(seconds) && seconds > 0) {
+                track.duration = seconds;
+                track.durEl.textContent = clock(seconds);
+            }
+        });
+    }
+
     function probeDurations() {
         if (probeStarted) return;
         probeStarted = true;
@@ -3698,8 +4914,13 @@ document.addEventListener('DOMContentLoaded', () => {
        leaves volume alone and the two never meet. */
     function applyVolume() {
         const percent = Math.round(volume * 100);
-        audio.volume = volume;
-        audio.muted = muted;
+        /* Mute is both decks' business — a fade in flight has two of them
+           sounding. The LEVEL is not: during a fade the two are being ramped
+           against each other, and writing a flat volume over that would
+           undo it. The ramp reads this same variable every tick, so pulling
+           the slider mid-fade still works, just scaled. */
+        decks.forEach(function (d) { d.muted = muted; });
+        if (!fade) audio.volume = volume;
         volRange.value = percent;
         volRange.style.setProperty('--pl-vol', percent + '%');
         volReadout.textContent = muted ? 'Off' : String(percent);
@@ -3748,9 +4969,15 @@ document.addEventListener('DOMContentLoaded', () => {
        a viewport too short to honour both, being on screen beats clearing the
        bar. */
     function placeAt(left, top) {
-        const box = windowEl.getBoundingClientRect();
-        const maxLeft = Math.max(8, window.innerWidth - box.width - 8);
-        const maxTop = Math.max(8, window.innerHeight - box.height - 8);
+        /* offsetWidth, not getBoundingClientRect(). The opening animation
+           scales the window from 0.97, and a rect read during it is 3%
+           short — so every placement made in the same tick as an open was
+           clamped against a window a dozen pixels narrower than the one
+           that ends up on screen. offsetWidth ignores transforms. */
+        const w = windowEl.offsetWidth;
+        const h = windowEl.offsetHeight;
+        const maxLeft = Math.max(8, window.innerWidth - w - 8);
+        const maxTop = Math.max(8, window.innerHeight - h - 8);
         windowEl.style.left = Math.min(Math.max(8, left), maxLeft) + 'px';
         windowEl.style.top = Math.min(Math.max(ceiling(), top), maxTop) + 'px';
         // Hands positioning over from the stylesheet's centring transform,
@@ -3760,16 +4987,70 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function placeCentred() {
-        const box = windowEl.getBoundingClientRect();
-        placeAt((window.innerWidth - box.width) / 2, (window.innerHeight - box.height) / 2);
+        placeAt((window.innerWidth - windowEl.offsetWidth) / 2,
+                (window.innerHeight - windowEl.offsetHeight) / 2);
+    }
+
+    /* ---- where it opens ----------------------------------------------------
+
+       OVER THE RIGHT EDGE OF THE MAZE, not in the middle of the screen. Dead
+       centre put the player on top of the room it is playing — which is the
+       one thing the window should not cover, and the thing Auto-Room exists
+       to show you. Hung off the right edge instead, it overlaps the frame by
+       enough to read as attached to it and leaves the picture and the words
+       clear, which is where mazerats.net's console sits on its own browse
+       window and for the same reason.
+
+       ANCHORED TO THE FRAME, NOT TO THE VIEWPORT, and measured fresh every
+       time it opens: .ll-window is centred in a column that changes width
+       with the screen, so a number counted from the right of the glass would
+       be right at one size and wrong at every other.
+
+       Until the visitor drags it. From then on their placement is the one
+       that sticks, across closes and reopens and across a resize — the same
+       bargain the archive strikes. */
+    const PLAYER_PHONE_MAX = 640;
+
+    function placeDefault() {
+        const h = windowEl.offsetHeight;
+
+        /* Below this the maze frame is most of the screen's width and there
+           is no "beside it" to sit in; anchoring would put the window's
+           right edge on the viewport boundary. Centred and held high
+           instead, clear of the bar. */
+        if (window.innerWidth <= PLAYER_PHONE_MAX) {
+            placeAt((window.innerWidth - windowEl.offsetWidth) / 2,
+                    Math.round(window.innerHeight * 0.14));
+            return;
+        }
+
+        const frame = document.querySelector('.ll-window');
+        if (!frame) { placeCentred(); return; }
+        const r = frame.getBoundingClientRect();
+        // Half on, half off: 200px of overlap on a 400px window. Hung by a
+        // corner it read as something dropped on the page; this far in it
+        // reads as attached to the frame, and the room's picture and the
+        // first of its words are still clear to the left of it.
+        placeAt(r.right - 200, r.top + r.height / 2 - h / 2 - 20);
+    }
+
+    function placeWindow() {
+        if (dragged) placeAt(currentLeft(), currentTop());
+        else placeDefault();
     }
 
     function currentLeft() { return parseFloat(windowEl.style.left) || 0; }
     function currentTop() { return parseFloat(windowEl.style.top) || 0; }
 
     titlebar.addEventListener('pointerdown', function (event) {
-        // The close box lives in the bar and is a button, not a handle.
-        if (event.target.closest('.pl-close')) return;
+        /* ANY BUTTON IN THE BAR IS A CONTROL, NOT A HANDLE. This used to name
+           .pl-close alone, and the day a second button arrived — Mini Player —
+           pressing it started a drag instead: the preventDefault() below
+           suppresses the click that would have followed, so the button simply
+           did nothing. Asking whether a button was pressed, rather than
+           listing the buttons there are, is the version that survives the
+           next one. */
+        if (event.target.closest('button')) return;
 
         const box = windowEl.getBoundingClientRect();
         windowDrag = {
@@ -3789,6 +5070,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     titlebar.addEventListener('pointermove', function (event) {
         if (!windowDrag || event.pointerId !== windowDrag.id) return;
+        dragged = true;
         placeAt(event.clientX - windowDrag.dx, event.clientY - windowDrag.dy);
     });
 
@@ -3804,72 +5086,191 @@ document.addEventListener('DOMContentLoaded', () => {
     titlebar.addEventListener('pointerup', endWindowDrag);
     titlebar.addEventListener('pointercancel', endWindowDrag);
 
+    /* The strip no longer needs placing at all. It used to be fixed to the
+       viewport and told where the underside of the bar was, measured on every
+       resize; it is a child of the bar now, so on a wide screen it is simply
+       in it, and on a narrow one top: 100% hangs it underneath — in CSS,
+       from the bar itself, with nothing to measure and nothing to keep in
+       step. */
+
     // A window dragged to the right of a wide screen must not be left off the
     // edge of a narrow one.
+    /* A window dragged to the right of a wide screen must not be left off
+       the edge of a narrow one — and one never dragged follows the frame,
+       which moves and resizes with the column it is centred in. */
     window.addEventListener('resize', function () {
-        if (!windowEl.hidden && placed) placeAt(currentLeft(), currentTop());
+        if (!windowEl.hidden) placeWindow();
     });
 
-    // ---- open and close -----------------------------------------------------
+    // ---- open, collapse, expand and close -----------------------------------
 
-    function openWindow() {
-        windowEl.hidden = false;
-        openBtn.setAttribute('aria-expanded', 'true');
-        probeDurations();
-        // Where it was last time, pulled back inside if the viewport has
-        // changed since; centred the first time.
-        if (placed) placeAt(currentLeft(), currentTop());
-        else placeCentred();
+    /* ONE PLAYER, TWO SHAPES. show() is the only thing that decides which of
+       them is on screen, and it never touches the audio — that is what lets
+       EXPAND and MINI PLAYER swap between them without the music noticing. The
+       pill in the bar, the close box on each, and Escape are the only things
+       that stop it. */
+    function show(which) {
+        // The row it is anchored to is about to be hidden or re-measured.
+        hideTip();
+        mode = which;
+        writeString(MODE_KEY, which);
+
+        if (which === 'full') {
+            miniEl.hidden = true;
+            windowEl.hidden = false;
+            probeDurations();
+            // Beside the maze frame, or wherever it was dragged to.
+            placeWindow();
+            // The list had no height at all while the window was hidden, so
+            // the bar beside it could not know how long its track was.
+            refreshListScrollbar();
+        } else {
+            windowEl.hidden = true;
+            miniEl.hidden = false;
+        }
+
+        setExpanded(true);
+        saveState();
     }
 
-    /* CLOSING STOPS IT. A player that keeps going with its controls put away
-       leaves the only way to silence it off screen, which on a page that also
-       has a room track of its own is a good way to end up hunting for which
-       thing is making the noise. */
-    function closeWindow(returnFocus) {
+    function isShowing() { return !windowEl.hidden || !miniEl.hidden; }
+
+    /* CLOSING THE WINDOW ON MUSIC THAT IS PLAYING MINIMISES IT INSTEAD.
+
+       Stopping was the right answer while the strip was a second window
+       hanging off the bar: leaving sound playing with its only pause button
+       put away is how somebody ends up hunting the page for what is making
+       the noise. The strip lives in the bar now and never goes off screen,
+       so that reasoning is gone — and shutting a window somebody opened to
+       pick a track should not also stop the track they picked.
+
+       Silence is still one press away, and from two places: the X on the
+       strip, and the Soundtrack pill, which is the master switch for the
+       whole thing. Both go through closePlayer(), which is why the choice
+       is made by its caller rather than in here. */
+    function closeOrMinimise(returnFocus) {
+        if (!windowEl.hidden && !audio.paused) {
+            show('mini');
+            return;
+        }
+        closePlayer(returnFocus);
+    }
+
+    /* Stops it, both halves, whatever it was doing. */
+    function closePlayer(returnFocus) {
+        hideTip();
         windowEl.hidden = true;
-        openBtn.setAttribute('aria-expanded', 'false');
-        audio.pause();
-        if (returnFocus === true) openBtn.focus();
+        miniEl.hidden = true;
+        setExpanded(false);
+        cancelFade();
+        decks.forEach(function (d) { d.pause(); });
+        saveState();
+        if (returnFocus === true && lastOpener) lastOpener.focus();
     }
 
-    openBtn.addEventListener('click', function () {
-        if (windowEl.hidden) openWindow();
-        else closeWindow(true);
+    openBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            lastOpener = btn;
+            if (isShowing()) closePlayer(true);
+            else show(mode);
+        });
     });
 
-    closeBtn.addEventListener('click', function () { closeWindow(true); });
+    /* Moving between the two hands focus to the button that does the reverse,
+       so a keyboard can expand and collapse without hunting for either.
 
-    windowEl.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') closeWindow(true);
-    });
-
-    /* THE WINDOW BELONGS TO THE END SCREEN. Floating over the page rather than
-       sitting in it, nothing else would ever take it away — and a player left
-       hovering over room 12, with the button that opens it three rooms further
-       on and goToRoom() having already faded its track out, is a panel the
-       visitor has no way to account for. So it leaves when the room does.
-       Focus is deliberately not sent back to the button here: the button is in
-       a room that is no longer on screen. */
-    const endScreen = document.getElementById('youwon');
-    if (endScreen && window.MutationObserver) {
-        new MutationObserver(function () {
-            if (!windowEl.hidden && !endScreen.classList.contains('active')) {
-                closeWindow(false);
-            }
-        }).observe(endScreen, { attributes: true, attributeFilter: ['class'] });
+       ONLY FOR A KEYBOARD, THOUGH. Focusing an element in script counts as a
+       keyboard arrival as far as :focus-visible is concerned, so clicking
+       Mini Player left a focus ring sitting on Expand — and since nothing
+       else on the page takes focus, clicking away did not clear it. A click
+       raised by the keyboard reports detail 0, where a real press reports the
+       click count, which is the one honest way to tell the two apart here. */
+    function swapTo(which, focusAfter) {
+        return function (event) {
+            show(which);
+            if (event.detail === 0) focusAfter.focus();
+        };
     }
+
+    expandBtn.addEventListener('click', swapTo('full', collapseBtn));
+    collapseBtn.addEventListener('click', swapTo('mini', expandBtn));
+
+    // The window's own close box steps down to the strip while something is
+    // playing; the strip's stops it, because there is nowhere further down.
+    closeBtn.addEventListener('click', function () { closeOrMinimise(true); });
+    miniCloseBtn.addEventListener('click', function () { closePlayer(true); });
+
+    [windowEl, miniEl].forEach(function (el) {
+        el.addEventListener('keydown', function (event) {
+            if (event.key !== 'Escape') return;
+            // Escape out of the window is the same gesture as its close box.
+            if (el === windowEl) closeOrMinimise(true);
+            else closePlayer(true);
+        });
+    });
+
+    /* THE WINDOW USED TO LEAVE WITH THE END SCREEN — a MutationObserver here
+       closed it the moment #youwon stopped being the active room. That was
+       right while the only way to open it was a button sitting on that one
+       screen: a player hovering over room 12, with nothing on screen able to
+       account for it, is a panel the visitor cannot explain. The top bar
+       answers that now. It is open because they opened it from a control that
+       is still right there, it stays with them from room to room, and
+       Auto-Room makes moving rooms something the window itself does. */
 
     // ---- the options --------------------------------------------------------
 
     function setAutoplay(on) {
         autoplay = on;
+        // The fade only exists because the next track was going to play.
+        if (!on) cancelFade();
         writePref(AUTOPLAY_KEY, on);
         autoplayBtn.setAttribute('aria-pressed', String(on));
         autoplayStateEl.textContent = on ? 'On' : 'Off';
     }
 
+    /* WHAT THE THREE MEAN, and how they sit with Autoplay — between them the
+       two say everything that can happen when a track runs out.
+
+         Off  the track ends and that is that, unless Autoplay moves on.
+         All  the list goes round: Autoplay walks it, and the end hands back
+              to the top instead of stopping.
+         One  this track again, and Autoplay does not get a say — asking for
+              one track over and over is asking not to be moved on.
+
+       Autoplay Off with Repeat All would be the one pairing that does nothing
+       visible, All being only ever about what happens once you have moved on.
+       Pressing the button through to All turns Autoplay on rather than
+       leaving it there — see the click handler. */
+    const REPEAT_LABELS = {
+        off: 'Repeat off. Press to repeat all tracks.',
+        all: 'Repeating all tracks. Press to repeat this track.',
+        one: 'Repeating this track. Press to turn repeat off.'
+    };
+
+    function setRepeat(state) {
+        repeat = REPEAT_STATES.indexOf(state) >= 0 ? state : 'off';
+        // One means this track again, not the next one already coming in.
+        if (repeat === 'one') cancelFade();
+        writeString(REPEAT_KEY, repeat);
+        repeatBtn.dataset.repeat = repeat;
+        repeatBtn.classList.toggle('is-on', repeat !== 'off');
+        repeatBtn.setAttribute('aria-label', REPEAT_LABELS[repeat]);
+        repeatStateEl.textContent = repeat === 'off' ? 'Off' : repeat === 'all' ? 'All' : 'One';
+        // The last track stops being the last one when the list goes round.
+        updateNow();
+    }
+
+    function setAutoRoom(on) {
+        autoRoom = on;
+        writePref(AUTOROOM_KEY, on);
+        autoRoomBtn.setAttribute('aria-pressed', String(on));
+        autoRoomStateEl.textContent = on ? 'On' : 'Off';
+    }
+
     function setSkipExpanse(on) {
+        // A track that is about to leave the list cannot be the one arriving.
+        if (fade && on && tracks[fade.toIndex].expanse) cancelFade();
         skipExpanse = on;
         writePref(SKIP_EXPANSE_KEY, on);
         skipBtn.setAttribute('aria-pressed', String(on));
@@ -3887,21 +5288,129 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    autoplayBtn.addEventListener('click', function () { setAutoplay(!autoplay); });
-    skipBtn.addEventListener('click', function () { setSkipExpanse(!skipExpanse); });
+    /* ---- what the four options mean, on hovering one ----------------------
 
-    playAllBtn.addEventListener('click', function () {
-        // Play All means all of them, so it turns autoplay on: without that it
-        // would play exactly one track and stop, which is not what it says.
-        if (!autoplay) setAutoplay(true);
-        const first = neighbour(-1, 1);
-        if (first >= 0) select(first, true);
+       The pills say what they are; these say what they do.
+
+       HALF A SECOND, and then no wait at all. A tip that comes up the instant
+       a pointer crosses the row is something to get out of the way of, and
+       one that takes a second and a half feels like nothing is going to
+       happen — 500ms is where every desktop has settled, long enough that
+       crossing the row on the way somewhere else raises nothing.
+
+       The second number is what makes it feel like one thing rather than
+       four. Once a tip has been up, the next pill along shows its own at
+       once: reading across the row is a single act, and making somebody wait
+       again at each pill turns it into four. Pause for longer than this and
+       the row has gone cold, so the next one waits its turn again. */
+    const TIP_DELAY = 500;
+    const TIP_WARM = 900;
+    let tipLastHidden = 0;
+
+    const TIPS = {
+        'pl-autoplay': 'Next track plays automatically.',
+        'pl-repeat': 'Repeat this track, or all.',
+        'pl-autoroom': 'Progress to the next room when the track finishes.',
+        'pl-skip-expanse': 'Remove Expanse tracks from the playlist.'
+    };
+
+    let tipTimer = null;
+    let tipFor = null;
+
+    function hideTip() {
+        if (tipTimer) { clearTimeout(tipTimer); tipTimer = null; }
+        if (!tipFor) return;
+        tipFor.removeAttribute('aria-describedby');
+        tipFor = null;
+        tipEl.hidden = true;
+        tipLastHidden = Date.now();
+    }
+
+    function showTip(btn) {
+        const text = TIPS[btn.id];
+        if (!text) return;
+        tipEl.textContent = text;
+        tipEl.hidden = false;
+        tipFor = btn;
+        // Named as the button's description only while it is up, so a screen
+        // reader is not pointed at an empty element the rest of the time.
+        btn.setAttribute('aria-describedby', 'pl-tip');
+
+        /* Centred over the pill, then pulled back inside the row. The width
+           can only be measured once it is on screen, which is why this runs
+           here and not when the text is set. */
+        const rowBox = optionsRow.getBoundingClientRect();
+        const btnBox = btn.getBoundingClientRect();
+        const centred = (btnBox.left - rowBox.left) + (btnBox.width - tipEl.offsetWidth) / 2;
+        tipEl.style.left =
+            Math.max(0, Math.min(centred, rowBox.width - tipEl.offsetWidth)) + 'px';
+    }
+
+    Object.keys(TIPS).forEach(function (id) {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+
+        btn.addEventListener('pointerenter', function (event) {
+            // A finger has no hover: on a touchscreen this fires as part of
+            // the tap, and the tip would be up over a pill that has already
+            // done what it was pressed for.
+            if (event.pointerType === 'touch') return;
+            const warm = tipFor !== null || Date.now() - tipLastHidden < TIP_WARM;
+            hideTip();
+            if (warm) showTip(btn);
+            else tipTimer = setTimeout(function () { showTip(btn); }, TIP_DELAY);
+        });
+
+        btn.addEventListener('pointerleave', hideTip);
+        // Pressing it answers the question better than the sentence does.
+        btn.addEventListener('click', hideTip);
+
+        /* Tabbing to a control is the one case with no pointer to wait on, so
+           it shows at once — and only for a keyboard, since a click focuses
+           the button too and would otherwise leave a plate behind. */
+        btn.addEventListener('focus', function () {
+            if (!btn.matches(':focus-visible')) return;
+            hideTip();
+            showTip(btn);
+        });
+
+        btn.addEventListener('blur', hideTip);
     });
 
-    playBtn.addEventListener('click', togglePlay);
-    nextBtn.addEventListener('click', advance);
+    autoplayBtn.addEventListener('click', function () { setAutoplay(!autoplay); });
 
-    prevBtn.addEventListener('click', function () {
+    repeatBtn.addEventListener('click', function () {
+        setRepeat(REPEAT_STATES[(REPEAT_STATES.indexOf(repeat) + 1) % REPEAT_STATES.length]);
+        /* ASKING FOR THE LIST TO GO ROUND IS ASKING TO BE MOVED THROUGH IT.
+           All on its own does nothing until something reaches the end of the
+           list, so with Autoplay off it was a setting that lit up and then
+           sat there. Play All used to turn Autoplay on for exactly this
+           reason and this inherits the trick.
+
+           Only from the button, and only on the way to All. Doing it inside
+           setRepeat() would mean the restore at page load reaching over and
+           switching Autoplay back on every visit, overruling somebody who
+           had turned it off on purpose afterwards. */
+        if (repeat === 'all' && !autoplay) setAutoplay(true);
+    });
+
+    autoRoomBtn.addEventListener('click', function () {
+        setAutoRoom(!autoRoom);
+        // Switched on with something already playing, it catches up at once
+        // rather than waiting for the next track: the option says the room
+        // follows the music, and it is not following anything until it moves.
+        if (autoRoom && current >= 0) followToRoom(tracks[current].room);
+    });
+
+    skipBtn.addEventListener('click', function () { setSkipExpanse(!skipExpanse); });
+
+    /* PLAY ALL IS GONE, and was redundant long before Repeat replaced it:
+       pressing play with nothing chosen already starts at the first track
+       (see togglePlay), so on a fresh player the two buttons did the same
+       thing. Its one unique trick — jump back to the top and force Autoplay
+       on — is a rare thing to want and was always a click on row 01 away. */
+
+    function previous() {
         // Back to the top of this one if we are well into it, to the one before
         // if we have only just started — which is what every other player does.
         if (current >= 0 && audio.currentTime > 3) {
@@ -3909,92 +5418,795 @@ document.addEventListener('DOMContentLoaded', () => {
             paintSeek();
             return;
         }
-        const previous = neighbour(current < 0 ? tracks.length : current, -1);
-        if (previous >= 0) select(previous, true);
-    });
+        let index = neighbour(current < 0 ? tracks.length : current, -1);
+        // A list on repeat is a ring, so its top hands back to its bottom.
+        if (index < 0 && repeat === 'all') index = neighbour(tracks.length, -1);
+        if (index >= 0) select(index, true);
+    }
+
+    // The strip's three are the window's three. One handler each, bound to
+    // both buttons, so the two halves cannot drift apart. Next is wrapped
+    // rather than passed straight to advance(), which would hand it the click
+    // event as its `wrap` argument.
+    [playBtn, miniPlayBtn].forEach(function (b) { b.addEventListener('click', togglePlay); });
+    [nextBtn, miniNextBtn].forEach(function (b) { b.addEventListener('click', function () { advance(true); }); });
+    [prevBtn, miniPrevBtn].forEach(function (b) { b.addEventListener('click', previous); });
 
     // ---- the seek bar -------------------------------------------------------
 
-    function seekTo(clientX) {
+    /* WIRED TWICE, over the window's bar and the strip's. Only one of them is
+       ever on screen, so they cannot be dragged at once; writing the logic
+       against whichever element was pressed is what keeps that true without
+       either of them having to know the other exists. */
+    function seekTo(clientX, el) {
         const total = audio.duration;
         if (!isFinite(total) || total <= 0) return;
-        const box = seekEl.getBoundingClientRect();
+        const box = el.getBoundingClientRect();
         if (!box.width) return;
         const ratio = Math.min(1, Math.max(0, (clientX - box.left) / box.width));
+        // Dragging out of the tail takes back the fade it had started.
+        if (fade && ratio * total < total - XFADE) cancelFade();
         audio.currentTime = ratio * total;
         paintSeek();
     }
 
-    seekEl.addEventListener('pointerdown', function (event) {
-        dragging = true;
-        if (seekEl.setPointerCapture) {
-            try { seekEl.setPointerCapture(event.pointerId); } catch (e) { /* no capture, still seekable */ }
+    function wireSeek(el) {
+        el.addEventListener('pointerdown', function (event) {
+            dragging = true;
+            if (el.setPointerCapture) {
+                try { el.setPointerCapture(event.pointerId); } catch (e) { /* no capture, still seekable */ }
+            }
+            seekTo(event.clientX, el);
+        });
+
+        el.addEventListener('pointermove', function (event) {
+            if (dragging) seekTo(event.clientX, el);
+        });
+
+        function endDrag(event) {
+            if (!dragging) return;
+            dragging = false;
+            if (el.releasePointerCapture && event.pointerId !== undefined) {
+                try { el.releasePointerCapture(event.pointerId); } catch (e) { /* already gone */ }
+            }
         }
-        seekTo(event.clientX);
+
+        el.addEventListener('pointerup', endDrag);
+        el.addEventListener('pointercancel', endDrag);
+
+        el.addEventListener('keydown', function (event) {
+            const jump = event.key === 'ArrowRight' ? 5 : event.key === 'ArrowLeft' ? -5 : 0;
+            if (!jump || !isFinite(audio.duration)) return;
+            event.preventDefault();
+            audio.currentTime = Math.min(audio.duration, Math.max(0, audio.currentTime + jump));
+            paintSeek();
+        });
+    }
+
+    wireSeek(seekEl);
+    wireSeek(miniSeekEl);
+
+    /* ---- the crossfade -----------------------------------------------------
+
+       Thirty-six tracks played end to end used to be thirty-six stops. The
+       maze is not a record with gaps between its songs — it is one walk, and
+       the rooms already fade into each other when you press Progress — so
+       the player now does the same: the next track starts under the last one
+       and they trade places over a couple of seconds.
+
+       WHY TWO ELEMENTS. Two tracks sounding at once is two tracks sounding
+       at once; there is no way to hold both on one <audio>. So the player
+       keeps a pair and swaps which one it is wired to, rather than loading
+       over the top of itself and cutting the tail off.
+
+       ONLY ON A TRACK RUNNING OUT. Pressing Next, picking a row, Repeat One
+       coming round again — those are all somebody asking for a change now,
+       and making them wait two seconds for it would be answering a different
+       question. The fade is for the transitions nobody asked for. */
+    const XFADE = 2.4;           // seconds of overlap
+    const XFADE_TICK = 40;       // ms between volume steps
+
+    let fade = null;             // { into, from, toIndex, started, timer }
+
+    // What play() must not silence: the deck being faded into is supposed to
+    // be sounding alongside the one that is playing.
+    function fadeInto() { return fade ? fade.into : null; }
+
+    /* Puts a deck back the way an unused deck should be. Not removeAttribute
+       ('src') — that makes the element raise an 'error', which the handler
+       below would read as a broken track. */
+    function parkDeck(el) {
+        el.pause();
+        try { el.currentTime = 0; } catch (e) { /* nothing loaded yet */ }
+        el.volume = volume;
+    }
+
+    /* Undoes a fade in flight and leaves the track that was playing playing.
+       Called by everything that counts as the visitor asking for something
+       else, and by an incoming track that turns out not to load. */
+    function cancelFade() {
+        if (!fade) return;
+        const into = fade.into;
+        clearInterval(fade.timer);
+        fade = null;
+        parkDeck(into);
+        audio.volume = volume;
+    }
+
+    /* The swap. The incoming deck is already playing and already at full
+       volume by the time this runs, so there is nothing to start — only the
+       bookkeeping that says it is now the one the window is about. */
+    function commitFade() {
+        if (!fade) return;
+        const into = fade.into;
+        const toIndex = fade.toIndex;
+        const leaving = audio;
+        clearInterval(fade.timer);
+        fade = null;
+
+        audio = into;
+        current = toIndex;
+        parkDeck(leaving);
+        audio.volume = volume;
+        audio.muted = muted;
+
+        durationEl.textContent = clock(tracks[current].duration || audio.duration);
+        elapsedEl.textContent = clock(audio.currentTime);
+        setPlayIcon(!audio.paused);
+        paintSeek();
+        markCurrent();
+        updateNow();
+        followToRoom(tracks[current].room);
+        updateMediaSession();
+        updateMediaPosition();
+        saveState();
+    }
+
+    /* Which track the tail of this one should run into, or -1. The same
+       reasoning as advance()'s, asked a couple of seconds early. */
+    function nextForFade() {
+        if (!autoplay || repeat === 'one') return -1;
+        const next = neighbour(current, 1);
+        if (next >= 0) return next;
+        return repeat === 'all' ? neighbour(-1, 1) : -1;
+    }
+
+    function maybeStartFade() {
+        if (fade || current < 0 || audio.paused || dragging) return;
+        const total = audio.duration;
+        // A track has to be long enough to have a tail worth fading. Three
+        // times the overlap is the shortest that leaves any of it alone.
+        if (!isFinite(total) || total < XFADE * 3) return;
+        if (total - audio.currentTime > XFADE) return;
+
+        const toIndex = nextForFade();
+        // Into itself is not a crossfade; Repeat All with one playable track
+        // is the case that asks for it.
+        if (toIndex < 0 || toIndex === current) return;
+
+        const into = otherDeck();
+        into.src = tracks[toIndex].src;
+        into.muted = muted;
+        into.volume = 0;
+        // A freshly-given src is already at zero; this is only for a deck
+        // that still holds the same file from an earlier fade, and it throws
+        // on one with no duration yet.
+        try { into.currentTime = 0; } catch (e) { /* not loaded */ }
+
+        const started = into.play();
+        if (started && started.catch) {
+            // Refused — no gesture yet, or the file will not play. Leave the
+            // outgoing track to end on its own and let advance() handle it.
+            started.catch(function () { cancelFade(); });
+        }
+
+        fade = { into: into, toIndex: toIndex, started: Date.now(), timer: null };
+        fade.timer = setInterval(function () {
+            if (!fade) return;
+            const t = Math.min(1, (Date.now() - fade.started) / (XFADE * 1000));
+            /* Equal-power rather than straight lines: two tracks each at half
+               volume are not half as loud as one, so a linear pair dips
+               audibly in the middle. The sines cross at about 0.707, which is
+               where the sum holds steady. */
+            audio.volume = volume * Math.cos(t * Math.PI / 2);
+            fade.into.volume = volume * Math.sin(t * Math.PI / 2);
+            if (t >= 1) commitFade();
+        }, XFADE_TICK);
+    }
+
+    // ---- the elements' own events -------------------------------------------
+
+    /* WIRED ONTO BOTH DECKS, and almost every handler then asks whether the
+       deck it fired on is the one playing. The other deck is either parked
+       and silent, or it is the one being faded into — and a track fading in
+       is not yet the track the window is about, so its progress, its pauses
+       and its ending are none of the window's business until commitFade()
+       says otherwise. */
+    decks.forEach(function (deck) {
+        deck.addEventListener('play', function () {
+            if (deck !== audio) return;
+            setPlayIcon(true);
+            updateMediaSession();
+            updateMediaPosition();
+        });
+
+        /* Fires for the window's own pause button and for the two places the
+           rest of the page reaches in and stops this: toggleAudio() and
+           goToRoom(). Either of them stopping a deck mid-fade ends the fade
+           — the two tracks have been pulled apart by something outside this
+           window, and carrying on would bring back the one it silenced. */
+        deck.addEventListener('pause', function () {
+            if (fade && deck === fade.into) { cancelFade(); return; }
+            if (deck !== audio) return;
+            /* THE ONE PAUSE THAT MUST NOT CANCEL A FADE is a track simply
+               running out: an element reaching the end of its media fires
+               'pause' and then 'ended', and the first of those looks exactly
+               like somebody pressing the button. Reading it that way tore
+               down the crossfade a moment before 'ended' could commit it,
+               every single time — the incoming track was parked and then
+               started again from the top on the other deck. 'ended' is
+               already true by the time this fires, and the clock is checked
+               as well for a browser that orders the two the other way. */
+            const ranOut = deck.ended ||
+                (isFinite(deck.duration) && deck.duration - deck.currentTime < 0.35);
+            if (fade && !ranOut) cancelFade();
+            setPlayIcon(false);
+            updateMediaSession();
+            saveState();
+        });
+
+        deck.addEventListener('timeupdate', function () {
+            if (deck !== audio || dragging) return;
+            elapsedEl.textContent = clock(audio.currentTime);
+            paintSeek();
+            maybeStartFade();
+            /* The welcome room's door, which opens on its track being heard
+               rather than on one element playing it — see
+               unlockWelcomeProgress(). */
+            if (current >= 0 && tracks[current].room === 'welcome' &&
+                audio.currentTime >= 53 &&
+                typeof window.unlockWelcomeProgress === 'function') {
+                window.unlockWelcomeProgress();
+            }
+            // Every few seconds rather than four times a second: this fires
+            // constantly, and localStorage is a synchronous write to disk.
+            if (Date.now() - lastSave > 4000) { saveState(); updateMediaPosition(); }
+        });
+
+        deck.addEventListener('loadedmetadata', function () {
+            // The incoming deck still gets its running time written down —
+            // it is the same fact whichever element learned it.
+            if (fade && deck === fade.into) {
+                setDuration(tracks[fade.toIndex], deck.duration);
+                return;
+            }
+            if (deck !== audio) return;
+            if (current >= 0) setDuration(tracks[current], audio.duration);
+            if (pendingSeek > 0 && isFinite(audio.duration)) {
+                // Half a second short of the end, so a track that was all but
+                // finished comes back ready to play rather than ready to end.
+                audio.currentTime = Math.min(pendingSeek, Math.max(0, audio.duration - 0.5));
+                elapsedEl.textContent = clock(audio.currentTime);
+            }
+            pendingSeek = 0;
+            paintSeek();
+            updateMediaPosition();
+        });
+
+        /* Reached only by a track that was not faded out of: one too short to
+           fade, one whose neighbour would not start, or any track at all with
+           Autoplay off or Repeat One on. A fade that ran to the end has
+           already swapped the decks over long before this could fire. */
+        deck.addEventListener('ended', function () {
+            /* THE TAIL RUNNING OUT MID-FADE IS THE NORMAL CASE, not an edge
+               one: the fade begins when exactly XFADE seconds remain, so the
+               outgoing track reaches its end at almost the same moment the
+               ramp does. Taking the usual route from here would start the
+               next track a second time, on the deck that is still fading the
+               last one out — which is precisely what it did before this
+               clause: the incoming track was cut off and reloaded from the
+               top. The swap is what 'ended' wanted anyway, so take it now. */
+            if (fade && deck === audio) { commitFade(); return; }
+            if (deck !== audio) return;
+            setPlayIcon(false);
+            if (repeat === 'one') {
+                // Not select(): the file is already loaded and decoded, and
+                // handing the element the same src again would cost a round
+                // trip to arrive back where it is.
+                audio.currentTime = 0;
+                play();
+                return;
+            }
+            if (autoplay) advance(true);
+        });
+
+        deck.addEventListener('error', function () {
+            // An incoming track that will not load is simply not faded into;
+            // the outgoing one plays out and 'ended' takes the usual route
+            // past it.
+            if (fade && deck === fade.into) { cancelFade(); return; }
+            if (deck !== audio || current < 0) return;
+            nowSubEl.textContent = '[ERR] Track unavailable';
+            tracks[current].durEl.textContent = '--:--';
+            /* Walking on past a bad file is the point of autoplay, and the
+               walk always ends because neighbour() runs out at the end of the
+               list — advance(false) keeps it that way, and Repeat One is
+               ignored here on purpose: a file that cannot be played once
+               cannot be played over and over either. */
+            if (autoplay) advance(false);
+        });
     });
 
-    seekEl.addEventListener('pointermove', function (event) {
-        if (dragging) seekTo(event.clientX);
-    });
+    /* ---- the pixel scrollbar beside the track list -------------------------
 
-    function endDrag(event) {
-        if (!dragging) return;
-        dragging = false;
-        if (seekEl.releasePointerCapture && event.pointerId !== undefined) {
-            try { seekEl.releasePointerCapture(event.pointerId); } catch (e) { /* already gone */ }
+       mazerats.net's own js/custom-scrollbar.js, brought across and cut down
+       to the one axis and the one element this window has. The stylesheet's
+       .pl-sb-* rules say why the bar is built out of real elements rather
+       than ::-webkit-scrollbar-thumb and friends; this is the half that makes
+       them move.
+
+       It wraps .pl-list at runtime, so the markup up the page stays a plain
+       <ol> and nothing else in this file has to know the bar exists. The list
+       goes on scrolling exactly as it did — wheel, touch, keyboard, and
+       markCurrent() writing scrollTop — and the bar mirrors that while adding
+       a thumb to drag, two halves of track to page by and two arrows. */
+
+    let sbRefresh = null;
+
+    function refreshListScrollbar() { if (sbRefresh) sbRefresh(); }
+
+    function initListScrollbar() {
+        const wrap = document.createElement('div');
+        wrap.className = 'pl-list-wrap';
+        listEl.parentNode.insertBefore(wrap, listEl);
+        wrap.appendChild(listEl);
+        // With the stylesheet rather than instead of it: overflow can repaint
+        // after a script has run, and a native bar flashing in beside this one
+        // is the whole thing it is here to replace.
+        listEl.style.scrollbarWidth = 'none';
+
+        const bar = document.createElement('div');
+        bar.className = 'pl-sb';
+        /* aria-hidden and out of the tab order on purpose. The list already
+           scrolls with the keyboard and every row in it is a real button, so
+           to a screen reader this is decoration — two more buttons announcing
+           themselves between the options and the tracks would be in the way. */
+        bar.innerHTML =
+            '<button type="button" class="pl-sb-arrow pl-sb-up" tabindex="-1" aria-hidden="true"></button>' +
+            '<div class="pl-sb-track">' +
+                '<div class="pl-sb-seg pl-sb-seg-upper"></div>' +
+                '<div class="pl-sb-seg pl-sb-seg-lower"></div>' +
+                '<div class="pl-sb-thumb"></div>' +
+            '</div>' +
+            '<button type="button" class="pl-sb-arrow pl-sb-down" tabindex="-1" aria-hidden="true"></button>';
+        wrap.appendChild(bar);
+
+        const track = bar.querySelector('.pl-sb-track');
+        const segUpper = bar.querySelector('.pl-sb-seg-upper');
+        const segLower = bar.querySelector('.pl-sb-seg-lower');
+        const thumb = bar.querySelector('.pl-sb-thumb');
+        const arrowUp = bar.querySelector('.pl-sb-up');
+        const arrowDown = bar.querySelector('.pl-sb-down');
+
+        const ARROW_STEP = 36;   // a little over one row
+        const THUMB_SIZE = 15;   // the sprite's own size — see the CSS comment
+        const TRACK_TILE = 15;   // the track sprite's, for phasing the two segments
+
+        /* Held true for as long as a half of track is pressed. Paging moves
+           the thumb toward the press, which shrinks the very segment being
+           pressed — so the two boxes are frozen at their press-time sizes for
+           the whole hold, or the highlight ends up painted on a box with no
+           height and the press looks like it did nothing. The thumb and the
+           arrows keep updating throughout; one refresh on release puts the
+           segments back where they should have been. */
+        let paging = false;
+
+        function refresh() {
+            const maxScroll = listEl.scrollHeight - listEl.clientHeight;
+            const scrollable = maxScroll > 1;
+            bar.classList.toggle('is-unscrollable', !scrollable);
+            arrowUp.classList.toggle('is-disabled', !scrollable || listEl.scrollTop <= 0);
+            arrowDown.classList.toggle('is-disabled', !scrollable || listEl.scrollTop >= maxScroll - 1);
+
+            const trackSize = track.clientHeight;
+            const thumbStart = scrollable
+                ? Math.round(Math.max(0, trackSize - THUMB_SIZE) * (listEl.scrollTop / maxScroll))
+                : 0;
+            const thumbEnd = thumbStart + THUMB_SIZE;
+
+            thumb.style.height = THUMB_SIZE + 'px';
+            thumb.style.top = thumbStart + 'px';
+
+            if (paging) return;
+            segUpper.style.top = '0px';
+            segUpper.style.height = thumbStart + 'px';
+            segLower.style.top = thumbEnd + 'px';
+            segLower.style.height = Math.max(0, trackSize - thumbEnd) + 'px';
+            // Phased to the segment's own offset, so the tiling reads as one
+            // texture running on behind the thumb rather than two that happen
+            // not to line up.
+            segLower.style.backgroundPosition = '0 -' + (thumbEnd % TRACK_TILE) + 'px';
+        }
+
+        sbRefresh = refresh;
+
+        listEl.addEventListener('scroll', refresh);
+        window.addEventListener('resize', refresh);
+
+        /* Rows appearing, disappearing and being renumbered — Skip Expanse
+           does all three — without applyFilter() needing to call in here. */
+        if (window.ResizeObserver) new ResizeObserver(refresh).observe(listEl);
+        if (window.MutationObserver) {
+            new MutationObserver(refresh).observe(listEl, {
+                childList: true, subtree: true,
+                attributes: true, attributeFilter: ['hidden', 'style', 'class']
+            });
+        }
+
+        /* Pointer events rather than mouse events, so the bar answers a
+           finger and a pen as well as a cursor: the compatibility mouse
+           events a phone sends arrive only once the touch is over, which made
+           a tap one late nudge and the thumb undraggable.
+
+           Primary button only. A right-click used to start a drag or a repeat
+           too, and on macOS and Linux the context menu eats the release — so
+           nothing stopped it and the list could go on paging by itself. The
+           menu is refused on the bar itself, which is also what lets a long
+           press on a touchscreen keep repeating instead of popping one up. */
+        bar.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+        const pressOk = function (e) { return e.button === 0 && e.isPrimary !== false; };
+        // The window-wide stops skip a menu that came from the bar: that one
+        // was refused above, and its release is still coming.
+        const onMenuElsewhere = function (stop) {
+            return function (e) { if (!bar.contains(e.target)) stop(); };
+        };
+
+        // ---- the thumb ----
+        let sbDrag = null;
+
+        thumb.addEventListener('pointerdown', function (e) {
+            if (!pressOk(e)) return;
+            sbDrag = { id: e.pointerId, from: e.clientY, scroll: listEl.scrollTop };
+            // Captured, so a drag carries on however far it strays from the
+            // bar and its release still comes back here.
+            try { thumb.setPointerCapture(e.pointerId); } catch (err) { /* pointer already gone */ }
+            thumb.classList.add('is-dragging');
+            document.body.style.userSelect = 'none';
+            e.preventDefault();
+        });
+
+        thumb.addEventListener('pointermove', function (e) {
+            if (!sbDrag || e.pointerId !== sbDrag.id) return;
+            const maxScroll = listEl.scrollHeight - listEl.clientHeight;
+            const maxThumbStart = track.clientHeight - THUMB_SIZE;
+            if (maxThumbStart <= 0) return;
+            listEl.scrollTop = sbDrag.scroll +
+                ((e.clientY - sbDrag.from) / maxThumbStart) * maxScroll;
+            // Writing scrollTop does not reliably fire a 'scroll' event the
+            // way a wheel or a swipe does, so the listener above cannot be the
+            // only thing refreshing for the moves this file makes itself.
+            refresh();
+        });
+
+        function stopThumbDrag() {
+            if (!sbDrag) return;
+            try { thumb.releasePointerCapture(sbDrag.id); } catch (err) { /* already released */ }
+            sbDrag = null;
+            thumb.classList.remove('is-dragging');
+            document.body.style.userSelect = '';
+        }
+
+        thumb.addEventListener('pointerup', stopThumbDrag);
+        thumb.addEventListener('pointercancel', stopThumbDrag);
+        thumb.addEventListener('lostpointercapture', stopThumbDrag);
+        window.addEventListener('blur', stopThumbDrag);
+        window.addEventListener('contextmenu', onMenuElsewhere(stopThumbDrag));
+
+        // ---- the two halves of track ----
+        let pageTimer = null;
+        let activeSeg = null;
+
+        function pageBy(direction) {
+            listEl.scrollTop += direction * listEl.clientHeight * 0.9;
+            refresh();
+        }
+
+        track.addEventListener('pointerdown', function (e) {
+            if (!pressOk(e)) return;
+            // Which segment was hit is what decides the direction and what
+            // stays lit for the hold — not a comparison against the thumb.
+            const seg = e.target === segUpper ? segUpper : e.target === segLower ? segLower : null;
+            if (!seg) return;
+            e.preventDefault();
+            if (pageTimer) clearInterval(pageTimer);
+            if (activeSeg) activeSeg.classList.remove('is-active');
+            paging = true;
+            activeSeg = seg;
+            seg.classList.add('is-active');
+            const direction = seg === segUpper ? -1 : 1;
+            pageBy(direction);
+            pageTimer = setInterval(function () { pageBy(direction); }, 350);
+        });
+
+        function stopPaging() {
+            if (activeSeg) {
+                activeSeg.classList.remove('is-active');
+                activeSeg = null;
+            }
+            if (pageTimer) {
+                clearInterval(pageTimer);
+                pageTimer = null;
+            }
+            if (paging) {
+                paging = false;
+                refresh();
+            }
+        }
+
+        /* Not captured, unlike the thumb: sliding off the track is how a hold
+           is let go of early, and a captured pointer never leaves. */
+        window.addEventListener('pointerup', stopPaging);
+        window.addEventListener('pointercancel', stopPaging);
+        window.addEventListener('blur', stopPaging);
+        window.addEventListener('contextmenu', onMenuElsewhere(stopPaging));
+        track.addEventListener('pointerleave', stopPaging);
+
+        // ---- the arrows: one nudge on press, repeating while held ----
+        function wireArrow(btn, direction) {
+            let timer = null;
+            function step() { listEl.scrollTop += direction * ARROW_STEP; refresh(); }
+            function stop() {
+                if (timer) { clearInterval(timer); timer = null; }
+            }
+            btn.addEventListener('pointerdown', function (e) {
+                if (!pressOk(e)) return;
+                e.preventDefault();
+                stop();
+                step();
+                timer = setInterval(step, 80);
+            });
+            window.addEventListener('pointerup', stop);
+            window.addEventListener('pointercancel', stop);
+            window.addEventListener('blur', stop);
+            window.addEventListener('contextmenu', onMenuElsewhere(stop));
+            btn.addEventListener('pointerleave', stop);
+        }
+
+        wireArrow(arrowUp, -1);
+        wireArrow(arrowDown, 1);
+
+        refresh();
+    }
+
+    // ---- picking up where the last page left off ----------------------------
+
+    /* NOTHING IS SHOWN AND NOTHING IS PLAYED. The player used to come back up
+       by itself if it had been open when the page went away, and on a site
+       that is one page walked through in stages that meant it reopened
+       constantly — over the room somebody had just arrived in, having asked
+       all thirty-six files for their headers on the way. Coming back is the
+       visitor's to ask for: the pill is right there, and it reopens into
+       whichever half they were last using.
+
+       What is quietly put back is the track and the place in it, cued up and
+       paused, so that press carries on rather than starting the soundtrack
+       again from the top. */
+    function restore() {
+        const src = readString(TRACK_KEY);
+        const seconds = readNumber(TIME_KEY, 0, 0, 86400);
+        mode = readString(MODE_KEY) === 'mini' ? 'mini' : 'full';
+
+        if (!src) return;
+
+        restoring = true;
+        try {
+            let index = -1;
+            tracks.forEach(function (t, i) { if (t.src === src) index = i; });
+            if (index >= 0 && !tracks[index].hidden) {
+                // preload="none" on the element would leave the file untouched
+                // until it was played, and a seek on an element with no
+                // duration is refused — so the header is asked for now.
+                audio.preload = 'metadata';
+                select(index, false, true);
+                // After select(), which clears it: the two are a pair, and the
+                // 'loadedmetadata' handler is what spends it.
+                pendingSeek = seconds;
+            }
+        } finally {
+            restoring = false;
         }
     }
 
-    seekEl.addEventListener('pointerup', endDrag);
-    seekEl.addEventListener('pointercancel', endDrag);
+    /* ---- Reset Progress reaches in here too --------------------------------
 
-    seekEl.addEventListener('keydown', function (event) {
-        const jump = event.key === 'ArrowRight' ? 5 : event.key === 'ArrowLeft' ? -5 : 0;
-        if (!jump || !isFinite(audio.duration)) return;
-        event.preventDefault();
-        audio.currentTime = Math.min(audio.duration, Math.max(0, audio.currentTime + jump));
+       confirmReset() empties localStorage, which takes this player's
+       preferences with it — but not the copies of them held in memory. Until
+       the page was next reloaded, somebody who had just wiped their progress
+       was still carrying the settings of the run they wiped: Auto-Room off
+       because they had finished it, the Expanse rows hidden because they had
+       chosen to hide them. Clearing progress makes somebody new, and new is
+       what this puts the player back to.
+
+       THE RUNNING TIMES ARE WRITTEN STRAIGHT BACK, because they are not
+       progress. They are facts about thirty-six files that have not changed,
+       they are still in memory, and letting the clear take them would mean
+       asking every one of those files for its header again the next time the
+       window was opened — a cost for nothing, paid by somebody who only asked
+       to start the maze again. */
+    window.resetSoundtrackPlayer = function () {
+        closePlayer(false);   // cancels any fade and stops both decks
+        audio = decks[0];
+
+        // Before the srcs go: the 'error' an empty element may raise on
+        // load() is ignored while nothing is current, and acted on otherwise.
+        current = -1;
+        pendingSeek = 0;
+        // Both of them — the second may still be holding whatever was cued
+        // up behind the track that was playing.
+        decks.forEach(function (d) { d.removeAttribute('src'); d.load(); });
+
+        mode = 'full';
+        writeString(MODE_KEY, mode);
+        // Where it opens is part of what a reset puts back.
+        dragged = false;
+        placed = false;
+        setAutoplay(true);
+        setRepeat('off');
+        setAutoRoom(true);
+        setSkipExpanse(false);
+        volume = 1;
+        muted = false;
+        writePref(VOLUME_KEY, volume);
+        writePref(MUTED_KEY, muted);
+        applyVolume();
+
+        markCurrent();
+        updateNow();
         paintSeek();
-    });
+        elapsedEl.textContent = '0:00';
+        durationEl.textContent = '--:--';
+        saveDurations();
+        saveState();
+    };
 
-    // ---- the element's own events -------------------------------------------
+    /* ---- the operating system's own controls ------------------------------
 
-    audio.addEventListener('play', function () { setPlayIcon(true); });
+       The welcome screen asks for headphones, so the buttons on the cable are
+       where a good half of this will actually be driven from — along with the
+       lock screen, the Windows media overlay, and a car stereo over
+       Bluetooth. All of it is the Media Session API, and all of it is free
+       once the metadata and a handful of action handlers are set.
 
-    // Fires for the window's own pause button and for the two places the rest
-    // of the page reaches in and stops this: toggleAudio() and goToRoom().
-    audio.addEventListener('pause', function () { setPlayIcon(false); });
+       ONE PIECE OF ARTWORK FOR EVERY TRACK rather than the room's own. A room
+       on this site is a photograph with an overlay drawn over it, so its
+       artwork would have to be the two composited and then cropped square —
+       and what reaches a lock screen is a thumbnail of that, which is the
+       least recognisable part of it. The bead in the track list is where the
+       rooms are told apart. */
+    function updateMediaSession() {
+        if (!('mediaSession' in navigator)) return;
+        const ms = navigator.mediaSession;
 
-    audio.addEventListener('timeupdate', function () {
-        if (dragging) return;
-        elapsedEl.textContent = clock(audio.currentTime);
+        if (current >= 0 && window.MediaMetadata) {
+            ms.metadata = new MediaMetadata({
+                title: tracks[current].title,
+                artist: 'Liminal Labyrinth',
+                album: 'Soundtrack',
+                artwork: [{ src: new URL('images/LLpurp1.png', location.href).href,
+                            sizes: '508x469', type: 'image/png' }]
+            });
+        }
+        ms.playbackState = audio.paused ? 'paused' : 'playing';
+    }
+
+    /* The scrubber on a lock screen. It throws rather than ignoring a
+       duration it cannot use — before metadata arrives, or on a track that
+       failed — and a position past the end counts as one of those. */
+    function updateMediaPosition() {
+        if (!('mediaSession' in navigator) || !navigator.mediaSession.setPositionState) return;
+        const total = audio.duration;
+        if (!isFinite(total) || total <= 0) return;
+        try {
+            navigator.mediaSession.setPositionState({
+                duration: total,
+                playbackRate: audio.playbackRate || 1,
+                position: Math.min(Math.max(0, audio.currentTime), total)
+            });
+        } catch (e) { /* no-op */ }
+    }
+
+    function initMediaSession() {
+        if (!('mediaSession' in navigator)) return;
+        const ms = navigator.mediaSession;
+        /* Each in a try of its own: a browser that does not know an action
+           throws on being handed one, and losing 'seekto' should not cost us
+           'play'. */
+        [
+            ['play', function () { if (current < 0) togglePlay(); else play(); }],
+            ['pause', function () { audio.pause(); }],
+            ['stop', function () { closePlayer(false); }],
+            ['previoustrack', previous],
+            ['nexttrack', function () { advance(true); }],
+            ['seekbackward', function (d) { nudge(-(d && d.seekOffset || 10)); }],
+            ['seekforward', function (d) { nudge(d && d.seekOffset || 10); }],
+            ['seekto', function (d) {
+                if (!d || typeof d.seekTime !== 'number' || !isFinite(audio.duration)) return;
+                audio.currentTime = Math.min(Math.max(0, d.seekTime), audio.duration);
+                paintSeek();
+                updateMediaPosition();
+            }]
+        ].forEach(function (pair) {
+            try { ms.setActionHandler(pair[0], pair[1]); } catch (e) { /* unsupported */ }
+        });
+    }
+
+    function nudge(seconds) {
+        if (!isFinite(audio.duration)) return;
+        audio.currentTime = Math.min(audio.duration, Math.max(0, audio.currentTime + seconds));
         paintSeek();
+        updateMediaPosition();
+    }
+
+    /* ---- the keyboard ------------------------------------------------------
+
+       Only while the player is on screen, so the page is not quietly
+       listening for keys nobody meant for it, and never over a control that
+       wants the key itself: space belongs to whatever button is focused, and
+       the arrows to the seek bar and the volume slider, both of which handle
+       them already. */
+    const TYPING = { INPUT: 1, TEXTAREA: 1, SELECT: 1 };
+
+    document.addEventListener('keydown', function (event) {
+        if (!isShowing()) return;
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+        const target = event.target;
+        if (target && (TYPING[target.tagName] || target.isContentEditable)) return;
+        // A focused button, the seek bar, a track row: the key is theirs.
+        const onControl = target && target.closest &&
+            target.closest('button, [role="slider"], input');
+
+        switch (event.key) {
+            case ' ':
+            case 'Spacebar':
+                if (onControl) return;
+                event.preventDefault();
+                togglePlay();
+                break;
+            case 'ArrowRight':
+                if (onControl) return;
+                event.preventDefault();
+                if (event.shiftKey) advance(true); else nudge(5);
+                break;
+            case 'ArrowLeft':
+                if (onControl) return;
+                event.preventDefault();
+                if (event.shiftKey) previous(); else nudge(-5);
+                break;
+            case 'm':
+            case 'M':
+                event.preventDefault();
+                muteBtn.click();
+                break;
+            default:
+        }
     });
 
-    audio.addEventListener('loadedmetadata', function () {
-        if (current >= 0) setDuration(tracks[current], audio.duration);
-        paintSeek();
-    });
-
-    audio.addEventListener('ended', function () {
-        setPlayIcon(false);
-        if (autoplay) advance();
-    });
-
-    audio.addEventListener('error', function () {
-        if (current < 0) return;
-        nowSubEl.textContent = '[ERR] Track unavailable';
-        tracks[current].durEl.textContent = '--:--';
-        // Walking on past a bad file is the point of autoplay; the walk always
-        // ends, because neighbour() runs out at the end of the list.
-        if (autoplay) advance();
-    });
+    // Closing the tab, reloading, or following the wordmark back to the top.
+    window.addEventListener('pagehide', saveState);
 
     // ---- go -----------------------------------------------------------------
 
+    initListScrollbar();
+    initMediaSession();
+    loadDurations();               // before anything can ask the files themselves
     setAutoplay(autoplay);
+    setRepeat(repeat);
+    setAutoRoom(autoRoom);
     setSkipExpanse(skipExpanse);   // also numbers the list, through applyFilter()
     setPlayIcon(false);
     applyVolume();
+    restore();
 }());
 
 </script>
