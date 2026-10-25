@@ -3810,34 +3810,64 @@ function fadeAudioOut(audio, duration = 1500) {
     });
 }
 
+/* THE BUTTON BETWEEN RETURN AND PROGRESS now starts the room's track in the
+   soundtrack player and brings the mini player up with it, rather than
+   playing the room's own <audio> on its own.
+
+   The two were separate machines doing the same job: the room element knew
+   how to make a noise and nothing else, while every control that belongs to
+   playing something — a scrub bar, a volume, a skip, what is playing and how
+   long is left — lived in a window the visitor had to go and open. Pressing
+   play and being given the controls for the thing you just started is the
+   whole of this change.
+
+   The room's <audio> stays exactly where it is. It is where the track is
+   DECLARED — the playlist is read out of these elements, which is why
+   adding or reordering a room still carries the soundtrack with it — it is
+   simply no longer the thing that plays it.
+
+   playRoomTrack() returns false if the player never started (its script
+   bails if any of its elements are missing) or if this room has no track of
+   its own, like the two break rooms. Then, and only then, the old path runs,
+   so a page where the player is broken still makes a noise. */
 function toggleAudio(btn) {
     const room = btn.closest('.room');
-    const audio = room ? room.querySelector('audio') : null;
+    if (!room) return;
 
+    if (typeof window.playRoomTrack === 'function' && window.playRoomTrack(room.id)) return;
+
+    // ---- the fallback: the room on its own, as it always was ----
+    const audio = room.querySelector('audio');
     if (!audio) return;
 
     if (audio.paused) {
         document.querySelectorAll('audio').forEach(a => {
-            if (a !== audio) {
-                a.pause();
-            }
+            if (a !== audio) a.pause();
         });
-
         document.querySelectorAll('.audio-toggle-btn').forEach(b => {
-            if (b !== btn) {
-                b.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; vertical-align: middle; display: block; margin: 0 auto;">`;
-                b.classList.remove('playing');
-            }
+            if (b !== btn) setRoomButton(b, false);
         });
-
         audio.play();
-        btn.innerHTML = `<img class="audio-icon" src="${PAUSE_ICON_URL}" alt="Pause Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
-        btn.classList.add('playing');
+        setRoomButton(btn, true);
     } else {
         audio.pause();
-        btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
-        btn.classList.remove('playing');
+        setRoomButton(btn, false);
     }
+}
+
+/* The icon on a room's play button, swapped by src rather than by rewriting
+   the button's innerHTML. The old version wrote a fresh <img> each time,
+   carrying a copy of the inline styles with it — and the two copies had
+   drifted, so one of the three said vertical-align: middle and the others
+   did not. */
+function setRoomButton(btn, playing) {
+    if (!btn) return;
+    const icon = btn.querySelector('.audio-icon');
+    if (icon) {
+        icon.src = playing ? PAUSE_ICON_URL : PLAY_ICON_URL;
+        icon.alt = playing ? 'Pause Icon' : 'Play Icon';
+    }
+    btn.classList.toggle('playing', playing);
 }
 
 let hasRevealedLandingAction = false;
@@ -4053,18 +4083,17 @@ function goToRoom(roomId) {
            stopped this element would have the player silencing itself on
            every track change.
 
-           The one-thing-at-a-time rule still holds, because it is kept in the
-           two places that actually start something: toggleAudio() pauses this
-           when a room's play button is pressed, and the window's own play()
-           pauses the rooms. Arriving in a room sounds nothing by itself. */
+           The one-thing-at-a-time rule still holds: the player is the only
+           thing that plays a room's track now, so there is only ever one
+           source. Arriving in a room sounds nothing by itself.
+
+           The loop below is left in place for the fallback path in
+           toggleAudio() — the one that runs only if the player never
+           started — and for any room element something else sets going. */
         if (audio.classList.contains('pl-deck')) return;
         if (!audio.paused) {
             const room = audio.closest('.room');
-            const btn = room ? room.querySelector('.audio-toggle-btn.playing') : null;
-            if (btn) {
-                btn.innerHTML = `<img class="audio-icon" src="${PLAY_ICON_URL}" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">`;
-                btn.classList.remove('playing');
-            }
+            setRoomButton(room ? room.querySelector('.audio-toggle-btn.playing') : null, false);
             fadeAudioOut(audio);
         }
     });
@@ -4558,6 +4587,15 @@ document.addEventListener('DOMContentLoaded', () => {
         ? readString(REPEAT_KEY) : 'off';
     let autoRoom = readPref(AUTOROOM_KEY, !completed);
     let skipExpanse = readPref(SKIP_EXPANSE_KEY, false);
+    /* A TRACK STARTED FROM A ROOM'S OWN PLAY BUTTON GOES ROUND, the way it
+       did when the room's <audio loop> played it: you press play, and the
+       room keeps sounding while you read it.
+
+       Not a setting and never written down — a property of this particular
+       playing, cleared the moment the visitor asks for something else. The
+       Repeat pill is a standing instruction about the list and is left
+       alone; this is about one room, and it ends when you leave it. */
+    let roomLoop = false;
     let volume = readNumber(VOLUME_KEY, 1, 0, 1);
     let muted = readPref(MUTED_KEY, false);
     let probeStarted = false;
@@ -4628,10 +4666,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         playable = n;
-        noteEl.textContent = skipExpanse
-            ? pad(expanseCount) + ' Expanse interludes hidden'
-            : '';
+        updateNote();
         updateNow();
+    }
+
+    /* The one line under the list. Two things want it, and the loop has the
+       louder claim: a player quietly repeating a track with the Repeat pill
+       reading OFF is the kind of thing somebody stares at for a while. */
+    function updateNote() {
+        noteEl.textContent =
+            roomLoop ? 'Looping this room. Press next, or pick a track, to move on.'
+            : skipExpanse ? pad(expanseCount) + ' Expanse interludes hidden'
+            : '';
     }
 
     function neighbour(from, direction) {
@@ -4690,8 +4736,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function select(index, startPlaying, quiet) {
         if (index < 0 || index >= tracks.length) return;
         // Somebody has asked for a particular track, which answers whatever
-        // the tail of the last one was in the middle of doing.
+        // the tail of the last one was in the middle of doing — and ends the
+        // room loop, since the track being looped is no longer the one
+        // playing. playRoomTrack() sets it again on its way back out.
         cancelFade();
+        roomLoop = false;
+        // The line under the list is drawn from that flag, so it has to be
+        // redrawn with it — without this it went on claiming to be looping a
+        // room two tracks after the loop had ended.
+        updateNote();
         pendingSeek = 0;
         current = index;
         audio.src = tracks[index].src;
@@ -4712,10 +4765,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('audio').forEach(function (other) {
             if (other !== audio && other !== fadeInto() && !other.paused) other.pause();
         });
-        document.querySelectorAll('.audio-toggle-btn.playing').forEach(function (btn) {
-            btn.innerHTML = '<img class="audio-icon" src="' + PLAY_ICON_URL + '" alt="Play Icon" style="width: 24px; height: 24px; display: block; margin: 0 auto;">';
-            btn.classList.remove('playing');
-        });
+        syncRoomButtons();
 
         const started = audio.play();
         // A browser that refuses to start (no gesture yet, track missing) hands
@@ -4723,6 +4773,42 @@ document.addEventListener('DOMContentLoaded', () => {
         // on screen, so there is nothing to add here but a catch.
         if (started && started.catch) started.catch(function () { /* no-op */ });
     }
+
+    /* THE ROOM BUTTONS FOLLOW THE PLAYER, because the player is what plays
+       their tracks now. Exactly one of them can be showing a pause icon: the
+       one belonging to the track that is sounding. Everything that changes
+       what is playing calls this. */
+    function syncRoomButtons() {
+        if (typeof setRoomButton !== 'function') return;
+        const playingRoom = (current >= 0 && !audio.paused) ? tracks[current].room : null;
+        document.querySelectorAll('.room').forEach(function (room) {
+            setRoomButton(room.querySelector('.audio-toggle-btn'), room.id === playingRoom);
+        });
+    }
+
+    /* Called by a room's own play button. Returns false when there is
+       nothing here to take over — no track for this room, which is the two
+       break rooms — so the caller can fall back to its old behaviour. */
+    window.playRoomTrack = function (roomId) {
+        let index = -1;
+        tracks.forEach(function (t, i) { if (t.room === roomId) index = i; });
+        if (index < 0) return false;
+
+        /* The mini player, not the window: the visitor pressed play on a
+           room, not "show me the soundtrack". Only if nothing is up already
+           — a full window open is one they opened on purpose, and collapsing
+           it under them would be answering a question they did not ask. */
+        if (!isShowing()) show('mini');
+
+        // The track already loaded is a play/pause, same as its row in the list.
+        if (index === current) togglePlay();
+        else select(index, true);
+
+        // After select(), which clears it.
+        roomLoop = true;
+        updateNote();
+        return true;
+    };
 
     function togglePlay() {
         if (current < 0) {
@@ -5159,6 +5245,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* Stops it, both halves, whatever it was doing. */
     function closePlayer(returnFocus) {
         hideTip();
+        roomLoop = false;
         windowEl.hidden = true;
         miniEl.hidden = true;
         setExpanded(false);
@@ -5377,10 +5464,18 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('blur', hideTip);
     });
 
-    autoplayBtn.addEventListener('click', function () { setAutoplay(!autoplay); });
+    /* Both of these are the visitor saying what should happen when a track
+       runs out, which is precisely what the room loop was deciding for them. */
+    autoplayBtn.addEventListener('click', function () {
+        roomLoop = false;
+        setAutoplay(!autoplay);
+        updateNote();
+    });
 
     repeatBtn.addEventListener('click', function () {
+        roomLoop = false;
         setRepeat(REPEAT_STATES[(REPEAT_STATES.indexOf(repeat) + 1) % REPEAT_STATES.length]);
+        updateNote();
         /* ASKING FOR THE LIST TO GO ROUND IS ASKING TO BE MOVED THROUGH IT.
            All on its own does nothing until something reaches the end of the
            list, so with Autoplay off it was a setting that lit up and then
@@ -5553,6 +5648,7 @@ document.addEventListener('DOMContentLoaded', () => {
         durationEl.textContent = clock(tracks[current].duration || audio.duration);
         elapsedEl.textContent = clock(audio.currentTime);
         setPlayIcon(!audio.paused);
+        syncRoomButtons();
         paintSeek();
         markCurrent();
         updateNow();
@@ -5565,7 +5661,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* Which track the tail of this one should run into, or -1. The same
        reasoning as advance()'s, asked a couple of seconds early. */
     function nextForFade() {
-        if (!autoplay || repeat === 'one') return -1;
+        if (!autoplay || repeat === 'one' || roomLoop) return -1;
         const next = neighbour(current, 1);
         if (next >= 0) return next;
         return repeat === 'all' ? neighbour(-1, 1) : -1;
@@ -5626,6 +5722,7 @@ document.addEventListener('DOMContentLoaded', () => {
         deck.addEventListener('play', function () {
             if (deck !== audio) return;
             setPlayIcon(true);
+            syncRoomButtons();
             updateMediaSession();
             updateMediaPosition();
         });
@@ -5651,6 +5748,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 (isFinite(deck.duration) && deck.duration - deck.currentTime < 0.35);
             if (fade && !ranOut) cancelFade();
             setPlayIcon(false);
+            syncRoomButtons();
             updateMediaSession();
             saveState();
         });
@@ -5709,7 +5807,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (fade && deck === audio) { commitFade(); return; }
             if (deck !== audio) return;
             setPlayIcon(false);
-            if (repeat === 'one') {
+            if (roomLoop || repeat === 'one') {
                 // Not select(): the file is already loaded and decoded, and
                 // handing the element the same src again would cost a round
                 // trip to arrive back where it is.
@@ -6050,6 +6148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Where it opens is part of what a reset puts back.
         dragged = false;
         placed = false;
+        roomLoop = false;
         setAutoplay(true);
         setRepeat('off');
         setAutoRoom(true);
