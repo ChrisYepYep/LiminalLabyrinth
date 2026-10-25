@@ -191,10 +191,26 @@ body {
     border-radius: 14px;   /* the frame is the border-image; this only rounds
                               the shadow below to its curve */
     box-shadow: 0 16px 44px rgba(0, 0, 0, 0.75);
-    /* The frame's own breathing space around the panel. Kept tight — the frame
-       is 14px of art already, and the gap is there to show it. */
-    padding: 10px;
+    /* ---- the gap between the window's edge and what is inside it ----
+
+       TWELVE PIXELS, the archive's own number: the window's 1px outline, then
+       12px of clear chrome, then the panel. It was 23 — a 10px pad on top of
+       the full 14px border — which put the frame and its contents at arm's
+       length from each other and made the art read as a mount around a
+       picture rather than as the window's own edge.
+
+       THE BORDER STAYS 14px, because everything placed against it is measured
+       from it: the titlebar's dots, the close box, the soundtrack window's
+       own chrome. Only the inner 11px of that border is plain fill —
+       ll_window_frame.png draws its outline, fill and highlight in the outer
+       3px — so the panel simply reaches 1px back into it and covers nothing
+       but flat colour. */
+    --window-edge-gap: 13px;                              /* outline + 12px clear */
+    --window-inset: calc(var(--window-edge-gap) - 14px);  /* −1px */
+    padding: 0;
 }
+
+.ll-window > .ll-window-inner { margin: var(--window-inset); }
 
 /* ---- the grab bar ----------------------------------------------------------
 
@@ -215,9 +231,14 @@ body {
 
    -20px is that reach: 10px of .ll-window's padding plus 10px of its 14px
    border, leaving the outer 4px of frame showing. */
+/* Hung 4px inside the window's edge, where a grab bar belongs — the same 4px
+   the archive's grips stand in by. The bar's box starts at the inner edge of
+   the 14px border, so it reaches back over 10 of them. (It was -20px against
+   a 10px pad, which came to the same 4px; the pad is gone, so the number
+   moves with it.) */
 .ll-titlebar {
     height: 22px;
-    margin: -20px -20px 10px;
+    margin: -10px -10px 10px;
     background-image: url('images/ll_title_pattern.png');
     background-repeat: repeat;
     image-rendering: pixelated;
@@ -294,10 +315,11 @@ body {
    thirds, so at 14 the art is drawn 1:1 and at 7 every slice is resampled to
    half size — which on a frame that is one pixel of black, one of fill and one
    of highlight is the difference between an edge and a smudge. The 28px it
-   costs comes out of the padding instead, which nobody can see. */
+   costs comes out of the padding instead, which nobody can see. (There is no
+   padding left to take it out of: the gap is 12px at every width now — see
+   --window-edge-gap above — which is tighter than the 6px pad this used to
+   drop to, so the phone has gained what this rule was for.) */
 @media (max-width: 480px) {
-    .ll-window { padding: 6px; }
-
     /* A lower floor on a phone. The rooms are far taller here — narrow columns
        wrap the prose to many more lines, 450px to 864px against 572px of
        screen — so the height set by script does most of the work and this only
