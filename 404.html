@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <title>Liminal Labyrinth - Lost</title>
+    <meta name="description" content="This corridor does not exist. Liminal Labyrinth, an audio experience in Habbo Hotel: Origins.">
+    <!-- Not indexed: a 404 is not a page anybody should arrive at from a
+         search result. -->
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" sizes="64x64" href="images/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+    <link rel="apple-touch-icon" href="images/favicon.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 56px 0 0;
+            font-family: 'Oswald', sans-serif;
+            background-color: #0a0510;
+            color: #fff8fa;
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: min(680px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 24px 0 48px;
+            box-sizing: border-box;
+        }
+
+        /* The room's own voice: the sector readout and the expanse logs are
+           Courier in phosphor green, and a machine saying it cannot find
+           something is exactly that voice. */
+        .lost-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(0, 255, 102, 0.6);
+            margin: 0 0 10px;
+        }
+
+        .lost-title {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.6rem, 6vw, 2.6rem);
+            letter-spacing: 2px;
+            margin: 0 0 18px;
+            text-align: center;
+            text-shadow: 0 0 14px rgba(255, 248, 250, 0.25);
+        }
+
+        .lost-text {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 300;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+            max-width: 46ch;
+            text-align: center;
+            color: rgba(255, 248, 250, 0.8);
+            margin: 0 0 14px;
+        }
+
+        /* The end screen's pill, which is the site's one way of saying
+           "this takes you somewhere". */
+        .lost-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 26px;
+        }
+
+        .lost-actions a {
+            padding: 9px 22px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 248, 250, 0.2);
+            border-radius: 20px;
+            color: #fff8fa;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.72rem;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            opacity: 0.85;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .lost-actions a:hover,
+        .lost-actions a:focus-visible {
+            opacity: 1;
+            border-color: rgba(255, 248, 250, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .site-footer {
+            flex: 0 0 auto;
+            padding: 18px 16px 24px;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.62rem;
+            line-height: 1.6;
+            color: rgba(255, 248, 250, 0.35);
+        }
+
+        .site-footer p { margin: 0 0 6px; max-width: 70ch; margin-inline: auto; }
+        .site-footer a { color: rgba(255, 248, 250, 0.55); }
+
+        @media (prefers-reduced-motion: reduce) {
+            .lost-actions a { transition: none; }
+        }
+    </style>
+    <link rel="stylesheet" href="ll-chrome.css">
+</head>
+<body>
+
+<!-- The same bar as every other page; its styles live in ll-chrome.css so
+     there is one copy of them rather than four. No Soundtrack button here:
+     the player belongs to the maze, and this is not it. -->
+<header class="ll-topbar">
+    <div class="ll-brand-group">
+        <a class="ll-brand" href="index.html">
+            <span class="ll-brand-text">LIMINAL LABYRINTH</span>
+            <span class="ll-brand-tagline">An Audio Experience.</span>
+        </a>
+        <a class="ll-powered" href="https://mazerats.net" target="_blank" rel="noopener noreferrer">Powered by mazerats.net</a>
+    </div>
+</header>
+
+<div class="container">
+    <div class="ll-window">
+        <div class="ll-titlebar"></div>
+        <div class="ll-window-inner">
+            <p class="lost-code">[404] Corridor not found</p>
+            <h1 class="lost-title">You took a wrong turn.</h1>
+            <p class="lost-text">There is no room at this address. There may never have
+                been one &mdash; the maze is not above adding a door that opens onto
+                nothing, and you would not be the first to find it.</p>
+            <p class="lost-text">Nothing is lost. Your place in the labyrinth is where
+                you left it.</p>
+            <div class="lost-actions">
+                <a href="index.html">Back to the maze</a>
+                <a href="about.html">Behind the Labyrinth</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <p>Liminal Labyrinth: An Audio Experience, is produced by ChrisYepYep; Liminal Labyrinth is independent and not affiliated with, sponsored, supported, or endorsed by Sulake Oy or its affiliates. Any Habbo trademarks or intellectual property used here are done so in accordance with the Habbo Fan Site Policy.</p>
+    <p>&copy; 2026 Liminal Labyrinth. All rights reserved. | <a class="privacylink" href="privacy.html">Privacy Policy</a></p>
+</footer>
+
+</body>
+</html>
